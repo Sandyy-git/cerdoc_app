@@ -53,6 +53,44 @@ $config['staff_marital_status'] = array(
 
 $config['staff_bloodgroup'] = array('1' => 'O+', '2' => 'A+', '3' => 'B+', '4' => 'AB+', '5' => 'O-', '6' => 'A-', '7' => 'B-', '8' => 'AB-');
 
+$config['state'] =  [ '1' => "Andhra Pradesh",
+'2' =>"Arunachal Pradesh",
+'3' =>"Assam",
+'4' =>"Bihar",
+'5' =>"Chhattisgarh",
+'6' =>"Goa",
+'7' => "Gujarat",
+'8' =>"Haryana",
+'9' =>"Himachal Pradesh",
+'10' =>"Jammu and Kashmir",
+'11' =>"Jharkhand",
+'12' =>"Karnataka",
+'13' =>"Kerala",
+'14' =>"Madhya Pradesh",
+'15' =>"Maharashtra",
+'16' =>"Manipur",
+'17' =>"Meghalaya",
+'18' =>"Mizoram",
+'19' =>"Nagaland",
+'20' =>"Odisha",
+'21' =>"Punjab",
+'22' =>"Rajasthan",
+'23' =>"Sikkim",
+'24' =>"Tamil Nadu",
+'25' =>"Telangana",
+'26' =>"Tripura",
+'27' =>"Uttarakhand",
+'28' =>"Uttar Pradesh",
+'29' =>"West Bengal",
+'30' =>"Andaman and Nicobar Islands",
+'31' =>"Chandigarh",
+'32' =>"Dadra and Nagar Haveli",
+'33' =>"Daman and Diu",
+'34'=>"Delhi",
+'35' =>"Lakshadweep",
+'36' =>"Puducherry"];
+
+
 $config['payroll_status'] = array(
     'generated'    => lang('generated'),
     'paid'         => lang('paid'),
@@ -156,3 +194,12 @@ $config['agerange'] = array(
     '95'  => 95,
     '100' => 100,
 );
+
+$config['global_week'] = array(
+    '1'     => lang('1stweek'),
+    '2'     => lang('2ndweek'),
+    '3'     => lang('3rdweek'),
+    '4'    => lang('4thweek'),
+    '5'     => lang('5thweek'),
+);
+

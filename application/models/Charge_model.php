@@ -377,7 +377,7 @@ class Charge_model extends MY_Model
 
     public function getChargeById($id)
     {
-        $query = $this->db->select('patient_charges.*,charge_categories.name as charge_category_name,charges.charge_category_id,charges.standard_charge,charges.name as `charge_name`,charge_units.unit,charge_type_master.id as `charge_type_master_id`,ipd_details.patient_id as `ipd_patient_id`,ipd_patient.patient_name as `ipd_patient_name`,opd_details.patient_id as `opd_patient_id`,opd_patient.patient_name as `opd_patient_name`,opd_details.case_reference_id as `opd_case_reference_id`,ipd_details.case_reference_id as `ipd_case_reference_id`,tax_category.name as apply_tax,tax_category.percentage')
+        $query = $this->db->select('patient_charges.*,charge_categories.name as charge_category_name,charges.charge_category_id,charges.standard_charge,charges.name as `charge_name`,charge_units.unit,charge_type_master.id as `charge_type_master_id`,ipd_details.patient_id as `ipd_patient_id`,ipd_patient.patient_name as `ipd_patient_name`,opd_details.patient_id as `opd_patient_id`,opd_patient.patient_name as `opd_patient_name`,opd_details.case_reference_id as `opd_case_reference_id`,ipd_details.case_reference_id as `ipd_case_reference_id`,tax_category.name as apply_tax,tax_category.percentage,doctor_clinics.clinic_logo')
             ->join('opd_details', 'patient_charges.opd_id = opd_details.id', 'left')
             ->join('patients as opd_patient', 'opd_details.patient_id = opd_patient.id', 'left')
             ->join('ipd_details', 'patient_charges.ipd_id = ipd_details.id', 'left')
@@ -387,9 +387,13 @@ class Charge_model extends MY_Model
             ->join('charge_categories', 'charge_categories.id = charges.charge_category_id', 'inner')
             ->join("charge_type_master", 'charge_categories.charge_type_id = charge_type_master.id')
             ->join('charge_units', 'charges.charge_unit_id = charge_units.id', 'left')
+
+            ->join("appointment", "appointment.case_reference_id = opd_details.case_reference_id")
+            ->join("doctor_clinics", "doctor_clinics.id = appointment.doctor_clinics_id",'left')
+
             ->where('patient_charges.id', $id)
             ->get('patient_charges');
-
+        //  echo $this->db->last_query(); die;
         return $query->row();
     }
 

@@ -26,22 +26,31 @@ class Setting_model extends MY_Model
     public function get($id = null)
     {
         $staffId          = $this->customlib->getStaffID();
+        $role                        = $this->customlib->getStaffRole();
+        $role_id                     = json_decode($role)->id;
+
         $parentStaffId = null;
         if($staffId != null) {
             $parentStaffId = $this->getParentStaffId($staffId);
         }
-
+        // var_dump($staffId ); die;
         $this->db->select('sch_settings.id,sch_settings.parent_staff_id,sch_settings.start_month,sch_settings.lang_id,sch_settings.languages,sch_settings.doctor_restriction,sch_settings.superadmin_restriction,sch_settings.mini_logo,sch_settings.app_logo,sch_settings.is_rtl,sch_settings.cron_secret_key, sch_settings.timezone,sch_settings.name,sch_settings.email,sch_settings.phone,languages.language,sch_settings.address,sch_settings.dise_code,sch_settings.date_format,sch_settings.time_format,sch_settings.currency,sch_settings.currency_symbol,sch_settings.credit_limit,sch_settings.opd_record_month,sch_settings.opd_record_month,sch_settings.image,sch_settings.theme,sch_settings.mobile_api_url,sch_settings.app_primary_color_code,sch_settings.app_secondary_color_code,patient_panel');
         $this->db->from('sch_settings');
         $this->db->join('languages', 'languages.id = sch_settings.lang_id');
         if ($id != null) {
             $this->db->where('sch_settings.id', $id);
-        } elseif ($parentStaffId !=null){
+        } elseif ($parentStaffId !=null && $role_id != 4){
             $this->db->where('sch_settings.parent_staff_id', $parentStaffId[0]->parent_staff_id);
+            // $this->db->where('sch_settings.child_staff_id', $parentStaffId[0]->parent_staff_id);
+        } elseif ($parentStaffId !=null && $role_id == 4){
+            $this->db->where('sch_settings.staff_id', $staffId);
+            // $this->db->where('sch_settings.parent_staff_id', $parentStaffId[0]->parent_staff_id);
+
         }else {
             $this->db->order_by('sch_settings.id');
         }
         $query = $this->db->get();
+        // echo $this->db->last_query(); die;
         if ($id != null) {
             return $query->result_array();
         } else {
@@ -250,17 +259,25 @@ class Setting_model extends MY_Model
     public function getLogoImage()
     {
         $staffId          = $this->customlib->getStaffID();
+        $role                        = $this->customlib->getStaffRole();
+        $role_id                     = json_decode($role)->id;
         $parentStaffId = null;
         if($staffId != null) {
             $parentStaffId = $this->getParentStaffId($staffId);
         }
-        if($parentStaffId != null){
+        if($parentStaffId != null && $role_id !=4){
             $this->db->select('image,mini_logo');
             $this->db->from('sch_settings');
             $this->db->where('parent_staff_id',$parentStaffId[0]->parent_staff_id);
             $query = $this->db->get();
             return $query->row_array();
 
+        }elseif($parentStaffId != null && $role_id ==4){
+            $this->db->select('image,mini_logo');
+            $this->db->from('sch_settings');
+            $this->db->where('staff_id',$staffId);
+            $query = $this->db->get();
+            return $query->row_array();
         }else{
             $this->db->select('image,mini_logo');
             $this->db->from('sch_settings');
@@ -312,8 +329,47 @@ class Setting_model extends MY_Model
         $this->db->from('parent_child');
         $this->db->where('parent_child.child_staff_id',$id);
         $query = $this->db->get();
+                // echo $this->db->last_query(); die;
         return $query->result();
 
 
+    }
+
+    public function getClinicDetailsonBill($id = null)
+    {
+        $staffId          = $this->customlib->getStaffID();
+        $role                        = $this->customlib->getStaffRole();
+        $role_id                     = json_decode($role)->id;
+
+        $parentStaffId = null;
+        if($staffId != null) {
+            $parentStaffId = $this->getParentStaffId($staffId);
+        }
+        // var_dump($staffId ); die;
+        $this->db->select('sch_settings.id,sch_settings.parent_staff_id,sch_settings.start_month,sch_settings.lang_id,sch_settings.languages,sch_settings.doctor_restriction,sch_settings.superadmin_restriction,sch_settings.mini_logo,sch_settings.app_logo,sch_settings.is_rtl,sch_settings.cron_secret_key, sch_settings.timezone,sch_settings.name,sch_settings.email,sch_settings.phone,languages.language,sch_settings.address,sch_settings.dise_code,sch_settings.date_format,sch_settings.time_format,sch_settings.currency,sch_settings.currency_symbol,sch_settings.credit_limit,sch_settings.opd_record_month,sch_settings.opd_record_month,sch_settings.image,sch_settings.theme,sch_settings.mobile_api_url,sch_settings.app_primary_color_code,sch_settings.app_secondary_color_code,patient_panel,staff.drug_license_number,staff.gst_in,staff.local_address,staff.permanent_address');
+        $this->db->from('sch_settings');
+        $this->db->join('languages', 'languages.id = sch_settings.lang_id');
+        $this->db->join('staff', 'staff.id = sch_settings.staff_id');
+
+        if ($id != null) {
+            $this->db->where('sch_settings.id', $id);
+        } elseif ($parentStaffId !=null && $role_id != 4){
+            $this->db->where('sch_settings.parent_staff_id', $parentStaffId[0]->parent_staff_id);
+            // $this->db->where('sch_settings.child_staff_id', $parentStaffId[0]->parent_staff_id);
+        } elseif ($parentStaffId !=null && $role_id == 4){
+            $this->db->where('sch_settings.staff_id', $staffId);
+            // $this->db->where('sch_settings.parent_staff_id', $parentStaffId[0]->parent_staff_id);
+
+        }else {
+            $this->db->order_by('sch_settings.id');
+        }
+        $query = $this->db->get();
+        // echo $this->db->last_query(); die;
+        if ($id != null) {
+            return $query->result_array();
+        } else {
+            $result = $query->result_array();
+            return $result;
+        }
     }
 }

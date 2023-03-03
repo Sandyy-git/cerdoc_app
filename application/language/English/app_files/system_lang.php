@@ -294,7 +294,7 @@ $lang["banners"] = "Banners";
 $lang["basic_salary"] = "Basic Salary";
 $lang["batch_amount"] = "Batch Amount";
 
-$lang["batch_qty"] = "Batch Qty(Unit)";
+$lang["batch_qty"] = "Billing unit/Box Qty";
 
 
 $lang["batch_no"] = "Batch No";
@@ -1107,7 +1107,7 @@ $lang["lot"] = "Lot";
 $lang["low_stock"] = "Low Stock";
 $lang["make_payment"] = "Make Payment";
 $lang["male"] = "Male";
-$lang["manual_prescription"] = "Manual Prescription";
+$lang["manual_prescription"] = "View Manual Prescription";
 $lang["mar"] = "Mar";
 $lang["march"] = "March";
 $lang["marital_status"] = "Marital Status";
@@ -1341,7 +1341,7 @@ $lang["outgoing"] = "Outgoing";
 $lang["outward_date"] = "Outward Date";
 $lang["overview"] = "Overview";
 $lang["owned"] = "Owned";
-$lang["packing_qty"] = "Packing Qty";
+$lang["packing_qty"] = "Packing";
 $lang["page"]= "Page";
 $lang["page_list"] = "Page List";
 $lang["page_setting"]= "Page Setting";
@@ -1920,7 +1920,7 @@ $lang["system"] = "System";
 $lang["system_notification_setting"] = "System Notification Setting";
 $lang["system_update"] = "System Update";
 $lang["task"] = "Task";
-$lang["tax"] = "Tax";
+$lang["tax"] = "GST";
 $lang["tax_category"] = "Tax Category";
 $lang["tax_category_list"] = "Tax Category List";
 $lang["tax_percentage"] = "Tax Percentage";
@@ -2165,5 +2165,188 @@ $lang["sign_up"]= "Signup";
 
 $lang["latitude"]= "latitude";
 $lang["longitude"]= "longitude";
+
+
+$lang["pincode"]= "Pincode";
+$lang["state"]= "State";
+$lang["gst_in"]= "GSTIN";
+$lang["assign_supplier"]= "Assign Supplier";
+$lang["assign_supplier_list"]= "Assign Supplier List";
+$lang["approve_product"]= "Approve Product";
+$lang["approve_product_list"]= "Approve Product List";
+$lang["add_product"]= "Add Product";
+$lang["product_name"]= "Product Name";
+$lang["hsn_code"]= "HSN Code";
+$lang["product_unit_packing"]= "Unit Packing";
+$lang["product_composition"]= "Composition";
+// $lang["pts"]= "PTS(Billing rate from supplier to distributor)";
+// $lang["ptr"]= "PTR(Billing rate from distributor to pharmacy)";
+$lang["pts"]= "PTS";
+$lang["ptr"]= "PTR";
+$lang["patient_billing_rate"]= "Billing Rate";
+$lang["product_mrp"]= "MRP";
+$lang["discount_to_patient"]= "Discount";
+$lang["product_gst"]= "GST Rate";
+$lang["product_vp"]= "Value Point";
+$lang["product_lp"]= "Loyalty Point";
+$lang["product_id"]= "Product ID";
+$lang["edit_product"]= "Edit Product";
+$lang["product_approve_updated_successfully"] = "Product status updated successfully";
+$lang["medicine_supplier_updated_successfully"] = "Supplier status updated successfully";
+$lang["city"] = "city";
+$lang["search_type"] = "Search Type";
+$lang["add_search_type"] = "Add Medicine Searchtype";
+$lang["search_type_list"] = "Search Type List";
+$lang["edit_search_type"] = "Edit Search Type";
+$lang["serach_type_id"] = "Search Type ID";
+$lang["units_per_shipper_pack"] = "Unit per shipperpack";
+$lang["dosage_form"] = "Dosage form";
+$lang["download_approved_medicine"] = "Download Approved Medicine";
+$lang["unapproved_product"] = "Trying to upload unapproved product";
+$lang["staff_locality"] = "Locality";
+$lang["locality_list"] = "Locality List";
+$lang["add_locality"] = "Add Locality";
+$lang["locality_city"] = "City";
+$lang["locality_city_list"] = "City Based On Locality";
+$lang["add_locality_city"] = "Add City Based on Locality";
+$lang["edit_locality_city"] = "Edit City based on Locality";
+$lang["push_stock"] = "Bill Stock";
+$lang["push_stock_list"] = "Stock List";
+$lang["add_stock"] = "Bill to Chemist";
+$lang["medicine_id"] = "Medicine Id";
+$lang["medicine_quantity"] = "Medicine Quantity";
+$lang["tax_cgst"] = "CGST";
+$lang["tax_sgst"] = "SGST";
+$lang["dispatch_through"] = "Dispatch Through";
+
+$lang["bill_details"] = "Bill Details";
+$lang["stock_bill_no"] = "INVOICE No";
+$lang["bill_to"] = "Bill To";
+$lang["tax_invoice"] = "Tax Invoice";
+$lang["order"] = "Order Medicine";
+$lang["send_prescription"] = "Send Prescription";
+$lang["receive_prescription"] = "Receive Order";
+$lang["receive_order"] = "Receive Order";
+// $lang["pres_received_by"] = "Order Received By";
+$lang["assign_pincodes"] = "Assign Pincodes";
+$lang["add_pincodes"] = "Add pincodes";
+$lang["add_pincodes_to_dis"] = "Assign Pincodes to Distributors";
+$lang["distributors"] = "Distributors";
+$lang["loyalty_percentage"] = "Loyalty Point Percentage";
+$lang["value_percentage"] = "Value Point Percentage";
+$lang["units_per_shipper_pack"] = "Units Per Shipper Pack";
+$lang["stockist_discount"] = "Stockist Discount";
+$lang["retailer_discount"] = "Retailer Discount";
+$lang["staff_settings"] = "User Settings";
+$lang["pharmacy_settings"] = "Pharmacy Settings";
+$lang["purchase_report"] = "Purchase Report";
+$lang["add_clinics"] = "Add Clinics";
+$lang["clinic_name"] = "Clinic Name";
+$lang["1stweek"] = "1st week";
+$lang["2ndweek"] = "2nd week";
+$lang["3rdweek"] = "3rd week";
+$lang["4thweek"] = "4th week";
+$lang["5thweek"] = "5th week";
+$lang["week"] = "Week";
+$lang["doctor_clinics_id"] = "Doctor's Clinic";
+$lang["send_manual_prescription"] = "Send Prescription";
+
+$lang["purchase_id"] = "Purchase Id";
+$lang["sales_report"] = "Sales Report";
+$lang["to_chemist"] = "Billed to Chemist";
+$lang["productwise_purchase_report"] = "Productwise Purchase Report";
+$lang["productwise_sales_report"] = "Productwise Sales Report";
+
+$lang["sales_id"] = "Sales Id";
+$lang["chemist_purchase_report"] = "Chemist Purchase Report";
+$lang["chemist_productwise_purchase_report"] = "Chemist Productwise Purchase Report";
+$lang["stock_report"] = "Stock Report";
+
+$lang["medicalstore_name"] = "Medical Store Name";
+$lang["medicalstore_code"] = "Medical Store Code";
+$lang["medicalstore_logo"] = "Medical Store Logo";
+$lang["medicalstore_small_logo"] = "Medical Store Small Logo";
+
+
+$lang["dis_name"] = "Distributor Name";
+$lang["dis_code"] = "Distributor Code";
+$lang["dis_logo"] = "Distributor Logo";
+$lang["dis_small_logo"] = "Distributor Small Logo";
+$lang["clinic_logo"] = "Clinic Logo";
+
+$lang["doctorwise_product_report"] = "Doctorwise Product Report";
+$lang["patientwise_product_report"] = "Patientwise Product Report";
+
+$lang["prescription_record_exist"] = "Prescription has sent already";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

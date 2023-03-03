@@ -1,1 +1,1 @@
-medicine_name,medicine_company,medicine_composition,city,gst,unit_packing,note,valuep,loyalp,commission,generic_name
+medicine_name,medicine_composition,dosage_form,hsn_code,medicine_group,medicine_company,patient_billing_rate,valuep,value_percentage,loyalp,loyalty_percentage,discount_to_patient,units_per_shipper_pack,unit_packing,vat,vat_ac,mrp,stockist_discount,purchase_price,retailer_discount,sale_price

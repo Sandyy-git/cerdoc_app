@@ -97,6 +97,7 @@ if ($this->customlib->getRTL() == "yes") {
         </script>
         <?php
 $logoresult = $this->customlib->getLogoImage();
+// var_dump($logoresult); die;
 if (!empty($logoresult["image"])) {
     $logo_image = base_url() . "uploads/hospital_content/logo/" . $logoresult["image"];
 } else {

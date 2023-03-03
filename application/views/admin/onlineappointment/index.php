@@ -33,9 +33,55 @@ $this->load->view('admin/onlineappointment/appointmentSidebar');
                                                 ?>><?php echo $doctor['name'] . " " . $doctor['surname']; ?> (<?php echo $doctor['employee_id'] ?>)</option>
                                             <?php } ?>
                                         </select>
+
                                         <span class="text-danger"><?php echo form_error('doctor'); ?></span>
                                     </div>
                                 </div>
+
+                                <!-- To show clinics -->
+                                  <div class="col-lg-3 col-md-3">
+                                    <div class="form-group">
+                                        <label><?php echo $this->lang->line('clinic_name'); ?><small class="req"> *</small></label>
+                                        <select autofocus="" style="width: 100%" id="doctor_clinics_id" name="doctor_clinics_id" class="select2" >
+                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                            <?php foreach ($clinics as $clinic) { ?>
+                                            <option value="<?php echo $clinic['dclinic_id'] ?>" <?php
+                                            if (set_value('doctor_clinics_id') == $clinic['dclinic_id']) {
+                                                    echo "selected=selected";
+                                                }
+                                                ?>><?php echo $clinic['clinic_name'] . ", " . $clinic['locality']; ?> </option>
+                                            <?php } ?>
+                                        </select>
+
+                                        <span class="text-danger"><?php echo form_error('doctor_clinics_id'); ?></span>
+
+                                    </div>
+                                </div>
+                                <!-- To show clinics END-->
+
+                                <!-- To show week -->
+                                  <div class="col-lg-3 col-md-3">
+                                    <div class="form-group">
+                                        <label><?php echo $this->lang->line('week'); ?><small class="req"> *</small></label>
+                                        <select autofocus="" style="width: 100%" id="week" name="week" class="select2">
+                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                         <?php foreach ($weeks as $week) { ?>
+                                            <option value="<?php echo $week ?>" <?php
+                                             if (set_value('week') == $week) {
+                                                    echo "selected=selected";
+                                                }
+                                           
+                                                ?>><?php echo $week; ?> </option>
+                                            <?php } ?>  
+
+                                        </select>
+
+                                        <span class="text-danger"><?php echo form_error('week'); ?></span>
+
+                                    </div>
+                                </div>
+                                <!-- To show week END-->
+
                                 <div class="col-lg-3 col-md-3">
                                     <div class="form-group">
                                         <label><?php echo $this->lang->line("shift"); ?><small class="req"> *</small></label>
@@ -107,7 +153,7 @@ $this->load->view('admin/onlineappointment/appointmentSidebar');
                                 $cls = "";
                                 if ($count == 1) {
                                 } ?>
-                                <li <?php echo $cls; ?>><a href="#tab_<?php echo $count; ?>" data-s="<?php echo set_value("shift") ?>" data-d="<?php echo set_value("doctor"); ?>" data-day="<?php echo $days_key; ?>" data-toggle="tab" aria-expanded="true"><?php echo $days_value; ?></a></li>
+                                <li <?php echo $cls; ?>><a href="#tab_<?php echo $count; ?>" data-s="<?php echo set_value("shift") ?>" data-d="<?php echo set_value("doctor"); ?>" data-day="<?php echo $days_key; ?>" data-dc="<?php echo set_value("doctor_clinics_id"); ?>" data-w="<?php echo set_value("week"); ?>" data-toggle="tab" aria-expanded="true"><?php echo $days_value; ?></a></li>
                                 <?php $count++; } ?>
                         </ul>
                         <div class="tab-content">
@@ -146,6 +192,7 @@ $this->load->view('admin/onlineappointment/appointmentSidebar');
     })
 
     function getShiftdata(target, target_id, ajax_data) {
+        alert(ajax_data.w);
         $("#consult_time").attr("form","form_"+ajax_data.day);
         $("#consult_fee").attr("form","form_"+ajax_data.day);
         $(".charge_category").attr("form","form_"+ajax_data.day);
@@ -153,7 +200,7 @@ $this->load->view('admin/onlineappointment/appointmentSidebar');
         $.ajax({
             type: 'POST',
             url: base_url + "admin/onlineappointment/getShiftdata",
-            data: {'day': ajax_data.day, 'doctor': ajax_data.d, 'shift' : ajax_data.s},
+            data: {'day': ajax_data.day, 'doctor': ajax_data.d, 'shift' : ajax_data.s,'doctor_clinics_id' : ajax_data.dc,'week': ajax_data.w,},
             dataType: 'json',
             beforeSend: function () {
                 $(target).addClass('show');
@@ -279,7 +326,7 @@ $this->load->view('admin/onlineappointment/appointmentSidebar');
                 data: {charge_id: charge, organisation_id: 0},
                 dataType: 'json',
                 success: function (res) {
-                    let standard_charge = parseFloat(res.standard_charge)+parseFloat(res.standard_charge*res.percentage/100)
+                    let standard_charge = parseFloat(res.standard_charge)+parseFloat(res.standard_charge*res.percentage/100);
                     $('.standard_charge').val(standard_charge.toFixed(2));
                 }
         });

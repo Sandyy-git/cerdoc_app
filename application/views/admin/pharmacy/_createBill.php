@@ -16,6 +16,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                             <thead>
                                                 <tr class="font13 white-space-nowrap">
                                                     <th width="15%"><?php echo $this->lang->line('medicine_category'); ?><small class="req" style="color:red;"> *</small></th>
+                                                    <th width="15%"><?php echo $this->lang->line('search_type'); ?><small class="req" style="color:red;"> *</small></th>
                                                     <th width="15%"><?php echo $this->lang->line('medicine_name'); ?><small class="req" style="color:red;"> *</small></th>
                                                     <th width="15%"><?php echo $this->lang->line('batch_no'); ?> <small class="req" style="color:red;">*</small></th>
                                                     <th width="15%"><?php echo $this->lang->line('expiry_date'); ?><small class="req" style="color:red;"> *</small></th>
@@ -29,7 +30,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                             <tr id="row1">
                                                 <td>
                                                     <input type="hidden" name="total_rows[]" id="calculate" value="1">
-                                                    <select class="form-control medicine_category select3" style="width:100%" name='medicine_category_id_1'>
+                                                    <select class="form-control medicine_category select3" style="width:100%" name='medicine_category_id_1' id='medicine_cat_1'>
                                                         <option value="<?php echo set_value('medicine_category_id'); ?>"><?php echo $this->lang->line('select'); ?>
                                                         </option>
                                                         <?php foreach ($medicineCategory as $dkey => $dvalue) {
@@ -41,6 +42,22 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                                     <span class="text-danger"><?php echo form_error('medicine_category_id[]'); ?>
                                                     </span>
                                                 </td>
+
+                                                <td>
+                                                    <input type="hidden" name="search_type[]" id="calculate" value="1">
+                                                    <select class="form-control search_type select3" style="width:100%" name='search_type_1' id='1'>
+                                                        <option value="<?php echo set_value('search_type'); ?>"><?php echo $this->lang->line('select'); ?>
+                                                        </option>
+                                                        <?php foreach ($medicineSearchtype as $dkey => $stvalue) {
+    ?>
+                                                            <option value="<?php echo $stvalue["id"]; ?>"><?php echo $stvalue["search_type"] ?>
+                                                            </option>
+                                                        <?php }?>
+                                                    </select>
+                                                    <span class="text-danger"><?php echo form_error('search_type[]'); ?>
+                                                    </span>
+                                                </td>
+
                                                 <td>
                                                     <select class="form-control select3 medicine_name" style="width:100%"  id="medicine_name0" name='medicine_name_id_1'>
                                                         <option value=""><?php echo $this->lang->line('select'); ?>
@@ -75,7 +92,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                                 <td class="text-right">
                                                     <div class=""> 
                                                             <div class="input-group">
-                                                            <input type="text" class="form-control right-border-none medicine_tax"  name="tax_1" readonly id="tax0"  autocomplete="off">
+                                                            <input style="width:100px" type="text" class="form-control right-border-none medicine_tax"  name="tax_1" readonly id="tax0"  autocomplete="off">
                                                             <span class="input-group-addon "> %</span>
                                                             </div>
                                                     </div>
@@ -248,3 +265,14 @@ if ((isset($doctor_select)) && ($doctor_select == $dvalue["id"])) {
                             </div><!--./row-->
                         </div><!--./box-footer-->
                     </div><!--./col-md-12-->
+
+
+                    <script id="medst-template" type="text/template">
+
+<?php foreach ($medicineSearchtype as $dkey => $stvalue) {
+?>
+<option value="<?php echo $stvalue["id"]; ?>">
+<?php echo $stvalue["search_type"] ?>
+</option>
+<?php } ?>
+</script>

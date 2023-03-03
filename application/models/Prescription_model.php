@@ -502,9 +502,10 @@ class Prescription_model extends MY_Model
         return $this->db->select('ipd_prescription_basic.id')->from('ipd_prescription_basic')->join('visit_details','visit_details.id=ipd_prescription_basic.visit_details_id')->join('opd_details','visit_details.opd_details_id=opd_details.id')->where('opd_details',$id)->get()->row_array();
     }
 
+    //IN CASE OF ADMIN WISE MED SUPPLY
     public function getPrescriptionMedicinesByBasicID($id)
     {
-        $query = $this->db->select('`ipd_prescription_basic`.*,pharmacy.id as pharmacy_id,pharmacy.medicine_name,medicine_category.id as medicine_category_id,medicine_category.medicine_category,ipd_prescription_details.instruction,ipd_prescription_details.dose_interval_id,ipd_prescription_details.dose_duration_id,dose_duration.name as dose_duration_name,dose_interval.name as dose_interval_name,medicine_dosage.dosage,charge_units.unit,ipd_prescription_details.dosage as dosage_id,ipd_prescription_details.id as ipd_prescription_detail_id,pharmacy.generic_name,ipd_prescription_details.afbf')
+        $query = $this->db->select('`ipd_prescription_basic`.*,pharmacy.id as pharmacy_id,pharmacy.medicine_name,medicine_category.id as medicine_category_id,medicine_category.medicine_category,ipd_prescription_details.instruction,ipd_prescription_details.dose_interval_id,ipd_prescription_details.dose_duration_id,dose_duration.name as dose_duration_name,dose_interval.name as dose_interval_name,medicine_dosage.dosage,charge_units.unit,ipd_prescription_details.dosage as dosage_id,ipd_prescription_details.id as ipd_prescription_detail_id,pharmacy.medicine_composition,ipd_prescription_details.afbf')
             ->join("ipd_prescription_basic", "ipd_prescription_basic.id = ipd_prescription_details.basic_id")
             ->join("pharmacy", "ipd_prescription_details.pharmacy_id = pharmacy.id")
             ->join("medicine_category", "medicine_category.id=pharmacy.medicine_category_id")
@@ -518,6 +519,26 @@ class Prescription_model extends MY_Model
    
         return $result;
     }
+
+    //IN CASE OF CHEMIST WISE MED SUPPLYING
+    // public function getPrescriptionMedicinesByBasicID($id)
+    // {
+    //     $query = $this->db->select('`ipd_prescription_basic`.*,pharmacy.id as pharmacy_id,pharmacy.medicine_name,medicine_category.id as medicine_category_id,medicine_category.medicine_category,ipd_prescription_details.instruction,ipd_prescription_details.dose_interval_id,ipd_prescription_details.dose_duration_id,dose_duration.name as dose_duration_name,dose_interval.name as dose_interval_name,medicine_dosage.dosage,charge_units.unit,ipd_prescription_details.dosage as dosage_id,ipd_prescription_details.id as ipd_prescription_detail_id,pharmacy.medicine_composition,ipd_prescription_details.afbf')
+    //         ->join("ipd_prescription_basic", "ipd_prescription_basic.id = ipd_prescription_details.basic_id")
+    //         ->join("medicine_batch_details", "ipd_prescription_details.pharmacy_id = medicine_batch_details.id")
+    //         ->join("pharmacy", "medicine_batch_details.pharmacy_id = pharmacy.id")
+
+    //         ->join("medicine_category", "medicine_category.id=pharmacy.medicine_category_id")
+    //         ->join("medicine_dosage", "medicine_dosage.id=ipd_prescription_details.dosage","left")
+    //         ->join("charge_units", "charge_units.id=medicine_dosage.charge_units_id","left")
+    //         ->join("dose_interval", "dose_interval.id=ipd_prescription_details.dose_interval_id",'left')
+    //         ->join("dose_duration", "dose_duration.id=ipd_prescription_details.dose_duration_id",'left')
+    //         ->where("ipd_prescription_details.basic_id", $id)
+    //         ->get("ipd_prescription_details");
+    //     $result = $query->result();   
+   
+    //     return $result;
+    // }
 
     public function getPrescriptionTestsByBasicID($id, $test_category = null)
     {
@@ -586,7 +607,7 @@ class Prescription_model extends MY_Model
 
     public function getPrescriptionByVisitID($visitid)
     {
-        $query = $this->db->select("opd_details.*,visit_details.id as visitid,visit_details.known_allergies as any_allergies,visit_details.weight,visit_details.height,visit_details.pulse,visit_details.temperature,visit_details.symptoms,visit_details.bp,patients.*,blood_bank_products.name as blood_group_name,staff.name,staff.surname,staff.employee_id,staff.local_address,ipd_prescription_basic.ipd_id,ipd_prescription_basic.id as prescription_id,ipd_prescription_basic.date as presdate,ipd_prescription_basic.header_note,ipd_prescription_basic.footer_note,ipd_prescription_basic.finding_description,ipd_prescription_basic.is_finding_print,prescription_generate.name as generated_by_name,prescription_generate.surname as generated_by_surname,prescription_generate.employee_id as generated_by_employee_id,prescribe_by.name as prescribe_by_name,prescribe_by.surname as prescribe_by_surname,prescribe_by.employee_id as prescribe_by_employee_id, opd_details.id as opd_detail_id,staff.employee_id as doctor_id,ipd_prescription_basic.opd_logo");
+        $query = $this->db->select("opd_details.*,visit_details.id as visitid,visit_details.known_allergies as any_allergies,visit_details.weight,visit_details.height,visit_details.pulse,visit_details.temperature,visit_details.symptoms,visit_details.bp,patients.*,blood_bank_products.name as blood_group_name,staff.name,staff.surname,staff.employee_id,staff.local_address,ipd_prescription_basic.ipd_id,ipd_prescription_basic.id as prescription_id,ipd_prescription_basic.date as presdate,ipd_prescription_basic.header_note,ipd_prescription_basic.footer_note,ipd_prescription_basic.finding_description,ipd_prescription_basic.is_finding_print,prescription_generate.name as generated_by_name,prescription_generate.surname as generated_by_surname,prescription_generate.employee_id as generated_by_employee_id,prescribe_by.name as prescribe_by_name,prescribe_by.surname as prescribe_by_surname,prescribe_by.employee_id as prescribe_by_employee_id, opd_details.id as opd_detail_id,staff.employee_id as doctor_id,ipd_prescription_basic.opd_logo,doctor_clinics.clinic_name,doctor_clinics.clinic_logo,doctor_clinics.address");
         $this->db->join("visit_details", "visit_details.id = ipd_prescription_basic.visit_details_id","left");
         $this->db->join("opd_details", "opd_details.id = visit_details.opd_details_id");
         $this->db->join("patients", "patients.id = opd_details.patient_id");
@@ -594,6 +615,10 @@ class Prescription_model extends MY_Model
         $this->db->join("staff", "staff.id = visit_details.cons_doctor");
         $this->db->join("staff as prescription_generate", "prescription_generate.id = ipd_prescription_basic.generated_by");
         $this->db->join("staff as prescribe_by", "prescribe_by.id = ipd_prescription_basic.prescribe_by");
+
+        $this->db->join("appointment", "appointment.case_reference_id = opd_details.case_reference_id");
+        $this->db->join("doctor_clinics", "doctor_clinics.id = appointment.doctor_clinics_id",'left');
+
         $this->db->where("ipd_prescription_basic.visit_details_id", $visitid);
         $query = $this->db->get("ipd_prescription_basic");
         // echo $this->db->last_query(); die;
@@ -646,6 +671,23 @@ class Prescription_model extends MY_Model
        $this->db->where('id', $prescription_detail_id);
        $this->db->delete('ipd_prescription_details'); 
 
+    }
+
+    public function addSendPrestoChemist($data1)
+    {
+        $query = $this->db->insert_batch('send_pres_to_chemist', $data1);
+        return $query;
+    }
+
+    public function checkExisofSendPrestoChemist($data){
+        // $query = $this->db->select('send_pres_to_chemist.*')->where('send_pres_to_chemist', $data)->get('send_pres_to_chemist');
+        
+        $this->db->select('send_pres_to_chemist.*');
+        $this->db->where($data);
+        $query = $this->db->get('send_pres_to_chemist');
+
+        $count = $query->num_rows();
+        return $count;
     }
 
 }

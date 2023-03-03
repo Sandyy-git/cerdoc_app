@@ -26,10 +26,11 @@
                                     <tr>
                                         <th><?php echo $this->lang->line('supplier_name'); ?></th>
                                         <th><?php echo $this->lang->line('supplier_contact'); ?></th>
-                                        <th><?php echo $this->lang->line('contact_person_name'); ?></th>
-                                        <th><?php echo $this->lang->line('contact_person_phone'); ?></th>
+                                        <th><?php echo $this->lang->line('gst_in'); ?></th>
                                         <th><?php echo $this->lang->line("drug_license_number"); ?></th>
                                         <th><?php echo $this->lang->line('address'); ?></th>
+                                        <th><?php echo $this->lang->line('state'); ?></th>
+                                        <th><?php echo $this->lang->line('active'); ?></th>
                                         <th class="text-right noExport"><?php echo $this->lang->line('action'); ?></th>
                                     </tr>
                                 </thead>
@@ -41,10 +42,25 @@
                                         <tr>
                                             <td><?php echo $supplier['supplier']; ?></td>
                                             <td><?php echo $supplier['contact']; ?></td>
-                                            <td><?php echo $supplier['supplier_person']; ?></td>
-                                            <td><?php echo $supplier['supplier_person_contact']; ?></td>
+                                            <td><?php echo $supplier['gst_in']; ?></td>
                                             <td><?php echo $supplier['supplier_drug_licence']; ?></td>
                                             <td><?php echo $supplier['address']; ?></td>
+                                            <td><?php echo $supplier['state']; ?></td>
+
+                                            <td><?php if($supplier['active'] == 1){ ?>
+                                            <input type="checkbox" checked="checked" onclick="assignsupplier(this,<?php echo $supplier['id']; ?>)"
+                                            id="global_shift_<?php echo $supplier['id']; ?>" name="global_shift[]" value="<?php echo $supplier['id']; ?>" data-id = <?= $shift_value['id'].$shift_value['assign_status']; ?>>
+                                            <span class="hide" id="checkbox_print_<?= $supplier['id']; ?>">
+
+                                            <?php }else{  ?>
+
+                                            <input type="checkbox" onclick="assignsupplier(this,<?php echo $supplier['id']; ?>)"
+                                            id="global_shift_<?php echo $supplier['id']; ?>" name="global_shift[]" value="<?php echo $supplier['id']; ?>" data-id = <?= $shift_value['id'].$shift_value['assign_status']; ?>>
+                                            <span class="hide" id="checkbox_print_<?= $supplier['id']; ?>">
+
+                                            <?php } ?>
+                                            </td>
+
                                             <td class="text-right">
                                                 <?php if ($this->rbac->hasPrivilege('medicine_supplier', 'can_edit')) { ?>
                                                     <a data-target="#editmyModal" onclick="get(<?php echo $supplier['id'] ?>)"  class="btn btn-default btn-xs" data-toggle="tooltip" title="<?php echo $this->lang->line('edit'); ?>">
@@ -115,42 +131,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1"><?php echo $this->lang->line('contact_person_name'); ?></label>
-                                    <input autofocus="" name="supplier_person" placeholder="" type="text" class="form-control"  value="<?php
-                                    if (isset($result)) {
-                                        echo $result["supplier_person"];
-                                    }
-                                    ?>" />
-                                    <span class="text-danger"><?php echo form_error('supplier_person'); ?></span>
 
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1"><?php echo $this->lang->line('contact_person_phone'); ?></label>
-                                    <input autofocus="" name="supplier_person_contact" placeholder="" type="text" class="form-control"  value="<?php
-                                    if (isset($result)) {
-                                        echo $result["supplier_person_contact"];
-                                    }
-                                    ?>" />
-                                    <span class="text-danger"><?php echo form_error('supplier_person_contact'); ?></span>
-
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1"><?php echo $this->lang->line("drug_license_number"); ?></label>
-                                    <input autofocus="" name="supplier_drug_licence" placeholder="" type="text" class="form-control"  value="<?php
-                                    if (isset($result)) {
-                                        echo $result["supplier_drug_licence"];
-                                    }
-                                    ?>" />
-                                    <span class="text-danger"><?php echo form_error('supplier_drug_licence'); ?></span>
-                                </div>
-                            </div>
-                                   
                             <div class="col-md-8">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1"><?php echo $this->lang->line('address'); ?></label>
@@ -164,18 +145,67 @@
                                 </div>                      
                             </div>
 
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1"><?php echo $this->lang->line('sup_bill_no'); ?></label>
-                                    <input autofocus="" name="sup_bill_no" placeholder="" type="text" class="form-control"  value="<?php
+                                    <label for="exampleInputEmail1"><?php echo $this->lang->line('pincode'); ?></label>
+                                    <input autofocus="" name="pincode" placeholder="" type="text" class="form-control"  value="<?php
                                     if (isset($result)) {
-                                        echo $result["sup_bill_no"];
+                                        echo $result["pincode"];
                                     }
                                     ?>" />
-                                    <span class="text-danger"><?php echo form_error('address'); ?></span>
+                                    <span class="text-danger"><?php echo form_error('pincode'); ?></span>
+
+                                </div>
+                            </div>
+
+
+                             <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1"><?php echo $this->lang->line('state'); ?></label><small class="req"> *</small>
+                                    <select class="form-control" name="state">
+                                        <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                        <?php foreach ($state as $bgkey => $bgvalue) {
+                                            ?>
+                                            <option <?php
+                                            if ($staff["blood_group"] == $bgvalue) {
+                                                echo "selected";
+                                            }
+                                            ?> value="<?php echo $bgvalue ?>"><?php echo $bgvalue ?></option>           
+
+                                        <?php } ?>
+
+                                    </select>
+                                    <span class="text-danger"><?php echo form_error('state'); ?></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1"><?php echo $this->lang->line("drug_license_number"); ?></label>
+                                    <input autofocus="" name="supplier_drug_licence" placeholder="" type="text" class="form-control"  value="<?php
+                                    if (isset($result)) {
+                                        echo $result["supplier_drug_licence"];
+                                    }
+                                    ?>" />
+                                    <span class="text-danger"><?php echo form_error('supplier_drug_licence'); ?></span>
+                                </div>
+                            </div>
+                                   
+                            
+
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1"><?php echo $this->lang->line('gst_in'); ?></label>
+                                    <input autofocus="" name="gst_in" placeholder="" type="text" class="form-control"  value="<?php
+                                    if (isset($result)) {
+                                        echo $result["gst_in"];
+                                    }
+                                    ?>" />
+                                    <span class="text-danger"><?php echo form_error('gst_in'); ?></span>
 
                                 </div>                      
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -226,45 +256,8 @@
                             </div>                 
 
                         </div>
-                        <div class="col-md-6">
-
-                            <div class="form-group">
-                                <label for="exampleInputEmail1"><?php echo $this->lang->line('contact_person_name'); ?></label>
-                                <input autofocus="" id="supplier_person" name="supplier_person" placeholder="" type="text" class="form-control"  value="<?php
-                                if (isset($result)) {
-                                    echo $result["supplier_person"];
-                                }
-                                ?>" />
-                                <span class="text-danger"><?php echo form_error('supplier_person'); ?></span>
-
-
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-
-                            <div class="form-group">
-                                <label for="exampleInputEmail1"><?php echo $this->lang->line('contact_person_phone'); ?></label>
-                                <input autofocus="" id="supplier_person_contact" name="supplier_person_contact" placeholder="" type="text" class="form-control"  value="<?php
-                                if (isset($result)) {
-                                    echo $result["supplier_person_contact"];
-                                }
-                                ?>" />
-                                <span class="text-danger"><?php echo form_error('supplier_person_contact'); ?></span>
-
-                            </div>                 
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="exampleInputEmail1"><?php echo $this->lang->line("drug_license_number"); ?></label>
-                                <input autofocus="" id="supplier_drug_licence" name="supplier_drug_licence" placeholder="" type="text" class="form-control"  value="<?php
-                                if (isset($result)) {
-                                    echo $result["supplier_drug_licence"];
-                                }
-                                ?>" />
-                                <span class="text-danger"><?php echo form_error('supplier_drug_licence'); ?></span>
-                            </div>                 
-                        </div>
+                    
+                       
                         <div class="col-md-8">
 
                             <div class="form-group">
@@ -279,6 +272,70 @@
                             </div>                 
 
                         </div>
+
+                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1"><?php echo $this->lang->line('pincode'); ?></label>
+                                <input autofocus="" id="pincode" name="pincode" placeholder="" type="text" class="form-control"  value="<?php
+                                if (isset($result)) {
+                                    echo $result["pincode"];
+                                }
+                                ?>" />
+                                <span class="text-danger"><?php echo form_error('pincode'); ?></span>
+
+
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1"><?php echo $this->lang->line('state'); ?></label><small class="req"> *</small>
+                                <select class="form-control" name="state" id="state">
+                                    <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                    <?php foreach ($state as $bgkey => $bgvalue) {
+                                        ?>
+                                        <option <?php
+                                        if ($result["state"] == $bgvalue) {
+                                            echo "selected";
+                                        }
+                                        ?> value="<?php echo $bgvalue ?>"><?php echo $bgvalue ?></option>           
+
+                                    <?php } ?>
+
+                                </select>
+                                <span class="text-danger"><?php echo form_error('state'); ?></span>
+                            </div>
+                        </div>
+
+
+                         <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1"><?php echo $this->lang->line("drug_license_number"); ?></label>
+                                <input autofocus="" id="supplier_drug_licence" name="supplier_drug_licence" placeholder="" type="text" class="form-control"  value="<?php
+                                if (isset($result)) {
+                                    echo $result["supplier_drug_licence"];
+                                }
+                                ?>" />
+                                <span class="text-danger"><?php echo form_error('supplier_drug_licence'); ?></span>
+                            </div>                 
+                        </div>
+
+                       
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1"><?php echo $this->lang->line('gst_in'); ?></label>
+                                <input autofocus="" id="gst_in" name="gst_in" placeholder="" type="text" class="form-control"  value="<?php
+                                if (isset($result)) {
+                                    echo $result["gst_in"];
+                                }
+                                ?>" />
+                                <span class="text-danger"><?php echo form_error('gst_in'); ?></span>
+
+                            </div>                 
+                        </div>
+
 
                     </div>
                 </div><!--./modalbody-->       
@@ -350,12 +407,12 @@
 
                 $('#id').val(result.id);
                 $('#supplier_category').val(result.supplier);
-                $('#supplier_person').val(result.supplier_person);
-                $('#supplier_person_contact').val(result.supplier_person_contact);
-                $('#supplier_drug_licence').val(result.supplier_drug_licence);
                 $('#contact').val(result.contact);
                 $('#address').val(result.address);
-
+                $('#pincode').val(result.pincode);
+                $('#state').val(result.state);
+                $('#supplier_drug_licence').val(result.supplier_drug_licence);
+                $('#gst_in').val(result.gst_in);
             }
 
         });
@@ -411,5 +468,34 @@ $(".supplier").click(function(){
             show:false
         });
     });
+</script>
+
+<script>
+    function assignsupplier(checkbox,doctor_id){
+        
+
+        // console.log("checkbox_print_"+checkbox.dataset.id);
+        if(checkbox.checked){
+            status = 1;
+            // document.querySelector("#checkbox_print_"+checkbox.dataset.id).innerHTML = "<?= $this->lang->line("yes"); ?>";
+        }else{
+            status = 0;
+            // document.querySelector("#checkbox_print_"+checkbox.dataset.id).innerHTML = "<?= $this->lang->line("no"); ?>";
+        }
+        $.ajax({
+                url: '<?php echo base_url(); ?>admin/medicinecategory/statusUpdatemedicinesupplier',
+                type: "POST",
+                data: {doctor_id:doctor_id,  status:status},
+                dataType: 'json',
+                success: function (data) {
+                    if(data.status == "success"){
+                        successMsg(data.message);
+                    }
+                },
+                error: function () {
+                    alert("Fail")
+                }
+            });
+    }
 </script>
 

@@ -38,8 +38,10 @@ class Unittype_model extends MY_model
 
     public function check_category_exists($name, $id)
     {
+        $loginUser = $this->customlib->getStaffID();
+
         if ($id != 0) {
-            $data  = array('id != ' => $id, 'unit' => $name);
+            $data  = array('id != ' => $id, 'unit' => $name, 'added_by'=>$loginUser);
             $query = $this->db->where($data)->get('charge_units');
             if ($query->num_rows() > 0) {
                 return true;
@@ -48,6 +50,8 @@ class Unittype_model extends MY_model
             }
         } else {
             $this->db->where('unit', $name);
+            $this->db->where('added_by', $loginUser);
+
             $query = $this->db->get('charge_units');
             if ($query->num_rows() > 0) {
                 return true;

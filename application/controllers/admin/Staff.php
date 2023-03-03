@@ -23,6 +23,8 @@ class Staff extends Admin_Controller
         $this->payment_mode     = $this->config->item('payment_mode');
         $this->status           = $this->config->item('status');
         $this->blood_group      = $this->config->item('staff_bloodgroup');
+        $this->state      = $this->config->item('state');
+
         $this->config->load('image_valid');
         $this->load->library('customlib');
         $this->load->helper('customfield_helper');
@@ -43,8 +45,11 @@ class Staff extends Admin_Controller
         $role                        = $this->customlib->getStaffRole();
         $role_id                     = json_decode($role)->id;
         $current_user_role_id = $role_id;
-        if($role_id!=7) {
+        // var_dump($role_id); die;   
+        if($role_id!=7 && $role_id!=73) {
             $data["role"] = $this->role_model->getRoleFromStaffid($role_id);
+        }elseif($role_id==73){    //CPA
+            $data["role"]            = $this->role_model->get("cw");
         }else{
             $data["role"] = $this->role_model->get();
         }
@@ -61,6 +66,8 @@ class Staff extends Admin_Controller
         if ($this->input->server('REQUEST_METHOD') === 'GET') {
             $resultlist         = $this->staff_model->searchFullText("", 1,$role_id);
             $data['resultlist'] = $resultlist;
+            // echo "<pre>";
+            // print_r($data['resultlist']); die;
             
         } elseif ($this->input->server('REQUEST_METHOD') === 'POST') {
 
@@ -395,18 +402,41 @@ class Staff extends Admin_Controller
 
     public function create()
     {
+        $loginUser = $this->customlib->getStaffID();
         $image_validate = $this->config->item('image_validate');
         $this->session->set_userdata('top_menu', 'HR');
         $this->session->set_userdata('sub_menu', 'admin/staff');
         $role                        = $this->customlib->getStaffRole();
         $role_id                     = json_decode($role)->id;
         $current_user_role_id = $role_id;
-        if($role_id!=7) {
+        if($role_id!=7 && $role_id!=73) {   //DIS
+             // PINCODE VAILDATION
+             $this->form_validation->set_rules('pincode', $this->lang->line('pincode'), array('required',
+             array('check_exists', array($this->staff_model,'check_pincode_exists_for_pharma')),
+             )
+             );           
+         // ENDS
             $roles = $this->role_model->getRoleFromStaffid($role_id);
-        }else{
+            $pincodes = $this->staff_model->getDisPincodes($loginUser);
+        }elseif($role_id==73){    //CPA
+            // PINCODE VAILDATION
+                $this->form_validation->set_rules('pincode', $this->lang->line('pincode'), array('required',
+                array('check_exists', array($this->staff_model,'check_pincode_exists_for_dis')),
+                )
+                );           
+            // ENDS
+            $roles            = $this->role_model->get("cw");
+            $parentid = null;
+            $pincodes = $this->staff_model->getGloPincodes();
+        }else{             //SA
+            // PINCODE VAILDATION
+            $this->form_validation->set_rules('pincode', $this->lang->line('pincode'), 'trim|required|xss_clean');
+            // 
             $roles = $this->role_model->get();
+            $pincodes = $this->staff_model->getGloPincodes();
 
         }
+        $data["pincodes"]          = $pincodes;
         $data["roles"]          = $roles;
         $genderList             = $this->customlib->getGender();
         $data['genderList']     = $genderList;
@@ -420,9 +450,12 @@ class Staff extends Admin_Controller
         $data["department"]     = $department;
         $specialist             = $this->staff_model->getspecialist();
         $data["specialist"]     = $specialist;
+        $staffLocality          = $this->staff_model->getstaffLocality();
+        $data["stafflocality"]     = $staffLocality;
         $marital_status         = $this->marital_status;
         $data["marital_status"] = $marital_status;
         $data["bloodgroup"]     = $this->blood_group;
+        $data["state"]          = $this->state;
         $data['title']          = 'Add Staff';
         $data["contract_type"]  = $this->contract_type;
         $custom_fields          = $this->customfield_model->getByBelong('staff');
@@ -451,6 +484,16 @@ class Staff extends Admin_Controller
             array('check_exists', array($this->staff_model, 'valid_employee_id')),
         )
         );
+
+        // $this->form_validation->set_rules('pincode', $this->lang->line('pincode'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('locality_id', $this->lang->line('staff_locality'), 'trim|required|xss_clean');
+
+        $this->form_validation->set_rules('city', $this->lang->line('city'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('state', $this->lang->line('state'), 'trim|required|xss_clean');
+        // $this->form_validation->set_rules('gst_in', $this->lang->line('gst_in'), 'trim|required|xss_clean');
+        // $this->form_validation->set_rules('drug_license_number', $this->lang->line('drug_license_number'), 'trim|required|xss_clean');
+
+
         $this->form_validation->set_rules('file', $this->lang->line('image'), 'callback_handle_upload[file]');
         $this->form_validation->set_rules('first_doc', $this->lang->line('document'), 'callback_handle_upload[first_doc]');
         $this->form_validation->set_rules('second_doc', $this->lang->line('document'), 'callback_handle_upload[second_doc]');
@@ -535,8 +578,14 @@ class Staff extends Admin_Controller
             $local_identification_number = $this->input->post("local_identification_number");
             $latitude = $this->input->post("latitude");
             $longitude = $this->input->post("longitude");
+            $pincode = $this->input->post("pincode");
+            $locality = $this->input->post("locality_id");
+            $city = $this->input->post("city");
+            $state = $this->input->post("state");
+            $gst_in = $this->input->post("gst_in");
+            $drug_license_number = $this->input->post("drug_license_number");
 
-
+            
             $password = $this->role->get_random_password($chars_min = 6, $chars_max = 6, $use_upper_case = false, $include_numbers = true, $include_special_chars = false);
             if (!empty($specialist)) {
                 $specialist_separated = implode(",", $specialist);
@@ -589,6 +638,12 @@ class Staff extends Admin_Controller
                 'local_identification_number' => $local_identification_number,
                 'latitude'                    => $latitude,
                 'longitude'                    => $longitude,
+                'pincode'                    => $pincode,
+                'city'                    => $city,
+                'state'                    => $state,
+                'gst_in'                    => $gst_in,
+                'drug_license_number'   => $drug_license_number,
+                'locality_id'                    => $locality,
                 'is_active'                   => 1,
                 'created_by'                  => $role_id,
             );
@@ -648,11 +703,12 @@ class Staff extends Admin_Controller
                 'lang_id'                  => $setting_result[0]['lang_id'],
                 'currency'                 => $setting_result[0]['currency'],
                 'currency_symbol'          => $setting_result[0]['currency_symbol']
-
-
-
             );
+
+
             if($insert) {
+                $returnData = $this->setting_model->add($settingData);
+            }else{
                 $returnData = $this->setting_model->add($settingData);
             }
             $this->insertStaffidtoprinting($staff_id);
@@ -787,6 +843,8 @@ class Staff extends Admin_Controller
         if (!$this->rbac->hasPrivilege('staff', 'can_edit')) {
             access_denied();
         }
+
+        $loginUser = $this->customlib->getStaffID();
         $data['title']             = $this->lang->line('edit_staff');
         $data['id']                = $id;
         $genderList                = $this->customlib->getGender();
@@ -795,7 +853,31 @@ class Staff extends Admin_Controller
         $leavetypeList             = $this->staff_model->getLeaveType();
         $data["leavetypeList"]     = $leavetypeList;
         $data["payscaleList"]      = $payscaleList;
-        $staffRole                 = $this->staff_model->getStaffRole();
+
+        $role                        = $this->customlib->getStaffRole();
+        $role_id                     = json_decode($role)->id;
+        if($role_id!=7 && $role_id!=73) {   //DIS
+            $staffRole= $this->role_model->getRoleFromStaffid($role_id);
+            $pincodes = $this->staff_model->getDisPincodes($loginUser);
+        }elseif($role_id==73){    //CPA
+            // 
+            $this->form_validation->set_rules('pincode', $this->lang->line('pincode'), array('required',
+            array('check_exists', array($this->staff_model, 'check_pincode_exists_for_dis')),
+            )
+            );
+            // 
+            $staffRole            = $this->role_model->get("cw");
+            $parentid = null;
+            $pincodes = $this->staff_model->getGloPincodes();
+        }else{             //SA
+            $staffRole  = $this->role_model->get();
+            $pincodes = $this->staff_model->getGloPincodes();
+
+        }
+
+        $data["pincodes"]      = $pincodes;
+        //ORIGINAL
+        // $staffRole                 = $this->staff_model->getStaffRole();
         $data["getStaffRole"]      = $staffRole;
         $designation               = $this->staff_model->getStaffDesignation();
         $data["designation"]       = $designation;
@@ -803,7 +885,13 @@ class Staff extends Admin_Controller
         $data["department"]        = $department;
         $specialist                = $this->staff_model->getSpecialist();
         $data["specialist"]        = $specialist;
+
+        $staffLocality          = $this->staff_model->getstaffLocality();
+        $data["stafflocality"]     = $staffLocality;
+
         $data["bloodgroup"]        = $this->blood_group;
+        $data["state"]          = $this->state;
+
         $marital_status            = $this->marital_status;
         $data["marital_status"]    = $marital_status;
         $data['title']             = $this->lang->line('edit_staff');
@@ -853,6 +941,12 @@ class Staff extends Admin_Controller
         )
         );
 
+        $this->form_validation->set_rules('pincode', $this->lang->line('pincode'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('city', $this->lang->line('city'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('state', $this->lang->line('state'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('locality_id', $this->lang->line('staff_location'), 'trim|required|xss_clean');
+
+
         if ($this->form_validation->run() == false) {
 
             $this->load->view('layout/header', $data);
@@ -879,6 +973,13 @@ class Staff extends Admin_Controller
             $pan_number                  = $this->input->post("pan_number");
             $identification_number       = $this->input->post("identification_number");
             $local_identification_number = $this->input->post("local_identification_number");
+            $pincode = $this->input->post("pincode");
+            $city = $this->input->post("city");
+            $state = $this->input->post("state");
+            $gst_in = $this->input->post("gst_in");
+            $drug_license_number = $this->input->post("drug_license_number");
+            $locality = $this->input->post("locality_id");
+
 
             if (!empty($this->input->post("date_of_joining"))) {
                 $date_of_joining = $this->customlib->dateFormatToYYYYMMDD($dateofjoining);
@@ -980,6 +1081,12 @@ class Staff extends Admin_Controller
                 'pan_number'                  => $pan_number,
                 'identification_number'       => $identification_number,
                 'local_identification_number' => $local_identification_number,
+                'pincode' => $pincode,
+                'city' => $city,
+                'state' => $state,
+                'gst_in' => $gst_in,
+                'drug_license_number' => $drug_license_number,
+                'locality_id' => $locality,
             );
 
             $insert_id = $this->staff_model->add($data1);
@@ -1645,4 +1752,16 @@ class Staff extends Admin_Controller
         $this->load->view("admin/staff/admincredentialreport");
         $this->load->view("layout/footer");
     }
+
+    public function getLocationCity(){
+        $staff_loc_id = $this->input->post('id');
+        $result = $this->staff_model->getLocationCity($staff_loc_id);
+        echo json_encode($result);
+
+    }
+
+    public function getDoctorbyLocId(){
+        $localityid = $this->input->post('localityid');
+        $result = $this->staff_model->getDoctorsbyLocId($localityid);
+        echo json_encode($result);    }
 }

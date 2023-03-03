@@ -1142,14 +1142,14 @@ class Customlib
         return $array_of_time;
     }
 
-    public function getSlotByDoctorShift($doctor_id, $shift)
+    public function getSlotByDoctorShift($doctor_id, $shift,$doctor_clinics_id)
     {
         $this->CI->load->model("onlineappointment_model");
         $shift             = $this->CI->onlineappointment_model->getShiftById($shift);
         // var_dump($shift); die;
         $starttime         = $shift["start_time"];
         $endtime           = $shift["end_time"];
-        $shift_details     = $this->CI->onlineappointment_model->getShiftDetails($doctor_id);
+        $shift_details     = $this->CI->onlineappointment_model->getShiftDetails($doctor_id,$doctor_clinics_id);
         $duration          = $shift_details['consult_duration'];
         $array_of_time     = array();
         $start_time        = strtotime($starttime);

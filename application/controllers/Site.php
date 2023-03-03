@@ -308,7 +308,7 @@ class Site extends Public_Controller
     }
     public function resetmpin($role = null, $verification_code = null)
     {
-        var_dump($role); die;
+        // var_dump($role); die;
         // $toCheck_mpin = $this->session->set_userdata('check_mpin_uname', $verification_code);
         
         if (!$role || !$verification_code) {
@@ -781,8 +781,12 @@ class Site extends Public_Controller
         $date         = $this->customlib->dateFormatToYYYYMMDD($dates);
         $doctor       = $this->input->post("doctor");
         $global_shift = $this->input->post("global_shift");
+        $doctor_clinics = $this->input->post("doctor_clinics");
+
         $day          = date("l", strtotime($date));
-        $shift        = $this->onlineappointment_model->getShiftdata($doctor, $day, $global_shift);
+        //ORIGINAL
+        // $shift        = $this->onlineappointment_model->getShiftdata($doctor, $day, $global_shift);
+        $shift        = $this->onlineappointment_model->getShiftdataPatSide($doctor, $day, $global_shift,$doctor_clinics);
         echo json_encode($shift);
     }
 
@@ -794,8 +798,9 @@ class Site extends Public_Controller
         $doctor_id      = $this->input->post("doctor");
         $global_shift   = $this->input->post("global_shift");
         $date           = $this->customlib->dateFormatToYYYYMMDD($this->input->post("date"));
+        $doctor_clinics_id   = $this->input->post("doctor_clinics_id");
         $appointments   = $this->onlineappointment_model->getAppointments($doctor_id, $shift, $date);
-        $array_of_time  = $this->customlib->getSlotByDoctorShift($doctor_id, $shift);
+        $array_of_time  = $this->customlib->getSlotByDoctorShift($doctor_id, $shift,$doctor_clinics_id);
         // var_dump($array_of_time); die;
         $this->load->model("charge_model");
         $class = "";
@@ -820,7 +825,7 @@ class Site extends Public_Controller
         $doctor_data               = $this->staff_model->getProfile($doctor_id);
         $data["doctor_name"]       = $doctor_data["name"] . " " . $doctor_data["surname"];
         $data["doctor_speciality"] = $this->staff_model->getStaffSpeciality($doctor_id);
-        $shift_details             = $this->onlineappointment_model->getShiftDetails($doctor_id);
+        $shift_details             = $this->onlineappointment_model->getShiftDetails($doctor_id,$doctor_clinics_id);
         $charge_details            = $this->charge_model->getChargeDetailsById($shift_details['charge_id']);
         $currency_symbol           = $this->setting_model->get()[0]["currency_symbol"];
         $data["fees"]              = isset($charge_details->standard_charge) ? $currency_symbol . $charge_details->standard_charge : "";
@@ -846,6 +851,13 @@ class Site extends Public_Controller
     {
         $doctor_id = $this->input->post("doctor_id");
         $shift     = $this->onlineappointment_model->doctorShiftById($doctor_id);
+        echo json_encode($shift);
+    }
+
+    public function doctorclinicbyid()
+    {
+        $doctor_id = $this->input->post("doctor_id");
+        $shift     = $this->onlineappointment_model->doctorClinicsById($doctor_id);
         echo json_encode($shift);
     }
 

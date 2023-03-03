@@ -1,10 +1,12 @@
  <?php 
                                           $lang=$this->setting_model->get();
                                             $defoult=$lang[0]['lang_id'];
+
                                             $session=$this->session->userdata('hospitaladmin');
-                                        
                                             $id=$session['id'];
                                            $defoultlang=$this->setting_model->get_stafflang($id);
+                                           // var_dump($id); die;
+
                                           
                                            if(!empty($defoultlang) ){
                                             if($defoultlang['lang_id']!=0){

@@ -547,6 +547,18 @@ class Staff_model extends MY_Model
         return $query->result_array();
     }
 
+    public function getstaffLocality()
+    {
+        $query = $this->db->select('*')->where("is_active", "yes")->get('staff_locality');
+        return $query->result_array();
+    }
+
+
+    public function getLocationCity($id){
+        $query = $this->db->select('*')->where("locality_id", $id)->get('locality_city');
+        return $query->row_array();
+    }
+
     public function getLeaveRecord($id)
     {
         $query = $this->db->select('leave_types.type,leave_types.id as lid,staff.name,staff.id as staff_id,staff.surname,roles.name as user_type,staff.employee_id,roles.id as role_id,staff_leave_request.*,apply_staff.employee_id as applier_employee_id,apply_staff.name as applier_name,apply_staff.surname as applier_surname,updated_by_staff.employee_id as updated_by_employee_id,updated_by_staff.name as updated_by_name,updated_by_staff.surname as updated_by_surname')->join("leave_types", "leave_types.id = staff_leave_request.leave_type_id")->join("staff", "staff.id = staff_leave_request.staff_id")->join("staff_roles", "staff.id = staff_roles.staff_id")->join("roles", "staff_roles.role_id = roles.id")->join("staff as updated_by_staff", "updated_by_staff.id = staff_leave_request.status_updated_by",'left')->join("staff as apply_staff", "apply_staff.id = staff_leave_request.applied_by",'left')->where("staff_leave_request.id", $id)->get("staff_leave_request");
@@ -795,31 +807,12 @@ class Staff_model extends MY_Model
     {
         if ($this->session->has_userdata('hospitaladmin')) {
             $doctor_restriction = $this->session->userdata['hospitaladmin']['doctor_restriction'];  //disabled
-            $userdata           = $this->customlib->getUserData();
-            // echo "<pre>";
-            // print_r($userdata); die;
-            
-            $role_id            = $userdata['role_id'];
-
-                if ($role_id == $id) {
-                    // echo $userdata["id"].'one';
-                    $user_id  = $userdata["id"];
-                    $doctorid = $user_id;
-                    $this->db->where('staff.id', $user_id);
-                }elseif($role_id != 7 && $role_id != 4 && $role_id != 5 && $role_id != 6){
-                    $user_id  = $role_id;
-                    // echo $user_id.'two';
-                    $this->db->where("staff.created_by", $user_id);
-                }elseif($role_id == 4){
-                    $user_id  = $userdata["created_by"];
-                    $this->db->where("staff.created_by", $user_id);
-                }elseif($role_id == 5){
-                    $user_id  = $userdata["created_by"];
-                    $this->db->where("staff.created_by", $user_id);
-                }elseif($role_id == 6){
-                    $user_id  = $userdata["created_by"];
-                    $this->db->where("staff.created_by", $user_id);
-                }
+            $role                        = $this->customlib->getStaffRole();
+            $role_id                     = json_decode($role)->id;
+            $loginUser = $this->customlib->getStaffID();
+            if($role_id == 3){
+                $this->db->where("staff.id", $loginUser);
+            }            
         }
         $this->db->select('staff.id,staff.name,staff.surname,staff.employee_id,staff_designation.designation as designation,staff_roles.role_id, department.department_name as department,roles.name as user_type');
         $this->db->join("staff_designation", "staff_designation.id = staff.staff_designation_id", "left");
@@ -833,6 +826,63 @@ class Staff_model extends MY_Model
         $query = $this->db->get();
         return $query->result_array();
     }
+
+
+    public function getClinics($id)
+    {
+        if ($this->session->has_userdata('hospitaladmin')) {
+            $doctor_restriction = $this->session->userdata['hospitaladmin']['doctor_restriction'];  //disabled
+            $role                        = $this->customlib->getStaffRole();
+            $role_id                     = json_decode($role)->id;
+            $loginUser = $this->customlib->getStaffID();
+            if($role_id == 3){
+                // $this->db->where("staff.id", $loginUser);
+                $this->db->where("doctor_clinics.staff_id", $loginUser);
+            }            
+        }
+        $this->db->select('staff.id,staff.name,staff.surname,staff.employee_id,staff_designation.designation as designation,staff_roles.role_id, department.department_name as department,roles.name as user_type,doctor_clinics.id as doctor_clinics_id,doctor_clinics.clinic_name');
+        $this->db->join("staff_designation", "staff_designation.id = staff.staff_designation_id", "left");
+        $this->db->join("department", "department.id = staff.department_id", "left");
+        $this->db->join("staff_roles", "staff_roles.staff_id = staff.id", "left");
+        $this->db->join("roles", "staff_roles.role_id = roles.id", "left");
+        $this->db->join("doctor_clinics", "doctor_clinics.staff_id = staff.id", "left");
+
+        $this->db->where("staff_roles.role_id", $id);
+        $this->db->where("staff.is_active", "1");
+        $this->db->order_by("staff.name", 'asc');
+        $this->db->from('staff');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+
+
+    public function getClinicsbyId()
+    {
+        if ($this->session->has_userdata('hospitaladmin')) {
+            $doctor_restriction = $this->session->userdata['hospitaladmin']['doctor_restriction'];  //disabled
+            $role                        = $this->customlib->getStaffRole();
+            $role_id                     = json_decode($role)->id;
+            $loginUser = $this->customlib->getStaffID();
+            if($role_id == 3){
+                $this->db->where("staff.id", $loginUser);
+            }            
+        }
+        $this->db->select('staff.id,staff.name,staff.surname,staff.employee_id,staff_designation.designation as designation,staff_roles.role_id, department.department_name as department,roles.name as user_type,doctor_clinics.id as dclinic_id,doctor_clinics.clinic_name,staff_locality.locality');
+        $this->db->join("staff_designation", "staff_designation.id = staff.staff_designation_id", "left");
+        $this->db->join("department", "department.id = staff.department_id", "left");
+        $this->db->join("staff_roles", "staff_roles.staff_id = staff.id", "left");
+        $this->db->join("roles", "staff_roles.role_id = roles.id", "left");
+        $this->db->join("doctor_clinics", "doctor_clinics.staff_id = staff.id", "left");
+        $this->db->join("staff_locality", "staff_locality.id = doctor_clinics.locality_id", "left");
+        $this->db->where("staff_roles.role_id", $role_id);
+        $this->db->where("staff.is_active", "1");
+        $this->db->order_by("staff.name", 'asc');
+        $this->db->from('staff');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
 
     public function getStaffipd($id, $doc)
     {
@@ -1000,4 +1050,144 @@ class Staff_model extends MY_Model
         $query = $this->db->get();
         return $query->result_array();
     }
+
+    public function getDisPincodes($id){
+        $this->db->select('distributor_pincodes.*')->from('distributor_pincodes');
+        $this->db->where('distributor_pincodes.staff_id', $id);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    public function getGloPincodes(){
+        $this->db->select('staff_pincode.*')->from('staff_pincode');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+
+    public function check_pincode_exists_for_dis($str)
+    {
+        $pincode     = $this->input->post('pincode');
+        $role                        = $this->customlib->getStaffRole();
+        $role_id                     = json_decode($role)->id;
+        if (!isset($id)) {
+            $id = 0;
+        }
+        if (!isset($staff_id)) {
+            $staff_id = 0;
+        }
+
+        if ($this->check_pincode_exists_for_distributor($pincode,$role_id)) {
+            $this->form_validation->set_message('check_exists', 'Distributor Existed on this Pincode');
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+    public function check_pincode_exists_for_distributor($pincode, $id)
+    {
+        if ($pincode != 0) {
+            $data  = array('pincode' => $pincode, 'created_by' => $id);
+            $query = $this->db->where($data)->get('staff');
+            if ($query->num_rows() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            $this->db->where('created_by', $id);
+            $query = $this->db->get('staff');
+            if ($query->num_rows() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public function check_pincode_exists_for_pharma($str)
+    {
+        $pincode     = $this->input->post('pincode');
+        // $role                        = $this->customlib->getStaffRole();
+        // $role_id                     = json_decode($role)->id;
+        if (!isset($id)) {
+            $id = 0;
+        }
+        if (!isset($staff_id)) {
+            $staff_id = 0;
+        }
+
+        if ($this->check_pincode_exists_for_pharmacist($pincode)) {
+            $this->form_validation->set_message('check_exists', 'Pharma Existed on this Pincode');
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+    public function check_pincode_exists_for_pharmacist($pincode)
+    {
+        if ($pincode != 0) {
+            $data  = array('pincode' => $pincode);
+            $query = $this->db
+            ->join('staff_roles','staff_roles.staff_id=staff.id','left')
+            ->where('staff_roles.role_id',4)
+            ->where($data)
+            ->get('staff');
+            if ($query->num_rows() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            $this->db->where('created_by', $id);
+            $query = $this->db->get('staff');
+            if ($query->num_rows() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public function getDoctorsbyLocId($id){
+        $this->db->select('staff.*,staff_locality.locality')->from('staff');
+        $this->db->join('staff_locality', 'staff_locality.id = staff.locality_id');
+        $this->db->join('staff_roles', 'staff_roles.staff_id = staff.id','left');
+        $this->db->where('staff.locality_id', $id);
+        $this->db->where('staff_roles.role_id', 3);
+        $this->db->where('staff.is_active', 1);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+
+    public function getDocwiseProReport($start_date,$end_date,$doctorid){
+            $this->db->select("staff.*,CONCAT(patients.patient_name, '.', patients.patient_lname) AS patient_name,pharmacy_bill_detail.quantity,pharmacy.medicine_name,pharmacy.product_id,pharmacy.valuep,pharmacy_bill_basic.date as pharm_bill_date,medicine_batch_details.sale_rate,supplier_bill_basic.tax as sbbtax,supplier_bill_basic.tax_cgst as sbbcgst,supplier_bill_basic.tax_sgst as sbbsgst,pharmacy.medicine_company");
+            $this->db->join('ipd_prescription_basic', 'ipd_prescription_basic.prescribe_by = staff.id');
+            $this->db->join('pharmacy_bill_basic', 'pharmacy_bill_basic.ipd_prescription_basic_id = ipd_prescription_basic.id');
+            $this->db->join('pharmacy_bill_detail', 'pharmacy_bill_detail.pharmacy_bill_basic_id = pharmacy_bill_basic.id');
+            $this->db->join('medicine_batch_details', 'medicine_batch_details.id = pharmacy_bill_detail.medicine_batch_detail_id');
+            $this->db->join('supplier_bill_basic', 'supplier_bill_basic.id = medicine_batch_details.supplier_bill_basic_id');
+
+            $this->db->join('pharmacy', 'pharmacy.id = medicine_batch_details.pharmacy_id');
+            $this->db->join('patients', 'patients.id = pharmacy_bill_basic.patient_id');
+
+            // $this->db->where('supplier_bill_basic.received_by', $id);
+            $this->db->where('DATE(pharmacy_bill_basic.created_at) >=', $start_date);
+            $this->db->where('DATE(pharmacy_bill_basic.created_at) <=', $end_date);
+            $this->db->where_in('ipd_prescription_basic.prescribe_by', $doctorid);
+
+            $query = $this->db->get('staff');
+            // echo $this->db->last_query(); die;
+            return $query->result();
+        
+    }
+
+
+   
+    
 }

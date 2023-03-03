@@ -601,16 +601,19 @@ class Admin extends Admin_Controller
         $first_day_this_month = date('Y-m-01');
         //$tot_roles            = $this->role_model->get(); //get all roles from
        $parentid= $staffid;
-        if($role_id!=7) {
+    //    var_dump($role_id); die;
+        if($role_id!=7 && $role_id!=73) {
             $tot_roles = $this->role_model->getRoleFromStaffid($role_id);
-        }else
-        {
+        }elseif($role_id==73){
+            $tot_roles            = $this->role_model->get("cw");
+            $parentid = null;
+        }else{
             $tot_roles            = $this->role_model->get();
             $parentid = null;
         }
         // echo "<pre>";
         // print_r( $staffid ); die;
-        // var_dump( $tot_roles); die;
+        // print_r( $tot_roles); die;
         foreach ($tot_roles as $key => $value) {
             //if ($value["id"] != 1 ) {
                 $count_roles[$value["name"]] = $this->role_model->count_roles($value["id"],$role_id);

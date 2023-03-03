@@ -432,8 +432,14 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
 
 
                                                                     <span data-toggle="modal" data-target="#prescriptionviewmaual">
-             <a href="#" class="btn btn-default btn-xs" data-toggle='tooltip' onclick="mpview_prescription('<?php echo $value['id'] ?>')" title="<?php echo $this->lang->line('view_prescription'); ?>">
-                                                                        <i class="fas fa-file-prescription"></i>
+             <a href="#" class="btn btn-default btn-xs" data-toggle='tooltip' onclick="mpview_prescription('<?php echo $value['id'] ?>')" title="<?php echo $this->lang->line('manual_prescription'); ?>">
+                                                                        <i class="fas fa-print"></i>
+                                                                    </a>
+                                                                </span>
+
+                                                                <span data-toggle="modal" data-target="#prescriptionviewsend">
+             <a href="#" class="btn btn-default btn-xs" data-toggle='tooltip' onclick="send_prescription('<?php echo $value['id'] ?>')" title="<?php echo $this->lang->line('send_prescription'); ?>">
+                                                                        <i class="fas fa-send"></i>
                                                                     </a>
                                                                 </span>
                                                                     <?php
@@ -609,6 +615,13 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                         <a href="#" id='print_id' data-toggle="modal"><i class="fa fa-print"></i></a>
                     </div>
                 </div>
+
+                <!-- <div class="modalicon">
+                    <div id='send_deleteprescription'>
+                        <a href="#" id='print_id' data-toggle="modal"><i class="fa fa-send"></i></a>
+                    </div>
+                </div> -->
+
                 <h4 class="modal-title"><?php echo $this->lang->line('prescription'); ?></h4>
             </div>
             <div class="modal-body pt0 pb0" id="getdetails_prescription">
@@ -619,7 +632,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
 </div>
 
 
-<!-- ADD MANUAL PRESCRIPTION -->
+<!-- VIEW MANUAL PRESCRIPTION -->
 
 <div class="modal fade" id="prescriptionviewmanual" tabindex="-1" role="dialog" aria-labelledby="follow_up">   
     <div class="modal-dialog modal-mid modal-lg" role="document">
@@ -631,9 +644,65 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                  
                     </div>
                 </div>
+
+                <div class="modalicon"> 
+                    <div id='send_deleteprescriptionmanual'>
+                 
+                    </div>
+                </div>
+
                 <h4 class="modal-title"><?php echo $this->lang->line('prescription'); ?></h4>
             </div>
             <div class="modal-body pt0 pb0" id="getdetails_prescriptionmanual">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- END -->
+
+
+<!-- SEND PRESCRIPTION -->
+
+<div class="modal fade" id="prescriptionviewsend" tabindex="-1" role="dialog" aria-labelledby="follow_up">   
+    <div class="modal-dialog modal-mid modal-lg" role="document">
+        <div class="modal-content modal-media-content">
+            <div class="modal-header modal-media-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <div class="modalicon"> 
+                    <div id='edit_deleteprescriptionsend'>
+                 
+                    </div>
+                </div>
+                <h4 class="modal-title"><?php echo $this->lang->line('send_prescription'); ?></h4>
+            </div>
+            <div class="modal-body pt0 pb0" id="getdetails_prescriptionsend">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- END -->
+
+<!-- SEND MANUAL PRESCRIPTION -->
+
+<div class="modal fade" id="prescriptionviewsendManual" tabindex="-1" role="dialog" aria-labelledby="follow_up">   
+    <div class="modal-dialog modal-mid modal-lg" role="document">
+        <div class="modal-content modal-media-content">
+            <div class="modal-header modal-media-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <div class="modalicon"> 
+                    <div id='edit_deleteprescriptionsendManual'>
+                 
+                    </div>
+                </div>
+                <h4 class="modal-title"><?php echo $this->lang->line('send_manual_prescription'); ?></h4>
+            </div>
+            <div class="modal-body pt0 pb0" id="getdetails_prescriptionsendManual">
 
             </div>
         </div>
@@ -755,6 +824,8 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
             url: '<?php echo base_url(); ?>patient/prescription/getPrescription/' + visitid ,
             success: function (res) {
                 $("#edit_deleteprescription").html("<a href='#' onclick='print(" + visitid + ")' id='print_id' data-toggle='modal' title='<?php echo $this->lang->line('print'); ?>'><i class='fa fa-print'></i></a>");
+                // $("#send_deleteprescription").html("<a href='#' onclick='send_prescription(" + visitid + ")' id='print_id' data-toggle='modal' title='<?php echo $this->lang->line('send_prescription'); ?>'><i class='fa fa-send'></i></a>");
+
                 $("#getdetails_prescription").html(res);
 
                 holdModal('prescriptionview');
@@ -769,9 +840,10 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
     function mpview_prescription(visitid) {
         alert("view pres");
         $.ajax({
-            url: '<?php echo base_url(); ?>admin/prescription/getPrescriptionmanual/' + visitid  ,
+            url: '<?php echo base_url(); ?>patient/prescription/getPrescriptionmanual/' + visitid  ,
             success: function (res) {
                 $("#edit_deleteprescriptionmanual").html("<a href='#' onclick='mpprint(" + visitid + ")' id='mpprint_id' data-toggle='modal' title='<?php echo $this->lang->line('print'); ?>'><i class='fa fa-print'></i></a>");
+                // $("#send_deleteprescriptionmanual").html("<a href='#' onclick='send_manualprescription(" + visitid + ")' id='mpprint_id' data-toggle='modal' title='<?php echo $this->lang->line('send_prescription'); ?>'><i class='fa fa-send'></i></a>");
                 $("#getdetails_prescriptionmanual").html(res);
 
                 holdModal('prescriptionviewmanual');
@@ -782,6 +854,66 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
         });
     }
     // END
+
+    // SEND PRES
+    function send_prescription(visitid) {
+        alert("send pres");
+        $.ajax({
+            url: '<?php echo base_url(); ?>patient/prescription/getPrescriptionSend/' + visitid  ,
+            success: function (res) {
+                console.log(res); 
+                $("#edit_deleteprescriptionsend").html("<a href='#' onclick='sendprint(" + visitid + ")' id='sendprint_id' data-toggle='modal' title='<?php echo $this->lang->line('print'); ?>'><i class='fa fa-print'></i></a>");
+                $("#getdetails_prescriptionsend").html(res);
+
+                holdModal('prescriptionviewsend');
+            },
+            error: function () {
+                alert("Fail")
+            }
+        });
+    }
+    // END
+
+     // SEND MANUAL PRES
+     function send_manualprescription(visitid) {
+        alert("send pres");
+        $.ajax({
+            url: '<?php echo base_url(); ?>patient/prescription/getPrescriptionSendManual/' + visitid  ,
+            success: function (res) {
+                console.log(res); 
+                $("#edit_deleteprescriptionsendManual").html("<a href='#' onclick='sendprint(" + visitid + ")' id='sendprint_id' data-toggle='modal' title='<?php echo $this->lang->line('print'); ?>'><i class='fa fa-print'></i></a>");
+                $("#getdetails_prescriptionsendManual").html(res);
+
+                holdModal('prescriptionviewsendManual');
+            },
+            error: function () {
+                alert("Fail")
+            }
+        });
+    }
+    // END
+
+
+     // SEND PRES
+    //  function sendPrescription(staffId) {
+        // alert(staffId);
+        
+        // $.ajax({
+        //     url: '<?php echo base_url(); ?>patient/prescription/getPrescriptionSend/' + visitid  ,
+        //     success: function (res) {
+        //         console.log(res); 
+        //         $("#edit_deleteprescriptionsend").html("<a href='#' onclick='sendprint(" + visitid + ")' id='sendprint_id' data-toggle='modal' title='<?php echo $this->lang->line('print'); ?>'><i class='fa fa-print'></i></a>");
+        //         $("#getdetails_prescriptionsend").html(res);
+
+        //         holdModal('prescriptionviewsend');
+        //     },
+        //     error: function () {
+        //         alert("Fail")
+        //     }
+        // });
+    //}
+    // END
+
 
 
     function printprescriptionmanual(visitid) {

@@ -8,7 +8,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
 <div class="row">
         <div class="col-md-12">
 
-              <?php if (!empty($print_details['print_header'])) { ?>
+            <!--   <?php if (!empty($print_details['print_header'])) { ?>
                         <div class="pprinta4">
                             <img src="<?php
                             if (!empty($print_details['print_header'])) {
@@ -16,7 +16,19 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                             }
                             ?>" class="img-responsive" style="height:100px; width: 100%;">
                         </div>
+                    <?php } ?> -->
+
+                      <?php if (!empty($print_details['print_header'])) { ?>
+                        <div class="pprinta4">
+                            <img style="width: 100px;height: 100px;" src="<?php
+                            if (!empty($print_details['print_header'])) {
+                                echo base_url() ."./uploads/clinic_images/". $charge->clinic_logo;
+                            }
+                            ?>" class="img-responsive" style="height:100px; width: 100%;">
+                        </div>
                     <?php } ?>
+
+
               <div class="card">
                 <div class="card-body">  
                     <div class="row">
@@ -109,26 +121,37 @@ if (!empty($charge)) {
                              <tbody>
                                 <tr>
                                    <td>1</td>
+
                                    <td><strong><?php   echo $charge->charge_name ?></strong><br>
                                     <?php echo $charge->note;?>
-                                  </td>
+                                   </td>
                                  
                                    <td class=""><?php 
                                    if($charge->tax>0)
                                     { 
                                       $tax=(($charge->apply_charge*$charge->tax)/100);  
-                                    }else{ $tax=0; 
-                                    } echo amountFormat($tax)." (".$charge->tax."%)";?></td>
+                                    }else{ 
+                                      $tax=0; 
+                                    } 
+                                    echo amountFormat($tax)." (".$charge->tax."%)";?>
+                                    </td>
+
                                    <td class="text-right"><?php echo $charge->amount;?></td>
                                 </tr>
                                 <tr>
                                    
-                                   <td colspan="3" class="text-right thick-line"><strong><?php echo $this->lang->line('net_amount');?></strong></td>
-                                   <td class="text-right thick-line"><strong><?php echo $currency_symbol.$charge->apply_charge; ?></strong></td>
+                                   <td colspan="3" class="text-right thick-line"><strong><?php echo $this->lang->line('net_amount');?></strong>
+                                   </td>
+
+                                   <td class="text-right thick-line"><strong><?php echo $currency_symbol.$charge->apply_charge; ?></strong>
+                                   </td>
                                 </tr>
+
                                 <tr>
                                    
-                                   <td colspan="3" class="text-right no-line"><strong><?php echo $this->lang->line('tax');?></strong></td>
+                                   <td colspan="3" class="text-right no-line"><strong><?php echo $this->lang->line('tax');?></strong>
+                                   </td>
+
                                    <td class="text-right no-line"><strong><?php 
                                    if($charge->tax>0){
                                      $tax_amt = ($charge->apply_charge*$charge->tax/100);
@@ -137,29 +160,37 @@ if (!empty($charge)) {
                                    }
                                   
                                    $total = ($charge->amount);
-                                   echo $currency_symbol.amountFormat($total+$tax_amt); ?></strong></td>
+                                   echo $currency_symbol.amountFormat($tax_amt); ?></strong></td>
+
                                 </tr>
+
                                 <tr>  
-                                  
-                                   <td colspan="3" class="text-right no-line"><strong><?php echo $this->lang->line('total');?></strong></td>
+                                   <td colspan="3" class="text-right no-line"><strong><?php echo $this->lang->line('total');?></strong>
+                                   </td>
                                    <td class="text-right no-line"><strong><?php 
                                    echo $currency_symbol.amountFormat($total); ?></strong></td>
                                 </tr>
-                                   <tr>                                  
+
+                                <tr>                                  
                                    <td colspan="3" class="text-right no-line">
-                                    <strong><?php echo $this->lang->line('paid_amount');?></strong></td>
-                                   <td class="text-right no-line"><strong><?php 
-                                $amount_paid=(!isset($transaction) || empty($transaction)) ? 0:  $transaction->amount;
-                                   
-                                   echo $currency_symbol.amountFormat($amount_paid); ?></strong></td>
+                                    <strong><?php echo $this->lang->line('paid_amount');?></strong>
+                                   </td>
+
+                                  <td class="text-right no-line"><strong><?php 
+                                    $amount_paid=(!isset($transaction) || empty($transaction)) ? 0:  $transaction->amount;
+                                   echo $currency_symbol.amountFormat($amount_paid); ?></strong>
+                                  </td>
                                 </tr>
-                                    <tr>                                  
+
+                                <tr>                                  
                                    <td colspan="3" class="text-right no-line">
-                                    <strong><?php echo $this->lang->line('balance_amount');?></strong></td>
+                                    <strong><?php echo $this->lang->line('balance_amount');?></strong>
+                                   </td>
                                    <td class="text-right no-line"><strong><?php 
-                                $amount_paid=(!isset($transaction) || empty($transaction)) ? 0:  $transaction->amount;
+                                     $amount_paid=(!isset($transaction) || empty($transaction)) ? 0:  $transaction->amount;
                                    
-                                   echo $currency_symbol.amountFormat(($total+$tax_amt)-$amount_paid); ?></strong></td>
+                                     echo $currency_symbol.amountFormat(($total)-$amount_paid); ?></strong>
+                                   </td>
                                 </tr>
 
                              </tbody>

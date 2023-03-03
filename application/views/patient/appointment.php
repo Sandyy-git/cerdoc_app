@@ -205,13 +205,29 @@ $count++;
                                         <label for="exampleInputFile">
                                             <?php echo $this->lang->line('doctor'); ?></label><small class="req"> *</small>
                                         <div>
-                                            <select class="form-control" name='doctor' id="doctor" onchange="reset_all(),getDoctorShift()">
+                                            <select class="form-control" name='doctor' id="doctor" onchange="reset_all(),getDoctorShift(),getDocClinics()">
                                                 <option value="<?php echo set_value('doctor'); ?>"><?php echo $this->lang->line('select') ?></option>
 
                                             </select>
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Doc Clinic View -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="pwd"><?php echo $this->lang->line("clinic_name"); ?></label><small class="req"> *</small>
+                                        <select name="doctor_clinics" id="doctor_clinics" class="form-control select2">
+                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                          <!--   <?php foreach ($global_shift as $global_key => $global_value) {?>
+                                            <option value="<?php echo $global_value['id']; ?>"><?php echo $global_value['name']; ?></option>
+                                            <?php }?> -->
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- ENDS -->
+
+
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="pwd"><?php echo $this->lang->line("shift"); ?></label><small class="req"> *</small>
@@ -223,6 +239,10 @@ $count++;
                                         </select>
                                     </div>
                                 </div>
+
+                                
+
+
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="pwd"><?php echo $this->lang->line("slot"); ?></label><small class="req"> *</small>
@@ -429,6 +449,7 @@ $count++;
 </div>
 <script type="text/javascript">
     function getRecord(id, active) {
+        alert('add app');
         $("#formadd").button('reset');
         $.ajax({
             url: '<?php echo base_url(); ?>patient/dashboard/getDetails',
@@ -447,7 +468,7 @@ $count++;
     $(document).ready(function (e) {
         $("#formadd").on('submit', (function (e) {
             alert('submit');
-            $("#formaddbtn").button('loading');
+            // $("#formaddbtn").button('loading');
             e.preventDefault();
             $.ajax({
                 url: '<?php echo base_url(); ?>patient/dashboard/addappointment',
@@ -537,6 +558,29 @@ $count++;
            }
         });
     }
+
+    function getDocClinics(prev_val = 0){
+        var doctor_id = $("#doctor").val();
+        alert(doctor_id);
+        var select_box = "<option value=''><?php echo $this->lang->line('select'); ?></option> ";
+        $.ajax({
+            type: 'POST',
+            url: "<?php echo base_url("site/doctorclinicbyid"); ?>",
+            data: {doctor_id:doctor_id},
+            dataType: 'json',
+            success: function(res){
+                $.each(res, function(i, list){
+                    selected = list.id == prev_val ? "selected" : "";
+                    select_box += "<option value='"+ list.id +"' "+selected+">"+ list.clinic_name +"</option>";
+                });
+                $("#doctor_clinics").html(select_box);
+           }
+        });
+    }
+
+
+
+    
 </script>
 
 <script>
@@ -545,11 +589,12 @@ $count++;
         var div_data = "";
         var doctor = $("#doctor").val();        
         var global_shift = $("#global_shift").val();
+        var doctor_clinics = $("#doctor_clinics").val();
         var select_box = "<option value=''><?php echo $this->lang->line('select'); ?></option> ";
         $.ajax({
             url: '<?php echo base_url(); ?>site/getShift',
             type: "POST",
-            data: {doctor: doctor, date: date, global_shift:global_shift},
+            data: {doctor: doctor, date: date, global_shift:global_shift,doctor_clinics:doctor_clinics},
             dataType: 'json',
             success: function(res){
                 if(res.length){
@@ -565,17 +610,19 @@ $count++;
     }
 
     function getSlotByShift(){
-        alert("c");
+        // alert("c");
         shift = $("#shift_id").val();
         var div_data = "";
         var date = $("#dates").val();
         var doctor = $("#doctor").val();
         var global_shift = $("#global_shift").val();
+        var doctor_clinics_id = $("#doctor_clinics").val();
+        // alert(doctor_clinics_id);
         if(shift!=''){
             $.ajax({
                 url: '<?php echo base_url(); ?>site/getSlotByShift',
                 type: "POST",
-                data: {shift:shift,doctor:doctor,date:date,global_shift:global_shift,shift:shift},
+                data: {shift:shift,doctor:doctor,date:date,global_shift:global_shift,shift:shift,doctor_clinics_id:doctor_clinics_id},
                 dataType: 'json',
                 success: function(res){
                     $.each(res.result, function (i, obj)

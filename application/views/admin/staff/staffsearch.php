@@ -203,7 +203,6 @@ $superadmin_rest = $this->session->userdata['hospitaladmin']['superadmin_restric
                                                     foreach ($resultlist as $staff) {
 
                                                          if($staff["user_type"]!='Super Admin' || $superadmin_rest != 'disabled' ){ ?>
-
                                                       
                                                         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 img_div_modal">
                                                             <div class="staffinfo-box">

@@ -2685,13 +2685,52 @@ window.location.href = baseurl+'admin/patient/search';
     // }); 
 
 //ORIGINAL
-    $(document).on('select2:select','.medicine_category',function(){      
-        alert("get mcat");
-       getMedicine($(this),$(this).val(),0);
+    $(document).on('select2:select','.search_type',function(){      
+        var thisId = $(this).attr("id");
+        var med_category_id = $("#medicine_cat_"+thisId+"").val();
+        // alert(med_category_id);
+        // alert("get mcat");
+        // alert($(this));
+        // alert($(this).val());
+       getMedicine($(this),$(this).val(),0,med_category_id);
        selected_medicine_category_id =$(this).val();   
        var medicine_dosage=getDosages(selected_medicine_category_id);
        $(this).closest('tr').find('.medicine_dosage').html(medicine_dosage);
     }); 
+
+
+
+    $(document).on('select2:select','.medicine_name',function(){ 
+        alert('med stock');
+        var thisId = $(this).attr('data-rowid');
+
+        var med_category_id = $("#medicine_cat_"+thisId+"").val();
+        var search_type_id = $("#"+thisId+"").val();
+
+        getMedicineBrand($(this),$(this).val(),0,med_category_id,search_type_id);
+    }); 
+
+
+    // $(document).on('select2:select','.search_type_edit',function(){   
+    //     let data_id = $(this).attr("data-id");
+    //     med_category_id = $('select[name="medicine_cat_'+data_id+'"]').val()
+    //    getMedicine($(this),$(this).val(),0,med_category_id);
+    //    selected_medicine_category_id =$(this).val();   
+    //    var medicine_dosage=getDosages(selected_medicine_category_id);
+    //    $(this).closest('tr').find('.medicine_dosage').html(medicine_dosage);
+    // }); 
+
+    // $(document).on('select2:select','.search_type_edit',function(){      
+        
+    //     var med_category_id = $("#medicine_cat_0").val();
+    //     alert("get mcat");
+    //     alert($(this));
+    //     alert($(this).val());
+    //    getMedicine($(this),$(this).val(),0,med_category_id);
+    //    selected_medicine_category_id =$(this).val();   
+    //    var medicine_dosage=getDosages(selected_medicine_category_id);
+    //    $(this).closest('tr').find('.medicine_dosage').html(medicine_dosage);
+    // }); 
 
    
     //FIRST ORIGINAL
@@ -2710,19 +2749,56 @@ window.location.href = baseurl+'admin/patient/search';
     //     });
    
 //ORIGINAL
-    $(document).on('select2:select','.medicine_name',function(){ 
+    // $(document).on('select2:select','.medicine_name',function(){ 
+    //         var row_id_val= $(this).data('rowid');
+    //         $.ajax({
+    //         type: "POST",
+    //         url: base_url + "admin/pharmacy/get_medicine_stockinfo",
+    //         data: {'pharmacy_id': $(this).val()},
+    //         dataType: 'json',
+    //         success: function (res) {
+    //             $('#stock_info_'+row_id_val).html(res);
+    //         }
+    //     });
+
+    // }); 
+
+    
+
+    $(document).on('select2:select','.medicine_brand',function(){ 
+        var visit_details_id = $('#visit_details_id').val();
+        alert('med stock');
+        alert($(this).val());
             var row_id_val= $(this).data('rowid');
             $.ajax({
             type: "POST",
             url: base_url + "admin/pharmacy/get_medicine_stockinfo",
-            data: {'pharmacy_id': $(this).val()},
+            data: {'pharmacy_id': $(this).val(),'visit_details_id':visit_details_id},
             dataType: 'json',
             success: function (res) {
+                console.log(res);
                 $('#stock_info_'+row_id_val).html(res);
             }
         });
 
     }); 
+    
+//ORIGINAL
+    // $(document).on('select2:select','.medicin_name',function(){ 
+    //     alert('med stock');
+    //     alert($(this).val());
+    //         var row_id_val= $(this).data('rowid');
+    //         $.ajax({
+    //         type: "POST",
+    //         url: base_url + "admin/pharmacy/get_medicine_stockinfo",
+    //         data: {'pharmacy_id': $(this).val()},
+    //         dataType: 'json',
+    //         success: function (res) {
+    //             $('#stock_info_'+row_id_val).html(res);
+    //         }
+    //     });
+
+    // }); 
 
 
     //FIRST ORIGINAL
@@ -2759,13 +2835,16 @@ window.location.href = baseurl+'admin/patient/search';
 // }
     
 //ORIGINAL
-    function getMedicine(med_cat_obj,val,medicine_id){  
+    function getMedicine(med_cat_obj,val,medicine_id,med_category_id){  
+        var visit_details_id = $('#visit_details_id').val();
+        alert(visit_details_id); 
+        alert('g med name');
       var medicine_colomn=med_cat_obj.closest('tr').find('.medicine_name');
         medicine_colomn.html("");    
         $.ajax({
             url: '<?php echo base_url(); ?>admin/pharmacy/get_medicine_name',
             type: "POST",
-            data: {medicine_category_id: val},
+            data: {medicine_category_id: med_category_id,search_type:val,visit_details_id:visit_details_id},
             dataType: 'json',
               beforeSend: function() {
               medicine_colomn.html("<option value=''><?php echo $this->lang->line('select') ?></option>");
@@ -2780,11 +2859,56 @@ window.location.href = baseurl+'admin/patient/search';
                                 sel = "selected";
                             }
                             
-                            if(obj.generic_name == undefined){
-                                  obj.generic_name="";
+                            if(obj.medicine_name == undefined){
+                                  obj.medicine_name="";
                              }
 
-                            div_data += "<option value=" + obj.id + " " + sel + ">" + obj.medicine_name + " " + obj.generic_name + "</option>";
+                            if(obj.medicine_composition == undefined){
+                                  obj.medicine_composition="";
+                             }
+
+                            div_data += "<option value=" + obj.id + " " + sel + ">" + obj.medicine_name + " " + obj.medicine_composition + "</option>";
+
+                });
+           
+                medicine_colomn.html(div_data);
+                medicine_colomn.select2("val", medicine_id);
+               
+            }
+        });
+}
+
+
+
+function getMedicineBrand(med_cat_obj,val,medicine_id,med_category_id,search_type_id){  
+    var visit_details_id = $('#visit_details_id').val();
+    alert(val);
+      var medicine_colomn=med_cat_obj.closest('tr').find('.medicine_brand');
+        medicine_colomn.html("");    
+        $.ajax({
+            url: '<?php echo base_url(); ?>admin/pharmacy/get_medicine_brand',
+            type: "POST",
+            data: {medicine_category_id: med_category_id,search_type:search_type_id,medicine_name:val,visit_details_id:visit_details_id},
+            dataType: 'json',
+              beforeSend: function() {
+              medicine_colomn.html("<option value=''><?php echo $this->lang->line('select') ?></option>");
+
+            }, 
+            success: function (res) {
+                var div_data="<option value=''><?php echo $this->lang->line('select') ?></option>";
+                $.each(res, function (i, obj)
+                {
+                    var sel = "";
+                            if (medicine_id == obj.id) {
+                                sel = "selected";
+                            }
+                            
+                            if(obj.medicine_composition == undefined){
+                                  obj.medicine_composition="";
+                             }
+
+                            // div_data += "<option value=" + obj.id + " " + sel + ">" + obj.medicine_name + " " + obj.medicine_composition + "</option>";
+                            div_data += "<option value=" + obj.id + " " + sel + ">" + obj.medicine_name + " " + "</option>";
 
                 });
            
@@ -2894,6 +3018,7 @@ $('#health_institutions1').append(myselect2.html());
     $(document).on('click','.add-record',function(){
 
          var rowCount = $('#tableID tr').length;
+         alert(rowCount);
          var cat_row="" ;
          var medicine_row="";
          var dose_row="";
@@ -2902,8 +3027,10 @@ $('#health_institutions1').append(myselect2.html());
          var afbf_row = "" ;
          var instruction_row="" ;
          var closebtn_row = "" ;
+         var st_row = "" ;
             if(rowCount==0){
                cat_row ="<label><?php echo $this->lang->line('medicine_category'); ?></label>";
+               st_row ="<label><?php echo $this->lang->line('search_type'); ?></label>";
               medicine_row ="<label><?php echo $this->lang->line('medicine'); ?></label>";
               dose_row =" <label><?php echo $this->lang->line("dose"); ?></label>";
               dose_interval_row =" <label><?php echo $this->lang->line("dose_interval"); ?></label>";
@@ -2920,7 +3047,7 @@ $('#health_institutions1').append(myselect2.html());
 //THIRD WITHOUT STOCK STYLE CHANGES
 // var div = "<input type='hidden' name='rows[]' value='"+prescription_rows+"' autocomplete='off'><div id=row1><div class='col-lg-2 col-md-2 col-sm-2 col-xs-2'><div>"+cat_row+" <select class='form-control select2 medicine_category' style='width: 70%' name='medicine_cat_"+prescription_rows+"'  id='medicine_cat" + prescription_rows + "'><option value='<?php echo set_value('medicine_category_id'); ?>'><?php echo $this->lang->line('select'); ?></option><?php foreach ($medicineCategory as $dkey => $dvalue) { ?><option value='<?php echo $dvalue["id"]; ?>'><?php echo $dvalue["medicine_category"] ?></option><?php } ?></select></div></div><div class='col-lg-6 col-md-6 col-sm-6 col-xs-6' style='right:4%'><div>"+medicine_row+" <select class='form-control select2 medicine_name' data-rowId='"+prescription_rows+"'  name='medicine_"+prescription_rows+"' id='search-query" + prescription_rows + "'><option value='l'><?php echo $this->lang->line('select') ?></option></select><small id='stock_info_"+prescription_rows+"''> </small></div></div><div class='col-lg-2 col-md-4 col-sm-6 col-xs-6' style='right:4%'><div>"+dose_interval_row+"<select  class='form-control select2 interval_dosage' name='interval_dosage_"+prescription_rows+"' id='search-interval-dosage" + prescription_rows + "'><option value='<?php echo set_value('interval_dosage_id'); ?>'><?php echo $this->lang->line('select'); ?></option><?php foreach ($intervaldosage as $dkey => $dvalue) { ?><option value='<?php echo $dvalue["id"]; ?>'><?php echo $dvalue["name"] ?></option><?php } ?></select></div></div><div class='col-lg-2 col-md-4 col-sm-6 col-xs-6' style='right:4%'><div> "+dose_duration_row+"<select class='form-control select2 duration_dosage' name='duration_dosage_"+prescription_rows+"' id='search-duration-dosage" + prescription_rows + "'><option value='<?php echo set_value('duration_dosage_id'); ?>'><?php echo $this->lang->line('select') ?></option><?php foreach ($durationdosage as $dkey => $dvalue) { ?><option value='<?php echo $dvalue["id"]; ?>'><?php echo $dvalue["name"] ?></option><?php } ?></select></div></div><div class='col-lg-2 col-md-4 col-sm-6 col-xs-6'><div>"+afbf_row+"<select  class='form-control select2 medicine_afbf' name='afbf_"+prescription_rows+"' id='search-afbf" + prescription_rows + "'><option value='l'><?php echo $this->lang->line('select'); ?></option><option value='Before Food'>Before Food</option><option value='After Food'>After Food</option><option value='With Food'>With Food</option></select></div></div><div class='col-lg-2 col-md-4 col-sm-6 col-xs-6'><div>"+instruction_row+"<textarea style='height:28px' name='instruction_"+prescription_rows+"' class=form-control id=description></textarea></div></div></div>";
 //WITH STOCK STYLE CHANGES      
-var div = "<input type='hidden' name='rows[]' value='"+prescription_rows+"' autocomplete='off'><div id=row1><div class='col-lg-2 col-md-2 col-sm-2 col-xs-2'><div>"+cat_row+" <select class='form-control select2 medicine_category' style='width: 70%' name='medicine_cat_"+prescription_rows+"'  id='medicine_cat" + prescription_rows + "'><option value='<?php echo set_value('medicine_category_id'); ?>'><?php echo $this->lang->line('select'); ?></option><?php foreach ($medicineCategory as $dkey => $dvalue) { ?><option value='<?php echo $dvalue["id"]; ?>'><?php echo $dvalue["medicine_category"] ?></option><?php } ?></select></div></div><div class='col-lg-6 col-md-6 col-sm-6 col-xs-6' style='right:4%'><div>"+medicine_row+" <select class='form-control select2 medicine_name' data-rowId='"+prescription_rows+"'  name='medicine_"+prescription_rows+"' id='search-query" + prescription_rows + "'><option value='l'><?php echo $this->lang->line('select') ?></option></select></div></div><div class='col-lg-2 col-md-2 col-sm-2 col-xs-2' style='right:4%'><div class=''><div id='suggesstion-box0' class='form-control'><small id='stock_info_"+prescription_rows+"'> </small></div></div></div><div class='col-lg-2 col-md-4 col-sm-6 col-xs-6' style='right:4%'><div>"+dose_interval_row+"<select  class='form-control select2 interval_dosage' name='interval_dosage_"+prescription_rows+"' id='search-interval-dosage" + prescription_rows + "'><option value='<?php echo set_value('interval_dosage_id'); ?>'><?php echo $this->lang->line('select'); ?></option><?php foreach ($intervaldosage as $dkey => $dvalue) { ?><option value='<?php echo $dvalue["id"]; ?>'><?php echo $dvalue["name"] ?></option><?php } ?></select></div></div><div class='col-lg-2 col-md-4 col-sm-6 col-xs-6' style='right:0%'><div> "+dose_duration_row+"<select class='form-control select2 duration_dosage' name='duration_dosage_"+prescription_rows+"' id='search-duration-dosage" + prescription_rows + "'><option value='<?php echo set_value('duration_dosage_id'); ?>'><?php echo $this->lang->line('select') ?></option><?php foreach ($durationdosage as $dkey => $dvalue) { ?><option value='<?php echo $dvalue["id"]; ?>'><?php echo $dvalue["name"] ?></option><?php } ?></select></div></div><div class='col-lg-2 col-md-4 col-sm-6 col-xs-6'><div>"+afbf_row+"<select  class='form-control select2 medicine_afbf' name='afbf_"+prescription_rows+"' id='search-afbf" + prescription_rows + "'><option value='l'><?php echo $this->lang->line('select'); ?></option><option value='Before Food'>Before Food</option><option value='After Food'>After Food</option><option value='With Food'>With Food</option></select></div></div><div class='col-lg-2 col-md-4 col-sm-6 col-xs-6'><div>"+instruction_row+"<textarea style='height:28px' name='instruction_"+prescription_rows+"' class=form-control id=description></textarea></div></div></div>";
+var div = "<input type='hidden' name='rows[]' value='"+prescription_rows+"' autocomplete='off'><div id=row1><div class='col-lg-2 col-md-2 col-sm-2 col-xs-2'><div>"+cat_row+" <select class='form-control select2 medicine_category' style='width: 70%' name='medicine_cat_"+prescription_rows+"'  id='medicine_cat_" + prescription_rows + "'><option value='<?php echo set_value('medicine_category_id'); ?>'><?php echo $this->lang->line('select'); ?></option><?php foreach ($medicineCategory as $dkey => $dvalue) { ?><option value='<?php echo $dvalue["id"]; ?>'><?php echo $dvalue["medicine_category"] ?></option><?php } ?></select></div></div> <div class='col-lg-2 col-md-2 col-sm-2 col-xs-2' style='right:4%'><div>"+st_row+" <select class='form-control select2 search_type' style='width: 70%' name='search_type_"+prescription_rows+"'  id=" + prescription_rows + "><option value='<?php echo set_value('search_type_id'); ?>'><?php echo $this->lang->line('select'); ?></option><?php foreach ($medicinesearchType as $dkey => $stvalue) { ?><option value='<?php echo $stvalue["id"]; ?>'><?php echo $stvalue["search_type"] ?></option><?php } ?></select></div></div> <div class='col-lg-8 col-md-12 col-sm-12 col-xs-12' style='right:8%'><div>"+medicine_row+" <select class='form-control select2 medicine_name' data-rowId='"+prescription_rows+"'  name='medicine_"+prescription_rows+"' id='search-query" + prescription_rows + "'><option value='l'><?php echo $this->lang->line('select') ?></option></select></div></div> <div class='col-lg-8 col-md-12 col-sm-12 col-xs-12'><div>"+medicine_row+" <select class='form-control select2 medicine_brand' data-rowId='"+prescription_rows+"'  name='medicine_brand_"+prescription_rows+"' id='search-query" + prescription_rows + "'><option value='l'><?php echo $this->lang->line('select') ?></option></select></div></div> <div class='col-lg-2 col-md-2 col-sm-2 col-xs-2' style='right:0%'><div class=''><div id='suggesstion-box0' class='form-control'><small id='stock_info_"+prescription_rows+"'> </small></div></div></div><div class='col-lg-2 col-md-4 col-sm-6 col-xs-6' style='right:0%'><div>"+dose_interval_row+"<select  class='form-control select2 interval_dosage' name='interval_dosage_"+prescription_rows+"' id='search-interval-dosage" + prescription_rows + "'><option value='<?php echo set_value('interval_dosage_id'); ?>'><?php echo $this->lang->line('select'); ?></option><?php foreach ($intervaldosage as $dkey => $dvalue) { ?><option value='<?php echo $dvalue["id"]; ?>'><?php echo $dvalue["name"] ?></option><?php } ?></select></div></div><div class='col-lg-2 col-md-4 col-sm-6 col-xs-6' style='right:0%'><div> "+dose_duration_row+"<select class='form-control select2 duration_dosage' name='duration_dosage_"+prescription_rows+"' id='search-duration-dosage" + prescription_rows + "'><option value='<?php echo set_value('duration_dosage_id'); ?>'><?php echo $this->lang->line('select') ?></option><?php foreach ($durationdosage as $dkey => $dvalue) { ?><option value='<?php echo $dvalue["id"]; ?>'><?php echo $dvalue["name"] ?></option><?php } ?></select></div></div><div class='col-lg-2 col-md-4 col-sm-6 col-xs-6'><div>"+afbf_row+"<select  class='form-control select2 medicine_afbf' name='afbf_"+prescription_rows+"' id='search-afbf" + prescription_rows + "'><option value='l'><?php echo $this->lang->line('select'); ?></option><option value='Before Food'>Before Food</option><option value='After Food'>After Food</option><option value='With Food'>With Food</option><option value='Not Applicable'>Not Applicable</option></select></div></div><div class='col-lg-2 col-md-4 col-sm-6 col-xs-6'><div>"+instruction_row+"<textarea style='height:28px' name='instruction_"+prescription_rows+"' class=form-control id=description></textarea></div></div></div>";
 
 var row = "<tr id='row" + prescription_rows + "'><td>" + div + "</td><td>"+closebtn_row+"<button type='button' onclick='delete_row("+prescription_rows+")' data-row-id='"+prescription_rows+"' class='closebtn delete_row'><i class='fa fa-remove'></i></button></td></tr>";
       $('#tableID').append(row).find('.select2').select2();

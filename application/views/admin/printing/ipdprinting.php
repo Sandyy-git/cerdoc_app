@@ -15,19 +15,19 @@
                     </div>                  
                     <div class="box-body">
                         <form enctype="multipart/form-data" action="<?php echo site_url('admin/printing/update') ?>" method="post">
-                            <input type="hidden" name="id" value="<?php if(!empty($printing_list)){ echo $printing_list[0]['id'];} ?>">
+                            <input type="hidden" name="id" value="<?php if(!empty($printing_list)){ echo $printing_list['id'];} ?>">
                             <input type="hidden" name="function_name" value="<?php echo $function_name; ?>">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label><?php echo $this->lang->line('header_image'); ?>(2230px X 300px)</label>
-                                        <input data-default-file="<?php echo base_url() ?><?php if(!empty($printing_list)){echo $printing_list[0]['print_header'];}?>" type="file" class="filestyle form-control" data-height="180"  name="header_image">
+                                        <input data-default-file="<?php echo base_url() ?><?php if(!empty($printing_list)){echo $printing_list['print_header'];}?>" type="file" class="filestyle form-control" data-height="180"  name="header_image">
                                         <input type="hidden" class=" form-control" name="print_header">
                                         <span class="text-danger"><?php echo form_error('header_image'); ?></span>
                                     </div>
                                     <div class="form-group"><label><?php echo $this->lang->line('footer_content'); ?></label>
                                         <textarea id="compose_textarea" name="footer_content" class="form-control" style="height: 250px">
-                                            <?php if(!empty($printing_list)) {  echo $printing_list[0]['print_footer'];} ?>
+                                            <?php if(!empty($printing_list)) {  echo $printing_list['print_footer'];} ?>
                                         </textarea>
                                         <span class="text-danger"><?php echo form_error('footer_content'); ?></span>
                                     </div>

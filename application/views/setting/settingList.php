@@ -113,56 +113,13 @@ $genderList = $this->customlib->getGender();
                                         </div>
                                     </div>
                                 </div>
-                               <!-- <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="settinghr"></div>
-                                        <h4 class="session-head"><?php /*echo $this->lang->line('language'); */?></h4>
-                                    </div><!--./col-md-12-->
-
-                                <!--<div class="col-md-6">
-                                        <div class="form-group row">
-                                            <label class="col-sm-4"><?php /*echo $this->lang->line('language'); */?><small class="req"> *</small></label>
-                                            <div class="col-sm-8">
-                                                <select  id="language_id" name="sch_lang_id" class="form-control" >
-                                                    <option value="">--<?php /*echo $this->lang->line('select') */?>--</option>
-                                                    <?php
-/*                                                    foreach ($languagelist as $language) {
-                                                        */?>
-                                                        <option value="<?php /*echo $language['id']; */?>" <?php /*if($settinglist[0]['lang_id']==$language['id']){ echo 'selected' ; } */?> ><?php /*echo $language['language'] */?></option>
-                                                        <?php
-/*                                                    }
-                                                    */?>
-                                                </select>
-                                                <span class="text-danger"><?php /*echo form_error('language_id'); */?></span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="form-group row">
-                                            <label class="col-sm-6"><?php /*echo $this->lang->line('language_rtl_text_mode'); */?></label>
-                                            <div class="col-sm-6">
-                                               <label class="radio-inline">
-                                                <input type="radio" name="sch_is_rtl" value="disabled" <?php /*if($settinglist[0]['is_rtl']=='disabled'){ echo 'checked' ; } */?> ><?php /*echo $this->lang->line('disabled'); */?>
-                                            </label>
-                                            <label class="radio-inline">
-                                                <input type="radio" name="sch_is_rtl" value="enabled" <?php /*if($settinglist[0]['is_rtl']=='enabled'){ echo 'checked' ; } */?>><?php /*echo $this->lang->line('enabled'); */?>
-                                            </label>
-
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                </div>--><!--./row-->
-
+                             
 
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="settinghr"></div>
                                         <h4 class="session-head"><?php echo $this->lang->line('date_time'); ?></h4>
                                     </div><!--./col-md-12-->
-
 
                                     <div class="col-md-6">
                                         <div class="form-group row">
@@ -203,51 +160,8 @@ $genderList = $this->customlib->getGender();
                                         </div>
                                     </div>
                                 </div><!--./row-->
+
                                 <div class="row">
-                                    <!--<div class="col-md-12">
-                                        <div class="settinghr"></div>
-                                        <h4 class="session-head"><?php /*echo $this->lang->line('currency') */?></h4>
-                                    </div>--><!--./col-md-12-->
-
-
-                                   <!-- <div class="col-md-6">
-                                        <div class="form-group row">
-                                            <label class="col-sm-4"><?php /*echo $this->lang->line('currency'); */?><small class="req"> *</small></label>
-                                            <div class="col-sm-8">
-                                                <select  id="currency" name="sch_currency" class="form-control" >
-                                                    <option value=""><?php /*echo $this->lang->line('select'); */?></option>
-                                                     <?php
-/*                                                    foreach ($currencyList as $currency) {
-                                                        */?>
-                                                        <option value="<?php /*echo $currency */?>" <?php /*if($settinglist[0]['currency']==$currency){ echo 'selected' ; } */?>><?php /*echo $currency; */?></option>
-                                                        <?php
-/*                                                    }
-                                                    */?>
-                                                </select>
-                                                <span class="text-danger"><?php /*echo form_error('currency'); */?></span>
-                                            </div>
-                                        </div>
-                                    </div>-->
-                                  <!--  <div class="col-md-6">
-                                        <div class="form-group row">
-                                            <label class="col-sm-4"><?php /*echo $this->lang->line('currency_symbol'); */?><small class="req"> *</small></label>
-                                            <div class="col-sm-8">
-                                                  <input id="currency_symbol" name="sch_currency_symbol" placeholder="" type="text" class="form-control" value="<?php /*echo $settinglist[0]['currency_symbol'] */?>" />
-                                                <span class="text-danger"><?php /*echo form_error('currency_symbol'); */?></span>
-                                            </div>
-                                        </div>
-                                    </div>-->
-
-                                   <!-- <div class="col-md-6">
-                                        <div class="form-group row">
-
-                                            <label class="col-sm-4"><?php /*echo $this->lang->line('credit_limit'); */?><small class="req"> *</small></label>
-                                            <div class="col-sm-8">
-                                                  <input id="credit_limit" name="credit_limit" placeholder="" type="text" class="form-control" value="<?php /*echo $settinglist[0]['credit_limit']; */?>" />
-                                                <span class="text-danger"><?php /*echo form_error('credit_limit'); */?></span>
-                                            </div>
-                                        </div>
-                                    </div>-->
                                     <div class="col-md-6">
                                         <div class="form-group row">
                                             <label class="col-sm-4"><?php echo $this->lang->line('time_format') ?><small class="req"> *</small></label>
@@ -266,199 +180,12 @@ $genderList = $this->customlib->getGender();
                                             </div>
                                         </div>
                                     </div>
-
-
                                 </div><!--./row-->
 
-                                <!--<div class="row">-->
-                                    <!--<div class="col-md-12">
-                                        <div class="settinghr"></div>
-                                        <div class="relative">
-
-                                            <h4 class="session-head"><?php /*echo $this->lang->line('mobile_app'); */?> <?php /*if ($app_response) { echo "<small class=' alert-success'>(".$this->lang->line('android_app_purchase_code_already_registered').")</small>"; } */?></h4>
-
-                                            <?php /*if (!$app_response) {
-                                                */?>
-                                                <button type="button" class="btn btn-info btn-sm impbtntitle3" data-toggle="modal" data-target="#andappModal"><?php /*echo $this->lang->line('register_your_android_app')*/?></button>
-                                                <?php
-/*                                            }
-                                            */?>
-
-                                        </div>
+                                
 
 
-
-                                    </div><!--./col-md-12-->
-
-                                 <!--   </div>-->
-                                    <!--<div class="row">
-                                        <div class="col-md-12">
-                                        <div class="form-group row">
-                                            <label class="col-sm-2"> <?php /*echo $this->lang->line('mobile_app_api_url') */?></label>
-                                            <div class="col-sm-10">
-                                                <input type="text" name="mobile_api_url" id="mobile_api_url" class="form-control" value="<?php /*echo $settinglist[0]['mobile_api_url']; */?>">
-                                                <span class="text-danger"><?php /*echo form_error('mobile_api_url'); */?></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    </div>-->
-
-
-                                   <!-- <div class="row">
-                                        <div class="col-md-6">
-                                        <div class="form-group row">
-                                            <label class="col-sm-5"><?php /*echo $this->lang->line('mobile_app_primary_color_code'); */?></label>
-                                            <div class="col-sm-7">
-                                                <input type="text" name="app_primary_color_code" id="app_primary_color_code" class="form-control" value="<?php /*echo $settinglist[0]['app_primary_color_code']; */?>">
-                                                <span class="text-danger"><?php /*echo form_error('app_primary_color_code'); */?></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group row">
-                                            <label class="col-sm-6"> <?php /*echo $this->lang->line('mobile_app_secondary_color_code'); */?></label>
-                                            <div class="col-sm-6">
-                                                <input type="text" name="app_secondary_color_code" id="app_secondary_color_code" class="form-control" value="<?php /*echo $settinglist[0]['app_secondary_color_code']; */?>">
-                                                <span class="text-danger"><?php /*echo form_error('app_secondary_color_code'); */?></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    </div>-->
-
-                           <!--         <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group row">
-                                             <label class="col-sm-2"> <?php /*echo $this->lang->line('mobile_app_logo'); */?></label>
-                                             <?php
-/*						                        if ($settinglist[0]['app_logo'] == "") {
-						                            */?>
-						                            <img src="<?php /*echo base_url('uploads/hospital_content/logo/images.png'.img_time()) */?>" class="" alt="" style="height: 15px;">
-						                            <?php
-/*						                        } else {
-						                            */?>
-						                            <img src="<?php /*echo base_url('uploads/hospital_content/logo/'.$settinglist[0]['app_logo'].img_time()) */?>" class="" alt="" style="height: 15px;margin-top: 5px;">
-						                            <?php
-/*						                        }
-						                        */?>
-                                                <?php /*if ($this->rbac->hasPrivilege('general_setting', 'can_edit')) { */?>
-					                            &nbsp;<a href="#" role="button" class="btn btn-primary btn-sm upload_applogo "   data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing"><i class="fa fa-picture-o"></i> <?php /*echo $this->lang->line('edit_app_logo'); */?></a>
-					                        <?php /*} */?>
-                                        </div>
-                                    </div>
-                                    </div>-->
-
-                                   <!-- <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="settinghr"></div>
-                                                <div class="relative">
-                                                    <h4 class="session-head"><?php /*echo $this->lang->line('miscellaneous'); */?></h4>
-                                                </div>
-                                        </div><!--./col-md-12-->
-                                    <!--</div>-->
-                               <!-- <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group row">
-                                            <label class="col-sm-5"><?php /*echo $this->lang->line('doctor_restriction_mode'); */?></label>
-                                            <div class="col-sm-7">
-                                               <label class="radio-inline">
-                                                    <input type="radio" name="doctor_restriction_mode" value="disabled" <?php /*if($settinglist[0]['doctor_restriction']=='disabled'){ echo 'checked' ; } */?> ><?php /*echo $this->lang->line('disabled'); */?>
-                                                </label>
-                                                <label class="radio-inline">
-                                                    <input type="radio" name="doctor_restriction_mode" value="enabled" <?php /*if($settinglist[0]['doctor_restriction']=='enabled'){ echo 'checked' ; } */?> ><?php /*echo $this->lang->line('enabled'); */?>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group row">
-                                            <label class="col-sm-6"> <?php /*echo $this->lang->line('superadmin_visibility'); */?></label>
-                                            <div class="col-sm-6">
-                                                <label class="radio-inline">
-                                                    <input type="radio" name="superadmin_restriction_mode" value="disabled" <?php /*if($settinglist[0]['superadmin_restriction']=='disabled'){ echo 'checked' ; } */?> ><?php /*echo $this->lang->line('disabled'); */?>
-                                                </label>
-                                                <label class="radio-inline">
-                                                    <input type="radio" name="superadmin_restriction_mode" value="enabled" <?php /*if($settinglist[0]['superadmin_restriction']=='enabled'){ echo 'checked' ; } */?>><?php /*echo $this->lang->line('enabled'); */?>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>-->
-                              <!--  <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group row">
-                                            <label class="col-sm-5"> <?php /*echo $this->lang->line('patient_panel'); */?></label>
-                                            <div class="col-sm-7">
-                                                <label class="radio-inline">
-                                                    <input type="radio" name="patient_panel" value="disabled" <?php /*if($settinglist[0]['patient_panel']=='disabled'){ echo 'checked' ; } */?> ><?php /*echo $this->lang->line('disabled'); */?>
-                                                </label>
-                                                <label class="radio-inline">
-                                                    <input type="radio" name="patient_panel" value="enabled" <?php /*if($settinglist[0]['patient_panel']=='enabled'){ echo 'checked' ; } */?>><?php /*echo $this->lang->line('enabled'); */?>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-
-                                </div>-->
-
-                                <!--<div class="row">
-                                    <div class="col-md-12">
-                                        <div class="settinghr"></div>
-                                        <h4 class="session-head"><?php /*echo $this->lang->line('current_theme'); */?></h4>
-                                    </div><!--./col-md-12-->
-                                <!--<div class="col-sm-12">
-
-                                        <div id="input-type">
-                                            <div class="row">
-
-                                                <div class="col-sm-3 col-xs-6 col20">
-                                                    <label class="radio-img">
-                                                        <input name="theme" <?php
-/*                                                        if ($settinglist[0]['theme'] == "default.jpg") {
-                                                            echo "checked";
-                                                        }
-                                                        */?>  value="default.jpg" type="radio" />
-                                                        <img src="<?php /*echo base_url('backend/images/default.jpg'.img_time()); */?>">
-                                                    </label>
-                                                </div>
-                                                <div class="col-sm-3 col-xs-6 col20">
-                                                    <label class="radio-img">
-                                                        <input name="theme" <?php
-/*                                                        if ($settinglist[0]['theme'] == "red.jpg") {
-                                                            echo "checked";
-                                                        }
-                                                        */?> value="red.jpg" type="radio" />
-                                                        <img src="<?php /*echo base_url('backend/images/red.jpg'.img_time()); */?>">
-                                                    </label>
-                                                </div>
-                                                <div class="col-sm-3 col-xs-6 col20">
-                                                    <label class="radio-img">
-                                                        <input name="theme" <?php
-/*                                                        if ($settinglist[0]['theme'] == "blue.jpg") {
-                                                            echo "checked";
-                                                        }
-                                                        */?> value="blue.jpg" type="radio" />
-                                                        <img src="<?php /*echo base_url('backend/images/blue.jpg'.img_time()); */?>">
-                                                    </label>
-                                                </div>
-                                                <div class="col-sm-3 col-xs-6 col20">
-                                                    <label class="radio-img">
-                                                        <input name="theme" <?php
-/*                                                        if ($settinglist[0]['theme'] == "gray.jpg") {
-                                                            echo "checked";
-                                                        }
-                                                        */?> value="gray.jpg" type="radio" />
-                                                        <img src="<?php /*echo base_url('backend/images/gray.jpg'.img_time()); */?>">
-                                                    </label>
-                                                </div>
-
-
-                                            </div><!--./row-->
-
-                                        <!--</div>
-                                    </div>
-                                </div>-->
+                                 
                             </div><!-- /.box-body -->
                             <div class="box-footer">
                                 <?php
@@ -644,6 +371,7 @@ $genderList = $this->customlib->getGender();
     });
 
     $(document).on('click', '.submit_schsetting', function (e) {
+        // alert('submit_sch');
         var $this = $(this);
         $this.button('loading');
         $.ajax({

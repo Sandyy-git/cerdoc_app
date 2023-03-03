@@ -430,6 +430,29 @@ if($r_id != '7'){
         return $query->row_array();
     }
 
+    public function supplierDetailsState($id)
+    {
+        $userLoggedInFirst = $this->customlib->getLoggedInUserId();
+        $array[] =$id;
+        $array[] =$userLoggedInFirst;
+        $query = $this->db->where_in("id", $array)->get("staff");
+        return $query->result_array();
+    }
+
+    public function supplierDetailsStateonPurchase($id)
+    {
+        $userLoggedInFirst = $this->customlib->getLoggedInUserId();
+       
+        $query = $this->db->where("id", $id)->get("medicine_supplier");
+        $array['med_supplier'] = $query->row_array();
+
+        $query1 = $this->db->where("id", $userLoggedInFirst)->get("staff");
+        $array['staff'] = $query1->row_array();
+
+        return $array;
+    }
+
+
     public function add_opd($data, $transcation_data, $charge, $opd_visit_data)
     {      
 
@@ -2019,6 +2042,97 @@ if($r_id != '7'){
         return $result;
     }
 
+
+    public function getchemistlistLocality($pat_locality){
+         
+        $i               = 1;
+        $custom_fields   = $this->customfield_model->get_custom_fields('opd','','','', 1);
+        $field_var_array = array();
+        if (!empty($custom_fields)) {
+            foreach ($custom_fields as $custom_fields_key => $custom_fields_value) {
+                $tb_counter = "table_custom_" . $i;
+                array_push($field_var_array, 'table_custom_' . $i . '.field_value as ' . $custom_fields_value->name);
+                $this->db->join('custom_field_values as ' . $tb_counter, 'opd_details.id = ' . $tb_counter . '.belong_table_id AND ' . $tb_counter . '.custom_field_id = ' . $custom_fields_value->id, 'left');
+                $i++;
+            }
+        }
+
+        $field_variable = implode(',', $field_var_array);
+        $this->db->select('staff.*' . $field_variable)->from('staff');
+        $this->db->join('staff_roles', 'staff_roles.staff_id = staff.id', "left");
+        $this->db->where('staff_roles.role_id', 4);
+        $this->db->where('staff.locality_id', $pat_locality);
+
+        // $this->db->where('opd_details.discharged', 'no');
+        // $this->db->group_by('opd_details.id', '');
+        // $this->db->order_by('opd_details.id', 'desc');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        return $result;
+    }
+
+
+    public function getchemistlist($pat_locality){
+         
+        $i               = 1;
+        $custom_fields   = $this->customfield_model->get_custom_fields('opd','','','', 1);
+        $field_var_array = array();
+        if (!empty($custom_fields)) {
+            foreach ($custom_fields as $custom_fields_key => $custom_fields_value) {
+                $tb_counter = "table_custom_" . $i;
+                array_push($field_var_array, 'table_custom_' . $i . '.field_value as ' . $custom_fields_value->name);
+                $this->db->join('custom_field_values as ' . $tb_counter, 'opd_details.id = ' . $tb_counter . '.belong_table_id AND ' . $tb_counter . '.custom_field_id = ' . $custom_fields_value->id, 'left');
+                $i++;
+            }
+        }
+
+        $field_variable = implode(',', $field_var_array);
+        $this->db->select('staff.*' . $field_variable)->from('staff');
+        $this->db->join('staff_roles', 'staff_roles.staff_id = staff.id', "left");
+        $this->db->where('staff_roles.role_id', 4);
+        $this->db->where('staff.locality_id!=', $pat_locality);
+
+        // $this->db->where('opd_details.discharged', 'no');
+        // $this->db->group_by('opd_details.id', '');
+        // $this->db->order_by('opd_details.id', 'desc');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        return $result;
+    }
+
+    public function getchemistlistByPincode($pat_pincode){
+        $i               = 1;
+        $custom_fields   = $this->customfield_model->get_custom_fields('opd','','','', 1);
+        $field_var_array = array();
+        if (!empty($custom_fields)) {
+            foreach ($custom_fields as $custom_fields_key => $custom_fields_value) {
+                $tb_counter = "table_custom_" . $i;
+                array_push($field_var_array, 'table_custom_' . $i . '.field_value as ' . $custom_fields_value->name);
+                $this->db->join('custom_field_values as ' . $tb_counter, 'opd_details.id = ' . $tb_counter . '.belong_table_id AND ' . $tb_counter . '.custom_field_id = ' . $custom_fields_value->id, 'left');
+                $i++;
+            }
+        }
+
+        $field_variable = implode(',', $field_var_array);
+        if($pat_pincode != ''){
+        $this->db->select('staff.*' . $field_variable)->from('staff');
+        $this->db->join('staff_roles', 'staff_roles.staff_id = staff.id', "left");
+        $this->db->where('staff_roles.role_id', 4);
+        $this->db->where('staff.pincode', $pat_pincode);
+        $query = $this->db->get();
+       
+        $result = $query->result_array();
+        return $result;
+        }else{
+            $this->db->select('staff.*' . $field_variable)->from('staff');
+            $this->db->join('staff_roles', 'staff_roles.staff_id = staff.id', "left");
+            $this->db->where('staff_roles.role_id', 4);
+            $query = $this->db->get();
+            $result = $query->result_array();
+            return $result;
+        }
+    }
+
     public function getAllopdrechekupRecord($patientid, $opdid)
     {
 
@@ -2749,6 +2863,7 @@ if($r_id != '7'){
         $this->db->join('tax_category', 'tax_category.id = charges.tax_category_id', 'LEFT');
         $this->db->where('charges.id', $id);
         $query = $this->db->get('charges');
+        // echo $this->db->last_query();
         return $query->row_array();
     }
 
@@ -4527,6 +4642,90 @@ if($docter_id != ""){
     {
         $query = $this->db->select("staff.*,staff_designation.designation,department.department_name as department, roles.id as role_id, roles.name as role")->join('staff_designation', "staff_designation.id = staff.staff_designation_id", "left")->join('staff_roles', "staff_roles.staff_id = staff.id", "left")->join('roles', "roles.id = staff_roles.role_id", "left")->join('department', "department.id = staff.department_id", "left")->where("staff.is_active", $active)->where("roles.id", $role)->order_by('staff.name')->get("staff");
         return $query->result_array();
+    }
+
+
+
+    public function getAllOrderreceived()
+    {
+        $userLoggedInFirst = $this->customlib->getLoggedInUserId();
+        $setting            = $this->setting_model->get();
+        $opd_month          = $setting[0]['opd_record_month'];
+        // var_dump($opd_month); die;
+        // $userdata           = $this->customlib->getUserData();
+        $doctor_restriction = $this->session->userdata['hospitaladmin']['doctor_restriction'];
+        $i                         = 1;
+        $custom_fields             = $this->customfield_model->get_custom_fields('opd', 1);
+    
+
+        $custom_field_column_array = array();
+        $field_var_array = array();
+       if (!empty($custom_fields)) {
+            foreach ($custom_fields as $custom_fields_key => $custom_fields_value) {
+                $tb_counter = "table_custom_" . $i;
+                array_push($custom_field_column_array, 'table_custom_' . $i . '.field_value');
+                array_push($field_var_array, '`table_custom_' . $i . '`.`field_value` as `' . $custom_fields_value->name.'`');
+                $this->datatables->join('custom_field_values as '.$tb_counter,'opd_details.id = '.$tb_counter.'.belong_table_id AND '.$tb_counter.'.custom_field_id = '.$custom_fields_value->id,"left");
+                $i++;
+            }
+        }
+
+        $field_variable = (empty($field_var_array))? "": ",".implode(',', $field_var_array);
+        $custom_field_column = (empty($custom_field_column_array))? "": ",".implode(',', $custom_field_column_array);
+        
+        
+            // $sql = $this->db->select('opd_details.id as opdid,visit_details.id as visit_id,opd_details.case_reference_id,patients.id as pid,patients.patient_name,patients.id as patientid,patients.guardian_name,patients.gender,patients.mobileno,patients.is_ipd,staff.name,staff.surname,staff.employee_id,pharmacy_bill_basic.id as pbbId'. $field_variable )
+        $this->datatables
+        ->select('opd_details.id as opdid,visit_details.id as visit_id,opd_details.case_reference_id,patients.id as pid,patients.patient_name,patients.id as patientid,patients.guardian_name,patients.gender,patients.mobileno,patients.is_ipd,staff.name,staff.surname,staff.employee_id,pharmacy_bill_basic.id as pbbId'. $field_variable )
+        ->join('ipd_prescription_basic', "ipd_prescription_basic.visit_details_id=send_pres_to_chemist.visit_id")
+        ->join('visit_details', "visit_details.id=ipd_prescription_basic.visit_details_id")
+        ->join('opd_details', "opd_details.id=visit_details.opd_details_id")
+        ->join('patients', "patients.id=opd_details.patient_id", "left")
+        ->join('staff', 'staff.id = send_pres_to_chemist.send_to ', "left")
+        ->join('pharmacy_bill_basic', 'pharmacy_bill_basic.ipd_prescription_basic_id = ipd_prescription_basic.id','left')
+        ->where('send_pres_to_chemist.send_to', $userLoggedInFirst)
+        ->group_by('send_pres_to_chemist.visit_id')
+        ->from('send_pres_to_chemist');
+    return $this->datatables->generate('json');
+    // $query = $this->db->get();
+            // echo $this->db->last_query(); die;
+            // $result = $query->result_array();
+
+
+
+    }
+
+    public function getAllPatient(){
+        $this->db
+        ->select('patients.*,CONCAT(patients.patient_name, '.', patients.patient_lname) AS patient_fullname')
+        ->order_by('patients.id', 'desc')
+        ->where('patients.is_active','yes')
+        ->from('patients');
+    $query = $this->db->get();
+    $result = $query->result_array();
+    return $result ;
+    }
+
+    public function getPatwiseProReport($start_date,$end_date,$doctorid,$patientid){
+        $this->db->select("staff.*,CONCAT(patients.patient_name, '.', patients.patient_lname) AS patient_name,pharmacy_bill_detail.quantity,pharmacy.medicine_name,pharmacy.product_id,pharmacy.valuep,pharmacy_bill_basic.date as pharm_bill_date,medicine_batch_details.sale_rate,supplier_bill_basic.tax as sbbtax,supplier_bill_basic.tax_cgst as sbbcgst,supplier_bill_basic.tax_sgst as sbbsgst,pharmacy.medicine_company");
+        $this->db->join('ipd_prescription_basic', 'ipd_prescription_basic.prescribe_by = staff.id');
+        $this->db->join('pharmacy_bill_basic', 'pharmacy_bill_basic.ipd_prescription_basic_id = ipd_prescription_basic.id');
+        $this->db->join('pharmacy_bill_detail', 'pharmacy_bill_detail.pharmacy_bill_basic_id = pharmacy_bill_basic.id');
+        $this->db->join('medicine_batch_details', 'medicine_batch_details.id = pharmacy_bill_detail.medicine_batch_detail_id');
+        $this->db->join('supplier_bill_basic', 'supplier_bill_basic.id = medicine_batch_details.supplier_bill_basic_id');
+
+        $this->db->join('pharmacy', 'pharmacy.id = medicine_batch_details.pharmacy_id');
+        $this->db->join('patients', 'patients.id = pharmacy_bill_basic.patient_id');
+
+        // $this->db->where('supplier_bill_basic.received_by', $id);
+        $this->db->where('DATE(pharmacy_bill_basic.created_at) >=', $start_date);
+        $this->db->where('DATE(pharmacy_bill_basic.created_at) <=', $end_date);
+        $this->db->where_in('ipd_prescription_basic.prescribe_by', $doctorid);
+        $this->db->where('pharmacy_bill_basic.patient_id', $patientid);
+
+        $query = $this->db->get('staff');
+        // echo $this->db->last_query(); die;
+        return $query->result();
     }
 
 }

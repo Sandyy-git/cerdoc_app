@@ -9,32 +9,43 @@ class Onlineappointment extends Admin_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->config->load("payroll");
         $this->load->model("staff_model");
         $this->load->model(array("onlineappointment_model", "charge_category_model"));
         $this->load->library("datatables");
         $this->time_format = $this->customlib->getHospitalTimeFormat();
         $this->load->library("customlib");
+        $this->state      = $this->config->item('state');
+        $this->week      = $this->config->item('global_week');
+
     }
 
     public function index()
     {
+        // var_dump($this->input->post()); die;
         $this->session->set_userdata('top_menu', 'setup');
         $this->session->set_userdata('sub_sidebar_menu', 'admin/onlineappointment');
         $this->session->set_userdata('sub_menu', 'admin/onlineappointment');
         $this->load->view('layout/header');
       
         $data['doctors']         = $this->staff_model->getStaffbyrole(3);
+        $data['clinics']         = $this->staff_model->getClinicsbyId();
+        $data['weeks'] = $this->week;
+
         $doctor                  = $this->input->post("doctor");
+        $doctor_clinics_id       = $this->input->post("doctor_clinics_id");
         $data['charge_category'] = $this->charge_category_model->getCategoryByModule("appointment");
         $this->form_validation->set_rules("doctor", $this->lang->line("doctor"), "trim|required|xss_clean");
         $this->form_validation->set_rules("shift", $this->lang->line("shift"), "trim|required|xss_clean");
+        $this->form_validation->set_rules("doctor_clinics_id", $this->lang->line("doctor_clinics_id"), "trim|required|xss_clean");
+        $this->form_validation->set_rules('week', $this->lang->line('week'), 'trim|required|xss_clean');
 
         if ($this->form_validation->run() == false) {
             $this->load->view('admin/onlineappointment/index', $data);
             $this->load->view('layout/footer');
         } else {
             $data["days"]               = $this->customlib->getDaysname();
-            $doc_data                   = $this->onlineappointment_model->getDocData($doctor);
+            $doc_data                   = $this->onlineappointment_model->getDocData($doctor,$doctor_clinics_id);
             $data['charge_id']          = isset($doc_data['charge_id']) ? $doc_data['charge_id'] : "";
             $charges                    = $this->charge_model->getChargeByChargeId($data['charge_id']);
             $data['charge_category_id'] = isset($charges['charge_category_id']) ? $charges['charge_category_id'] : "";
@@ -59,8 +70,11 @@ class Onlineappointment extends Admin_Controller
         $day                 = $this->input->post('day');
         $doctor_id           = $this->input->post("doctor");
         $shift               = $this->input->post("shift");
+        $doctor_clinics_id   = $this->input->post("doctor_clinics_id");
+        $week   = $this->input->post("week");
 
-        $prev_record = $this->onlineappointment_model->getShiftdata($doctor_id, $day, $shift);
+
+        $prev_record = $this->onlineappointment_model->getShiftdata($doctor_id, $day, $shift,$doctor_clinics_id,$week);
 
         if (empty($prev_record)) {
             $data['prev_record'] = array();
@@ -71,6 +85,9 @@ class Onlineappointment extends Admin_Controller
         $data['day']    = $day;
         $data['doctor'] = $doctor_id;
         $data['shift']  = $shift;
+        $data['doctor_clinics_id']  = $doctor_clinics_id;
+        $data['week']  = $week;
+
 
         $data['html'] = $this->load->view('admin/onlineappointment/addrow', $data, true);
         echo json_encode($data);
@@ -78,7 +95,8 @@ class Onlineappointment extends Admin_Controller
 
     public function saveDoctorShift()
     {
-        // echo json_encode($this->input->post()); die;
+        // echo "<pre>";
+        // print_r($this->input->post()); die;
         if (!$this->rbac->hasPrivilege('online_appointment_slot', 'can_edit')) {
             access_denied();
         }
@@ -88,6 +106,9 @@ class Onlineappointment extends Admin_Controller
         $this->form_validation->set_rules('charge_id', $this->lang->line('charge_id'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('doctor', $this->lang->line("doctor"), 'trim|required|xss_clean');
         $this->form_validation->set_rules('shift', $this->lang->line('shift'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('doctor_clinics_id', $this->lang->line('clinic_name'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('week', $this->lang->line('week'), 'trim|required|xss_clean');
+
         $total_rows = $this->input->post("total_row");
         if (!empty($total_rows)) {
             foreach ($this->input->post('total_row') as $key => $value) {
@@ -103,6 +124,8 @@ class Onlineappointment extends Admin_Controller
                 'shift'        => form_error('shift'),
                 'consult_time' => form_error('consult_time'),
                 'charge_id'    => form_error('charge_id'),
+                'doctor_clinics_id' => form_error('doctor_clinics_id'),
+                'week' => form_error('week'),
             );
             if (!empty($total_rows)) {
                 foreach ($this->input->post('total_row') as $key => $value) {
@@ -155,6 +178,9 @@ class Onlineappointment extends Admin_Controller
             $charge_id    = $this->input->post('charge_id');
             $day          = $this->input->post('day');
             $doctor_id    = $this->input->post('doctor');
+            $doctor_clinics_id    = $this->input->post('doctor_clinics_id');
+            $week    = $this->input->post('week');
+
             $total_row    = $this->input->post('total_row');
             $insert_array = array();
             $update_array = array();
@@ -174,6 +200,8 @@ class Onlineappointment extends Admin_Controller
                         $insert_array[] = array(
                             'day'             => $day,
                             'staff_id'        => $doctor_id,
+                            'doctor_clinics_id'=>$doctor_clinics_id,
+                            'week'=>$week,
                             'global_shift_id' => $shift_id,
                             'start_time'      => date("H:i:s", strtotime($this->input->post('time_from_' . $total_value))),
                             'end_time'        => date("H:i:s", strtotime($this->input->post('time_to_' . $total_value))),
@@ -183,6 +211,8 @@ class Onlineappointment extends Admin_Controller
                         $update_array[]   = array(
                             'id'              => $prev_id,
                             'staff_id'        => $doctor_id,
+                            'doctor_clinics_id'=>$doctor_clinics_id,
+                            'week'=>$week,
                             'global_shift_id' => $shift_id,
                             'day'             => $day,
                             'start_time'      => date("H:i:s", strtotime($this->input->post('time_from_' . $total_value))),
@@ -200,10 +230,11 @@ class Onlineappointment extends Admin_Controller
             $result        = $this->onlineappointment_model->add($delete_array, $insert_array, $update_array);
             $shift_details = array(
                 "staff_id"         => $doctor_id,
+                'doctor_clinics_id'=>$doctor_clinics_id,
                 "consult_duration" => $consult_time,
                 "charge_id"        => $charge_id,
             );
-            $prev_shift = $this->onlineappointment_model->getShiftDetails($doctor_id);
+            $prev_shift = $this->onlineappointment_model->getShiftDetails($doctor_id,$doctor_clinics_id);
 
             $prev_shift = $this->security->xss_clean($prev_shift);
 
@@ -629,8 +660,11 @@ class Onlineappointment extends Admin_Controller
         $date         = $this->customlib->dateFormatToYYYYMMDD($dates);
         $doctor       = $this->input->post("doctor");
         $global_shift = $this->input->post("global_shift");
+        $doctor_clinics_id =  $this->input->post("doctor_clinics_id");
         $day          = date("l", strtotime($date));
-        $shift        = $this->onlineappointment_model->getShiftdata($doctor, $day, $global_shift);
+        // $shift        = $this->onlineappointment_model->getShiftdata($doctor, $day, $global_shift);
+        $shift        = $this->onlineappointment_model->getShiftdataDocSide($doctor, $day, $global_shift,$doctor_clinics_id);
+
         echo json_encode($shift);
     }
 
@@ -658,4 +692,168 @@ class Onlineappointment extends Admin_Controller
         $this->onlineappointment_model->deleteGlobalShift($id);
         echo json_encode(array('status' => 1, 'msg' => $this->lang->line('delete_message')));
     }
+
+    public function doctorclinics()
+    {
+        if (!$this->rbac->hasPrivilege('add_clinics', 'can_view')) {
+            access_denied();
+        }
+        $this->session->set_userdata('top_menu', 'setup');
+        $this->session->set_userdata('sub_sidebar_menu', 'admin/onlineappointment/doctorclinics');
+        $this->session->set_userdata('sub_menu', 'admin/onlineappointment');
+        $doctorClinics         = $this->onlineappointment_model->doctorClinics();
+        $data["doctorClinics"] = $doctorClinics;
+        $staffLocality          = $this->staff_model->getstaffLocality();
+        $data["stafflocality"]     = $staffLocality;
+        $data["state"]          = $this->state;
+        // var_dump($data["state"] ); die;
+        $this->load->view('layout/header');
+        $this->load->view('admin/onlineappointment/addclinics', $data);
+        $this->load->view('layout/footer');
+    }
+
+    public function addClinics()
+    {
+        // var_dump($_FILES["clinic_logo"]['name']); die;
+        if (!$this->rbac->hasPrivilege('add_clinics', 'can_add')) {
+            access_denied();
+        }
+        $data = array();
+        $this->form_validation->set_rules("clinic_name", $this->lang->line('clinic_name'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules("address", $this->lang->line('address'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules("pincode", $this->lang->line('pincode'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules("locality_id", $this->lang->line('staff_locality'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules("city", $this->lang->line('city'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules("state", $this->lang->line('state'), 'trim|required|xss_clean');
+        if($_FILES["clinic_logo"]['name'] == ''){
+            $this->form_validation->set_rules("clinic_logo", $this->lang->line('clinic_logo'), 'required');
+        }
+        if ($this->form_validation->run() == false) {
+            $msg  = array(
+                "clinic_name" => form_error('clinic_name'), 
+                "address" => form_error('address'),
+                "pincode" => form_error('pincode'),
+                "locality_id" => form_error('staff_locality'),
+                "city" => form_error('city'),
+                "state" => form_error('state'),
+                "clinic_logo" => form_error('clinic_logo'));
+            $data = array('status' => 'fail', 'error' => $msg, 'message' => '');
+        } else {
+            $clinic_name = $this->input->post("clinic_name");
+            $clinic_logo = $_FILES["clinic_logo"]['name'];
+            $address = $this->input->post("address");
+            $pincode   = $this->input->post("pincode");
+            $locality_id   = $this->input->post("locality_id");
+            $city   = $this->input->post("city");
+            $state   = $this->input->post("state");
+            $loginUser = $this->customlib->getStaffID();
+
+            if($clinic_logo != ""){
+                if (isset($_FILES["clinic_logo"]) && !empty($_FILES['clinic_logo']['name'])) {
+                    $fileInfo = pathinfo($_FILES["clinic_logo"]["name"]);
+                    $img_name = rand(0,1000) . '.' . $fileInfo['extension'];
+                    move_uploaded_file($_FILES["clinic_logo"]["tmp_name"], "./uploads/clinic_images/" . $img_name);
+                }
+            }
+
+                $data_add = array(
+                    "clinic_name"       => $clinic_name,
+                    "address" => $address,
+                    "pincode"   => $pincode,
+                    "locality_id"   => $locality_id,
+                    "city"   => $city,
+                    "state"   => $state,
+                    "staff_id" => $loginUser,
+                    "clinic_logo" => $img_name,
+                );
+                $this->onlineappointment_model->addDoctorClinics($data_add);
+                $data = array('status' => 'success', 'error' => '', 'message' => $this->lang->line('success_message'));
+           
+        }
+        echo json_encode($data);
+    }
+
+    public function editClinics($id)
+    {
+        $shift = $this->onlineappointment_model->editDoctorClinics($id);
+        echo json_encode($shift);
+    }
+
+    public function updateClinics()
+    {
+        if (!$this->rbac->hasPrivilege('add_clinics', 'can_edit')) {
+            access_denied();
+        }
+        $data  = array();
+        $shift = array();
+        $this->form_validation->set_rules("clinic_name", $this->lang->line('clinic_name'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules("address", $this->lang->line('address'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules("pincode", $this->lang->line('pincode'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules("locality_id", $this->lang->line('staff_locality'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules("city", $this->lang->line('city'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules("state", $this->lang->line('state'), 'trim|required|xss_clean');
+        if($_FILES["clinic_logo"]['name'] == ''){
+            $this->form_validation->set_rules("clinic_logo", $this->lang->line('clinic_logo'), 'required');
+        }
+
+        if ($this->form_validation->run() == false) {
+            $msg  = array(
+                "clinic_name" => form_error('clinic_name'), 
+                "address" => form_error('address'),
+                "pincode" => form_error('pincode'),
+                "locality_id" => form_error('staff_locality'),
+                "city" => form_error('city'),
+                "state" => form_error('state'),
+                "clinic_logo" => form_error('clinic_logo'));
+            $data = array('status' => 'fail', 'error' => $msg, 'message' => '');
+        } else {
+            $existing_id = $this->input->post('dclinicid');
+            $clinic_name = $this->input->post("clinic_name");
+            $address = $this->input->post("address");
+            $pincode   = $this->input->post("pincode");
+            $locality_id   = $this->input->post("locality_id");
+            $city   = $this->input->post("city");
+            $state   = $this->input->post("state");
+            $clinic_logo = $_FILES["clinic_logo"]['name'];
+            if($existing_id != '' && $clinic_logo != ''){
+                $unlinkImg = $this->onlineappointment_model->unlinkImgofDocClinic($existing_id);
+                if($unlinkImg['clinic_logo'] != ''){
+                    unlink(FCPATH."./uploads/clinic_images/".$unlinkImg['clinic_logo']);
+                    if (isset($_FILES["clinic_logo"]) && !empty($_FILES['clinic_logo']['name'])) {
+                        $fileInfo = pathinfo($_FILES["clinic_logo"]["name"]);
+                        // $img_name = rand(0,1000) . '.' . $fileInfo['extension'];
+                        $img_name = $clinic_logo;
+                        move_uploaded_file($_FILES["clinic_logo"]["tmp_name"], "./uploads/clinic_images/" . $img_name);
+                    }
+                }
+            }
+                $update_array = array(
+                    "id"         => $this->input->post('dclinicid'),
+                    "clinic_name"       => $clinic_name,
+                    "clinic_logo"       => $img_name,
+                    "address" => $address,
+                    "pincode"   => $pincode,
+                    "locality_id"   => $locality_id,
+                    "city"   => $city,
+                    "state"   => $state,
+                );
+                $this->onlineappointment_model->updateDocClinic($update_array);
+                $data = array('status' => 'success', 'error' => '', 'message' => $this->lang->line('success_message'));
+           
+        }
+        echo json_encode($data);
+
+    }
+
+    public function deletedoctorClinics($id)
+    {
+
+        if (!$this->rbac->hasPrivilege('add_clinics', 'can_delete')) {
+            access_denied();
+        }
+
+        $this->onlineappointment_model->deleteDocClinics($id);
+        echo json_encode(array('status' => 1, 'msg' => $this->lang->line('delete_message')));
+    }
+
 }

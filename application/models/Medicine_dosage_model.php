@@ -436,4 +436,107 @@ foreach ($result as $result_key => $result_value) {
             return $record_id;
         }
     }
+
+
+    public function valid_medicine_interval($str)
+    {
+
+        $userLoggedInFirst = $this->customlib->getLoggedInUserId();
+        $userRoleIn = $this->role_model->getRoleFromStaffUsingLid($userLoggedInFirst);
+        if( $userRoleIn[0]['created_by'] == 7){
+            $userLoggedIn = $userRoleIn[0]['staff_id'];
+        }elseif( $userRoleIn[0]['created_by'] == 73){
+            $userLoggedIn = $userRoleIn[0]['staff_id'];
+        }else{
+        $userGetAdmin = $this->role_model->getAdminUsingCreatedById($userRoleIn[0]['created_by']);
+        $userLoggedIn = $userGetAdmin[0]['staff_id'];
+        }
+
+        $dose_interval = $this->input->post('name');
+        $id                = $this->input->post('id');
+        if (!isset($id)) {
+            $id = 0;
+        }
+        if ($this->check_interval_exists($dose_interval, $id,$userLoggedIn)) {
+            $this->form_validation->set_message('check_exists', 'Record already exists');
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function check_interval_exists($name, $id,$userLoggedIn)
+    {
+        if ($id != 0) {
+            $data  = array('id != ' => $id, 'name' => $name);
+            $query = $this->db->where($data)->get('dose_interval');
+            if ($query->num_rows() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            $this->db->where('name', $name);
+            $this->db->where('added_by', $userLoggedIn);
+
+            $query = $this->db->get('dose_interval');
+            if ($query->num_rows() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public function valid_medicine_duration($str)
+    {
+
+        $userLoggedInFirst = $this->customlib->getLoggedInUserId();
+        $userRoleIn = $this->role_model->getRoleFromStaffUsingLid($userLoggedInFirst);
+        if( $userRoleIn[0]['created_by'] == 7){
+            $userLoggedIn = $userRoleIn[0]['staff_id'];
+        }elseif( $userRoleIn[0]['created_by'] == 73){
+            $userLoggedIn = $userRoleIn[0]['staff_id'];
+        }else{
+        $userGetAdmin = $this->role_model->getAdminUsingCreatedById($userRoleIn[0]['created_by']);
+        $userLoggedIn = $userGetAdmin[0]['staff_id'];
+        }
+
+        $dose_duration = $this->input->post('name');
+        $id                = $this->input->post('id');
+        if (!isset($id)) {
+            $id = 0;
+        }
+        if ($this->check_duration_exists($dose_duration, $id,$userLoggedIn)) {
+            $this->form_validation->set_message('check_exists', 'Record already exists');
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function check_duration_exists($name, $id,$userLoggedIn)
+    {
+        if ($id != 0) {
+            $data  = array('id != ' => $id, 'name' => $name);
+            $query = $this->db->where($data)->get('dose_duration');
+            if ($query->num_rows() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            $this->db->where('name', $name);
+            $this->db->where('added_by', $userLoggedIn);
+
+            $query = $this->db->get('dose_duration');
+            if ($query->num_rows() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+
 }

@@ -18,14 +18,16 @@ class Schsettings extends Admin_Controller
 
     public function index()
     {
-
+        $role                        = $this->customlib->getStaffRole();
+        $role_id                     = json_decode($role)->id;
+        // var_dump($role_id ); die;
         if (!$this->rbac->hasPrivilege('general_setting', 'can_view')) {
             access_denied();
         }
         $app_ver         = $this->config->item('app_ver');
         $data['app_response']   = $this->auth->andapp_validate();
 
-    $addddd = $this->lang->line('general_settings');
+        $addddd = $this->lang->line('general_settings');
 
 
         $this->session->set_userdata('top_menu', 'setup');
@@ -34,6 +36,7 @@ class Schsettings extends Admin_Controller
         $data['title']          = 'Setting List';
         $setting_result         = $this->setting_model->get();
         $data['settinglist']    = $setting_result;
+        // var_dump($data['settinglist']); die;
         $timeFormat             = $this->customlib->timeFormat();
         $timezoneList           = $this->customlib->timezone_list();
         $data['title']          = 'Hospital Setting';
@@ -48,7 +51,13 @@ class Schsettings extends Admin_Controller
         $data['dateFormatList'] = $dateFormat;
         $data['currencyList']   = $currency;
         $this->load->view('layout/header', $data);
+        if($role_id == 4){
+        $this->load->view('setting/settingListPharmacy', $data);
+        }if($role_id == 73 || $role_id == 7){
         $this->load->view('setting/settingList', $data);
+        }else{
+        $this->load->view('setting/settingListDistributor', $data);
+        }
         $this->load->view('layout/footer', $data);
         
     }
@@ -197,6 +206,8 @@ class Schsettings extends Admin_Controller
 
     public function ajax_schedit()
     {
+        // echo "<pre>";
+        // print_r($this->input->post()); die;
         // var_dump($this->input->post('sch_id')); die;
         if (!$this->rbac->hasPrivilege('general_setting', 'can_edit')) {
             access_denied();

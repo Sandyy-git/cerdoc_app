@@ -15,9 +15,13 @@ $genderList      = $this->customlib->getGender();
                             <button type="button" class="btn btn-primary btn-sm generatebill" id="load1" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> <?php echo $this->lang->line('please_wait'); ?>"><i class="fa fa-plus"></i> <?php echo $this->lang->line('generate_bill'); ?></button>
                             <?php }?>
                              <!-- na pharmacy-->
-                             <?php if($view_add_med == 7 || $view_add_med == 0){ if ($this->rbac->hasPrivilege('medicine', 'can_view')) {?>
+                            
+                             <?php if($view_add_med == 7 || $view_add_med == 0 || $view_add_med ==73){ if ($this->rbac->hasPrivilege('medicine', 'can_view')) {?>
                                 <a href="<?php echo base_url(); ?>admin/pharmacy/search" class="btn btn-primary btn-sm"><i class="fa fa-reorder"></i> <?php echo $this->lang->line('medicines'); ?></a>
                             <?php } }?>
+
+                           
+
                         </div>
                     </div><!-- /.box-header -->
                     <div class="box-body">
@@ -147,6 +151,9 @@ $genderList      = $this->customlib->getGender();
         </div><!--./modal-body-->
     </div>
 </div>
+
+
+
 <div class="modal fade" id="addPaymentModal" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog pup100" role="document">
         <div class="modal-content modal-media-content">
@@ -161,6 +168,8 @@ $genderList      = $this->customlib->getGender();
     </div>
 </div>
 
+
+
 <script id="medcat-template" type="text/template">
    <?php
 foreach ($medicineCategory as $dkey => $med_cat_value) {
@@ -171,7 +180,18 @@ foreach ($medicineCategory as $dkey => $med_cat_value) {
     <?php
      }
    ?>
-</script>
+    </script>
+
+    <script id="medst-template" type="text/template">
+
+    <?php foreach ($medicineSearchtype as $dkey => $stvalue) {
+    ?>
+   <option value="<?php echo $stvalue["id"]; ?>">
+   <?php echo $stvalue["search_type"] ?>
+    </option>
+    <?php } ?>
+    </script>
+
 
 <script type="text/javascript">
          var datetime_format = '<?php echo $result = strtr($this->customlib->getHospitalDateFormat(true, true), ['d' => 'DD', 'm' => 'MM', 'Y' => 'YYYY', 'H' => 'hh', 'i' => 'mm']) ?>';
@@ -245,6 +265,7 @@ $(document).on('click','#search_prescription',function(){
 });
 
 function getPrescriptionData(){
+    alert("inside pres");
      var createModal=$('#billModal');
   $.ajax({
         url: '<?php echo base_url(); ?>admin/pharmacy/getPrescriptionById',
@@ -256,7 +277,7 @@ function getPrescriptionData(){
         },
         success: function(res) {    
       if(res.status === 0){
-errorMsg(res.msg);
+      errorMsg(res.msg);
       }else{
          $('#billModal .modal-body').html(res.page);
       $('#case_reference_id').val(res.case_reference_id);
@@ -280,6 +301,7 @@ errorMsg(res.msg);
                 //=============
               medicineTable.find("tbody tr").each(function() {
                 var medicine_category_obj = $(this).find("td select.medicine_category");
+                // var search_type_obj = $(this).find("td select.search_type");
                 var medicine_obj = $(this).find("td select.medicine_name");
                 var batch_obj = $(this).find("td select.batch_no");
                 var post_medicine_category_id = $(this).find("td input.post_medicine_category_id").val();
@@ -292,7 +314,7 @@ errorMsg(res.msg);
                 medicine_array['sale_price'] = post_medicine_sale_price;
                 $('.select3').select2();
                 $('.filestyle','#billModal').dropify();
-                getMedicine(medicine_category_obj,post_medicine_category_id,post_medicine_id);
+                getMedicineWithoutSt(medicine_category_obj,post_medicine_category_id,post_medicine_id);
                 getBatchNo(medicine_obj,post_medicine_id,post_medicine_batch_detail_id);
               });
             }
@@ -382,11 +404,20 @@ errorMsg(res.msg);
         });
     }
 
-    $(document).on('select2:select','.medicine_category',function(){  
-     
-      getMedicine($(this),$(this).val(),0);
+    $(document).on('select2:select','.search_type',function(){  
+
+        var thisId = $(this).attr("id");
+        var med_cat_id = $("#medicine_cat_"+thisId+"").val();
+        alert(med_cat_id);
+
+    //     med_cat_id = $('#medicine_category_id_1').val();
+    //    alert("yes");
+    //  alert($(this));
+    //  alert($(this).val());
+      getMedicine($(this),$(this).val(),0,med_cat_id);
 
     });
+
 
    $(document).on('click','.add_payment',function(){  
             var record_id=$(this).data('recordId'); 
@@ -452,13 +483,17 @@ errorMsg(res.msg);
   });
 
 
-    function getMedicine(med_cat_obj,val,medicine_id){
+    function getMedicine(med_cat_obj,val,medicine_id,med_cat_id){
+        // alert(med_cat_obj);
+        // alert(val);
+        // alert(medicine_id);
+        // alert(med_cat_id);
       var medicine_colomn=med_cat_obj.closest('tr').find('.medicine_name');
         medicine_colomn.html("");    
         $.ajax({
             url: '<?php echo base_url(); ?>admin/pharmacy/get_medicine_name',
             type: "POST",
-            data: {medicine_category_id: val},
+            data: {medicine_category_id: med_cat_id,search_type:val},
             dataType: 'json',
              async: false,
               beforeSend: function() {
@@ -473,10 +508,52 @@ errorMsg(res.msg);
                             if (medicine_id == obj.id) {
                                 sel = "selected";
                             }
-                            if(obj.generic_name == undefined){
-                                  obj.generic_name="";
+                            if(obj.medicine_composition == undefined){
+                                  obj.medicine_composition="";
                              }
-                            div_data += "<option value=" + obj.id + " " + sel + ">" + obj.medicine_name + obj.generic_name + "</option>";
+                            div_data += "<option value=" + obj.id + " " + sel + ">" + obj.medicine_name + obj.medicine_composition + "</option>";
+
+                });
+           
+                medicine_colomn.html(div_data);
+                medicine_colomn.select2("val", medicine_id);
+               
+            }
+        });
+} 
+
+
+
+    function getMedicineWithoutSt(med_cat_obj,val,medicine_id){
+        alert('get med without st');
+        // alert(med_cat_obj);
+        // alert(medicine_id);
+        // alert(med_cat_id);
+      var medicine_colomn=med_cat_obj.closest('tr').find('.medicine_name');
+        medicine_colomn.html("");    
+        $.ajax({
+            url: '<?php echo base_url(); ?>admin/pharmacy/get_medicine_name_without_st',
+            type: "POST",
+            data: {medicine_category_id: val},
+            dataType: 'json',
+             async: false,
+              beforeSend: function() {
+              medicine_colomn.html("<option value=''><?php echo $this->lang->line('loading') ?></option>");
+
+            },
+            success: function (res) {
+                console.log(res);
+                var div_data="<option value=''>Select</option>";
+                $.each(res, function (i, obj)
+                {
+                    var sel = "";
+                            if (medicine_id == obj.id) {
+                                sel = "selected";
+                            }
+                            if(obj.medicine_composition == undefined){
+                                  obj.medicine_composition="";
+                             }
+                            div_data += "<option value=" + obj.id + " " + sel + ">" + obj.medicine_name + obj.medicine_composition + "</option>";
 
                 });
            
@@ -491,6 +568,7 @@ errorMsg(res.msg);
  $(document).on('select2:select','.medicine_name',function(){
      getBatchNo($(this),$(this).val(),0);
     });
+
 
  function getBatchNo(med_obj,pharmacy_id,batch_id){
        
@@ -521,6 +599,9 @@ errorMsg(res.msg);
             }
         });
  }
+
+
+ 
 
 
  $(document).on('select2:select','.batch_no',function(){
@@ -566,7 +647,9 @@ $(document).on('click','.add-record',function(){
 var table = document.getElementById("tableID");
         var id = total_rows+1;
         var medcat_template=$("#medcat-template").html();
-        var div = "<td><input type='hidden' name='total_rows[]' value='" + id + "'><select class='form-control medicine_category select3' style='width: 100%;' name='medicine_category_id_"+id+"' ><option value='<?php echo set_value('medicine_category_id'); ?>'><?php echo $this->lang->line('select') ?></option>"+medcat_template+"</select></td><td><select class='form-control select3 medicine_name' style='width:100%' name='medicine_name_id_"+id+"'  id='medicine_name" + id + "' ><option value='<?php echo set_value('medicine_name'); ?>'><?php echo $this->lang->line('select') ?></option></select></td><td><select name='batch_no_id_"+id+"' id='batch_no" + id + "' class='form-control batch_no select3' style='width: 100%;'><option value='<?php echo set_value('batch_no'); ?>'><?php echo $this->lang->line('select') ?></option></select></td><td><input type='text' name='expire_date_"+id+"' readonly id='expire_date" + id + "' class='form-control exp_date'></td><td><div class='input-group'><input type='text' name='quantity_"+id+"' id='quantity" + id + "' class='form-control text-right qty'><span class='input-group-addon text-danger available_qty' style='font-size:10pt'  id='totalqty" + id + "'>&nbsp;&nbsp;</span></div><input type='hidden' class='available_quantity' name='available_quantity_"+id+"' id='available_quantity" + id + "'><input type='hidden' name='id[]' id='id" + id + "'></td><td> <input type='text' name='sale_price_"+id+"' id='sale_price" + id + "'  class='form-control text-right price' readonly></td><td><div class=''><div class='input-group'><input type='text' class='form-control right-border-none medicine_tax'  name='tax_1' readonly id='tax0'  autocomplete='off'><span class='input-group-addon'> %</span></div></div></td><td><input type='text' name='amount_"+id+"' id='amount" + id + "'  class='form-control text-right subtot' readonly></td>";
+        var medst_template=$("#medst-template").html();
+        
+        var div = "<td><input type='hidden' name='total_rows[]' value='" + id + "'><select class='form-control medicine_category select3' style='width: 100%;' name='medicine_category_id_"+id+"' id='medicine_cat_" + id + "' ><option value='<?php echo set_value('medicine_category_id'); ?>'><?php echo $this->lang->line('select') ?></option>"+medcat_template+"</select></td><td><input type='hidden' name='search_type[]' value='" + id + "'><select class='form-control search_type select3' style='width: 100%;' name='search_type_"+id+"' id=" + id + "><option value='<?php echo set_value('search_type'); ?>'><?php echo $this->lang->line('select') ?></option>"+medst_template+"</select></td><td><select class='form-control select3 medicine_name' style='width:100%' name='medicine_name_id_"+id+"'  id='medicine_name" + id + "' ><option value='<?php echo set_value('medicine_name'); ?>'><?php echo $this->lang->line('select') ?></option></select></td><td><select name='batch_no_id_"+id+"' id='batch_no" + id + "' class='form-control batch_no select3' style='width: 100%;'><option value='<?php echo set_value('batch_no'); ?>'><?php echo $this->lang->line('select') ?></option></select></td><td><input type='text' name='expire_date_"+id+"' readonly id='expire_date" + id + "' class='form-control exp_date'></td><td><div class='input-group'><input type='text' name='quantity_"+id+"' id='quantity" + id + "' class='form-control text-right qty'><span class='input-group-addon text-danger available_qty' style='font-size:10pt'  id='totalqty" + id + "'>&nbsp;&nbsp;</span></div><input type='hidden' class='available_quantity' name='available_quantity_"+id+"' id='available_quantity" + id + "'><input type='hidden' name='id[]' id='id" + id + "'></td><td> <input type='text' name='sale_price_"+id+"' id='sale_price" + id + "'  class='form-control text-right price' readonly></td><td><div class=''><div class='input-group'><input type='text' class='form-control right-border-none medicine_tax'  name='tax_1' readonly id='tax0'  autocomplete='off'><span class='input-group-addon'> %</span></div></div></td><td><input type='text' name='amount_"+id+"' id='amount" + id + "'  class='form-control text-right subtot' readonly></td>";
 
         var row =  "<tr id='row" + id + "'>" + div + "<td><button type='button' data-row-id='"+id+"' class='closebtn delete_row'><i class='fa fa-remove'></i></button></td></tr>";
         $('#tableID').append(row);

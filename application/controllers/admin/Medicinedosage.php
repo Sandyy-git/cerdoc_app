@@ -51,11 +51,11 @@ class Medicinedosage extends Admin_Controller
 
             $insert_id = $this->medicine_dosage_model->addMedicineDosage($data);
             $this->session->set_flashdata('msg', '<div class="alert alert-success">' . $this->lang->line('record_added_successfully') . '</div>');
-            redirect("admin/medicinedosage/");
+            redirect("admin/city/");
         } else {
 
             $this->load->view("layout/header");
-            $this->load->view("admin/pharmacy/medicine_dosage", $data);
+            $this->load->view("admin/staff/city", $data);
             $this->load->view("layout/footer");
         }
     }
@@ -92,7 +92,13 @@ class Medicinedosage extends Admin_Controller
         if (!$this->rbac->hasPrivilege('dosage_interval', 'can_add')) {
             access_denied();
         }
-        $this->form_validation->set_rules('name', $this->lang->line('name'), 'trim|required|xss_clean');
+        // $this->form_validation->set_rules('name', $this->lang->line('name'), 'trim|required|xss_clean');
+
+        $this->form_validation->set_rules(
+            'name', $this->lang->line('name'), array('required',
+                array('check_exists', array($this->medicine_dosage_model, 'valid_medicine_interval')),
+            )
+        );
 
         $dep_uploaded_role = $this->customlib->getStaffRole();  //to get Staff Role
         $dep_uploaded_role_id = json_decode($dep_uploaded_role)->id; 
@@ -125,7 +131,14 @@ class Medicinedosage extends Admin_Controller
         if (!$this->rbac->hasPrivilege('dosage_duration', 'can_add')) {
             access_denied();
         }
-        $this->form_validation->set_rules('name', $this->lang->line('name'), 'trim|required|xss_clean');
+        // $this->form_validation->set_rules('name', $this->lang->line('name'), 'trim|required|xss_clean');
+
+        $this->form_validation->set_rules(
+            'name', $this->lang->line('name'), array('required',
+                array('check_exists', array($this->medicine_dosage_model, 'valid_medicine_duration')),
+            )
+        );
+
 
         $dep_uploaded_role = $this->customlib->getStaffRole();  //to get Staff Role
         $dep_uploaded_role_id = json_decode($dep_uploaded_role)->id; 

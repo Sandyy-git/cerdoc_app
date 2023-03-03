@@ -20,6 +20,7 @@ $genderList = $this->customlib->getGender();
                     </div><!-- /.box-header -->
                     <div class="box-body">      
                         <?php  if ($this->session->flashdata('import_msg')) { ?> <div>  <?php echo $this->session->flashdata('import_msg') ?> </div> <?php $this->session->unset_userdata('import_msg'); }   ?>
+
                         <br/>           
                         <p><b><?php echo $this->lang->line('note') ?>:</b> <?php echo $this->lang->line('medicine_import_note'); ?> </p>
                         <hr/>
@@ -31,6 +32,7 @@ $genderList = $this->customlib->getGender();
                                 <tr>
                                     <?php
                                     foreach ($fields as $key => $value) {
+                                        // var_dump($value);
                                         if ($value == 'medicine_name') {
                                             $value = "medicine";
                                         }
@@ -40,30 +42,33 @@ $genderList = $this->customlib->getGender();
                                         if ($value == 'medicine_composition') {
                                             $value = "composition";
                                         }
-										 if ($value == 'city_med') {
-                                            $value = "city_med";
-                                        }
-                                        if ($value == 'vat') {
-                                            $value = "vat";
-                                        }
-                                        if ($value == 'unit_packing') {
-                                            $value = "unit_packing";
-                                        }
 										 if ($value == 'valuep') {
                                             $value = "valuep";
                                         }
 										 if ($value == 'loyalp') {
                                             $value = "loyalp";
                                         }
-										 if ($value == 'commission') {
-                                            $value = "commission";
+                                         if ($value == 'hsn_code') {
+                                            $value = "hsn_code";
                                         }
-                                        if ($value == 'generic_name') {
-                                            $value = "generic_name";
+                                        if ($value == 'patient_billing_rate') {
+                                            $value = "patient_billing_rate";
+                                        }
+                                        if ($value == 'discount_to_patient') {
+                                            $value = "discount_to_patient";
+                                        }
+										 if ($value == 'units_per_shipper_pack') {
+                                            $value = "units_per_shipper_pack";
+                                        }
+                                        if ($value == 'medicine_group') {
+                                            $value = "medicine_group";
+                                        }
+                                        if ($value == 'dosage_form') {
+                                            $value = "dosage_form";
                                         }
 
                                         $add = "";
-                                        if (($value == "medicine") || ($value == "company") || ($value == "composition") || ($value == "city") || ($value == "vat") || ($value == "unit_packing") || ($value == "valuep") || ($value == "loyalp") || ($value == "commission") || ($value == "generic_name")) {
+                                        if (($value == "medicine") || ($value == "company") || ($value == "composition")  || ($value == "valuep") || ($value == "loyalp") || ($value == "hsn_code") || ($value == "patient_billing_rate") || ($value == "discount_to_patient") || ($value == "units_per_shipper_pack") || ($value == "medicine_group") || ($value == "dosage_form")) {
                                             $add = "<span class=text-red>*</span> ";
                                         }
                                         ?>    
@@ -82,11 +87,18 @@ $genderList = $this->customlib->getGender();
 
                         </table>        
                     </div>
+
+                    <?php 
+                     $loggedIn_user = $this->customlib->getUserData();
+                     $created_by = $loggedIn_user['created_by'];
+                     if($created_by == 7){
+                     ?>
                     <form action="<?php echo site_url('admin/pharmacy/import') ?>" id="employeeform" name="employeeform" method="post" enctype="multipart/form-data">
                         <div class="box-body">
                         
                             <div class="row">
                                 <div class="col-md-6">
+
                                     <div class="form-group">
                                         <label for="exampleInputEmail1"><?php echo $this->lang->line('medicine_category'); ?></label><small class="req"> *</small>
 
@@ -104,7 +116,30 @@ $genderList = $this->customlib->getGender();
                                         <span class="text-danger"><?php echo form_error('medicine_category_id'); ?></span>
                                     </div>
                                     <input type="hidden" id="id" name="medicineid">
+
+
+                                    <!-- <div class="form-group">
+                                        <label for="exampleInputEmail1"><?php echo $this->lang->line('search_type'); ?></label><small class="req"> *</small>
+
+                                        <select autofocus="" id="search_type" name="search_type" class="form-control" >
+                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                            <?php
+                                            foreach ($medicineSearchType as $medicinest) {
+                                                ?>
+                                                <option value="<?php echo $medicinest['id'] ?>"><?php echo $medicinest['search_type'] ?></option>
+                                                <?php
+                                                $count++;
+                                            }
+                                            ?>
+                                        </select>
+                                        <span class="text-danger"><?php echo form_error('search_type'); ?></span>
+                                    </div>
+                                    <input type="hidden" id="id" name="searchtypeid"> -->
+
+                                        
                                 </div>
+
+                                
 
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -121,6 +156,74 @@ $genderList = $this->customlib->getGender();
                             </div>
                         </div>
                     </form>
+
+                    <?php }else{
+                        ?>
+                    <form action="<?php echo site_url('admin/pharmacy/import_approved_product') ?>" id="employeeform" name="employeeform" method="post" enctype="multipart/form-data">
+                        <div class="box-body">
+                        
+                            <div class="row">
+                                <div class="col-md-6">
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1"><?php echo $this->lang->line('medicine_category'); ?></label><small class="req"> *</small>
+
+                                        <select autofocus="" id="medicine_category_id" name="medicine_category_id" class="form-control" >
+                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                            <?php
+                                            foreach ($medicineCategory as $medicine) {
+                                                ?>
+                                                <option value="<?php echo $medicine['id'] ?>"><?php echo $medicine['medicine_category'] ?></option>
+                                                <?php
+                                                $count++;
+                                            }
+                                            ?>
+                                        </select>
+                                        <span class="text-danger"><?php echo form_error('medicine_category_id'); ?></span>
+                                    </div>
+                                    <input type="hidden" id="id" name="medicineid">
+
+
+                                    <!-- <div class="form-group">
+                                        <label for="exampleInputEmail1"><?php echo $this->lang->line('search_type'); ?></label><small class="req"> *</small>
+
+                                        <select autofocus="" id="search_type" name="search_type" class="form-control" >
+                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                            <?php
+                                            foreach ($medicineSearchType as $medicinest) {
+                                                ?>
+                                                <option value="<?php echo $medicinest['id'] ?>"><?php echo $medicinest['search_type'] ?></option>
+                                                <?php
+                                                $count++;
+                                            }
+                                            ?>
+                                        </select>
+                                        <span class="text-danger"><?php echo form_error('search_type'); ?></span>
+                                    </div>
+                                    <input type="hidden" id="id" name="searchtypeid"> -->
+
+                                        
+                                </div>
+
+                                
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputFile"><?php echo $this->lang->line('select_csv_file'); ?></label><small class="req"> *</small>
+                                        <div><input  class="filestyle form-control" type='file' name='file' id="file" size='20' />
+                                            <span class="text-danger"><?php echo form_error('file'); ?></span></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 pt20">
+
+                                    <button type="submit" class="btn btn-info btn-sm pull-right"><i class="fa fa-upload"></i> <?php echo $this->lang->line('import_medicine'); ?></button>
+                                </div>     
+
+                            </div>
+                        </div>
+                    </form>
+                        <?php
+                    } ?>
                 </div>                                                    
             </div>                                                                                                                  
         </div>  

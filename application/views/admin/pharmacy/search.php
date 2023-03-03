@@ -24,6 +24,11 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                             <?php if ($this->rbac->hasPrivilege('medicine_purchase', 'can_view')) { ?>
                                 <a href="<?php echo base_url(); ?>admin/pharmacy/purchase" class="btn btn-primary btn-sm"><i class="fa fa-reorder"></i> <?php echo $this->lang->line('purchase'); ?></a>
                             <?php } ?>
+
+                            <?php if ($this->rbac->hasPrivilege('push_stock', 'can_view')) { ?>
+                                <a href="<?php echo base_url(); ?>admin/pharmacy/push_stock" class="btn btn-primary btn-sm"><i class="fa fa-reorder"></i> <?php echo $this->lang->line('push_stock'); ?></a>
+                            <?php } ?>
+
                         </div>
                     </div><!-- /.box-header -->
                     <div class="box-body">
@@ -31,29 +36,38 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                        <!--  <form action="<?php echo site_url('admin/pharmacy/bulk_delete') ?>" method="POST" id="deletebulk"> -->
                         
                         <!-- <div class=""> -->
+                        <div class="box-tools pull-right">
                         <?php if ($this->rbac->hasPrivilege('medicine', 'can_delete')) { ?>
                             <button type="button" class="btn btn-primary pull-right btn-sm mt10 delete_selected" id="load" data-loading-text="<i class='fa fa-spinner fa-spin '></i> <?php echo $this->lang->line('please_wait'); ?>"><i class="fa fa-trash"></i> <?php echo $this->lang->line('delete_selected'); ?>
                             </button>
                         <?php } ?>
+
+                        <?php if ($this->rbac->hasPrivilege('download_approved_medicine', 'can_view')) { ?>
+                           
+                            <a data-toggle="modal" style="right:2%" href="<?php echo base_url(); ?>admin/pharmacy/download_approved_medicines" class="btn btn-primary btn-sm"><i class="fa fa-download"></i> <?php echo $this->lang->line('download_approved_medicine'); ?>
+                                </a>
+                        <?php } ?>
+                        </div>
                         <!-- </div>  -->
+
                       <div class="table-responsive-mobile">   
                         <table class="table table-striped table-bordered table-hover ajaxlist " cellspacing="0" width="100%" data-export-title="<?php echo $this->lang->line('medicines_stock'); ?>">
                             <thead>
                                 <tr>
                                     <th class="noExport"><input type="checkbox" name="checkAll"> #</th>
+                                    <th><?php echo $this->lang->line('product_id'); ?></th>
+
                                     <th><?php echo $this->lang->line('medicine_name'); ?></th>
                                     <th><?php echo $this->lang->line('medicine_company'); ?></th>
                                     <th><?php echo $this->lang->line('medicine_composition'); ?></th>
-									<!--<th><?php echo $this->lang->line('valuep'); ?></th>-->
-									<!--<th><?php echo $this->lang->line('loyalp'); ?></th>-->
                                     <th><?php echo $this->lang->line('medicine_category'); ?></th> 
-                                    <th><?php echo $this->lang->line('generic_name'); ?></th> 
-
-                                    <!--<th><?php echo $this->lang->line('medicine_group'); ?></th>-->
-									<th><?php echo $this->lang->line('valuep'); ?></th>
-									<th><?php echo $this->lang->line('loyalp'); ?></th>
-                                   <!-- <th><?php echo $this->lang->line('unit'); ?></th> -->
-                                   <!-- <th><?php echo $this->lang->line('available_qty'); ?></th>-->
+                                    <!-- <th><?php echo $this->lang->line('search_type'); ?></th>  -->
+									<!-- <th><?php echo $this->lang->line('valuep'); ?></th>
+									<th><?php echo $this->lang->line('loyalp'); ?></th> -->
+                                    <?php if ($this->rbac->hasPrivilege('medicine_approval', 'can_view')) {  ?>
+                                    <th><?php echo $this->lang->line('active'); ?></th>
+                                    <?php } ?>
+                                    <th><?php echo $this->lang->line('action'); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -68,6 +82,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
     </section>
 </div>
 
+<!-- ADD MEDICINE -->
 <div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content modal-media-content">
@@ -81,15 +96,8 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                         <div class="row">
                             <div class="col-lg-12 col-md-12 col-sm-12 paddlr">
                                 <div class="row">
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label><?php echo $this->lang->line('medicine_name'); ?></label>
-                                            <small class="req"> *</small> 
-                                            <input id="medicine_name" name="medicine_name" placeholder="" type="text" class="form-control"/>
-                                            <span class="text-danger"><?php echo form_error('medicine_name'); ?></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
+
+                                <div class="col-sm-3">
                                         <div class="form-group">
                                             <label for="exampleInputFile">
                                                 <?php echo $this->lang->line('medicine_category'); ?></label>
@@ -107,15 +115,17 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                             </div>
                                             <span class="text-danger"><?php echo form_error('medicine_category_id'); ?></span>
                                         </div>
-                                    </div>  
+                                    </div>
+
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label><?php echo $this->lang->line('medicine_company'); ?></label>
+                                            <label><?php echo $this->lang->line('medicine_name'); ?></label>
                                             <small class="req"> *</small> 
-                                            <input type="text" name="medicine_company" value="" class="form-control">
-                                            <span class="text-danger"><?php echo form_error('medicine_company'); ?></span>
+                                            <input id="medicine_name" name="medicine_name" placeholder="" type="text" class="form-control"/>
+                                            <span class="text-danger"><?php echo form_error('medicine_name'); ?></span>
                                         </div>
-                                    </div> 
+                                    </div>
+
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label><?php echo $this->lang->line('medicine_composition'); ?></label>
@@ -124,43 +134,193 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                             <span class="text-danger"><?php echo form_error('medicine_composition'); ?></span>
                                         </div>
                                     </div>
+
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><?php echo $this->lang->line('dosage_form'); ?></label>
+                                            <small class="req"> *</small> 
+                                            <input type="text" name="dosage_form" value="" class="form-control">
+                                            <span class="text-danger"><?php echo form_error('dosage_form'); ?></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><?php echo $this->lang->line('hsn_code'); ?><small class="req"> *</small></label>
+                                            <input type="text" name="hsn_code" value="" class="form-control">
+                                        </div>
+                                    </div>
 									
-                                   <!-- <div class="col-sm-3">
+                                    <div class="col-sm-3">
                                         <div class="form-group">
                                             <label><?php echo $this->lang->line('medicine_group'); ?><small class="req"> *</small></label>
                                             <input type="text" name="medicine_group" value="" class="form-control">
                                         </div>
-                                    </div> -->
+                                    </div>
+
+                                     
                                     <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><?php echo $this->lang->line('medicine_company'); ?></label>
+                                            <small class="req"> *</small> 
+                                            <input type="text" name="medicine_company" value="" class="form-control">
+                                            <span class="text-danger"><?php echo form_error('medicine_company'); ?></span>
+                                        </div>
+                                    </div> 
+
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><?php echo $this->lang->line('patient_billing_rate'); ?></label>
+                                            <small class="req"> *</small> 
+                                            <input type="text" name="patient_billing_rate" value="" class="form-control" id="patient_billing_rate">
+                                            <span class="text-danger"><?php echo form_error('patient_billing_rate'); ?></span>
+                                            <span class="text-danger" id='pbr_error'></span>
+                                        </div>
+                                    </div>
+                                    
+                                  
+
+                                     <!-- <div class="col-sm-3">
                                         <div class="form-group">
                                             <label><?php echo $this->lang->line('city_med'); ?></label>
                                             <input type="text" name="city_med" value="" class="form-control">
                                             <span class="text-danger"><?php echo form_error('city_med'); ?></span>
                                         </div>
+                                    </div> -->
+
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><?php echo $this->lang->line('value_percentage'); ?></label>
+                                            <input type="text" name="value_percentage" value="" class="form-control" id="value_percentage">
+                                            <span class="text-danger"><?php echo form_error('value_percentage'); ?></span>
+                                        </div>
                                     </div>
+
 									<div class="col-sm-3">
                                         <div class="form-group">
                                             <label><?php echo $this->lang->line('valuep'); ?></label>
-                                            <input type="text" name="valuep" value="" class="form-control">
+                                            <input type="text" name="valuep" value="" class="form-control" id="valuep">
                                             <span class="text-danger"><?php echo form_error('valuep'); ?></span>
+                                            <span class="text-danger" id="valuep_error"></span>
+
                                         </div>
                                     </div>
-									<div class="col-sm-3">
+
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><?php echo $this->lang->line('loyalty_percentage'); ?></label>
+                                            <input type="text" name="loyalty_percentage" value="" class="form-control" id="loyalty_percentage">
+                                            <span class="text-danger"><?php echo form_error('loyalty_percentage'); ?></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3">
                                         <div class="form-group">
                                             <label><?php echo $this->lang->line('loyalp'); ?></label>
-                                            <input type="text" name="loyalp" value="" class="form-control">
+                                            <input type="text" name="loyalp" value="" class="form-control" id="loyalp">
                                             <span class="text-danger"><?php echo form_error('loyalp'); ?></span>
+                                            <span class="text-danger" id="loyaltyp_error"></span>
                                         </div>
                                     </div>
 									
-                                    <!--<div class="col-sm-3">
+                                    <!-- <div class="col-sm-3">
                                         <div class="form-group">
                                             <label><?php echo $this->lang->line('unit'); ?></label>
                                             <small class="req"> *</small> 
                                             <input type="text" name="unit" class="form-control">
                                             <span class="text-danger"><?php echo form_error('unit'); ?></span>
                                         </div>
+                                    </div> -->
+
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><?php echo $this->lang->line('discount_to_patient'); ?></label>
+                                            <input type="text" name="discount_to_patient" class="form-control" id="discount_to_patient">
+                                            <span class="text-danger"><?php echo form_error('discount_to_patient'); ?></span>
+                                            <span class="text-danger" id="discount_to_patient_error"><?php echo form_error('discount_to_patient'); ?></span>
+
+                                        </div>
                                     </div>
+
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><?php echo $this->lang->line('units_per_shipper_pack'); ?></label>
+                                            <input type="text" name="units_per_shipper_pack" class="form-control">
+                                            <span class="text-danger"><?php echo form_error('units_per_shipper_pack'); ?></span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><?php echo $this->lang->line('unit_packing'); ?></label>
+                                            <small class="req"> *</small> 
+                                            <input type="text" name="unit_packing" class="form-control">
+                                            <span class="text-danger"><?php echo form_error('unit_packing'); ?>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                    <div class="form-group"> 
+                                    <label for="exampleInputEmail1"><?php echo $this->lang->line('tax'); ?></label>
+                                    <div class="input-group">
+                                <input type="text" class="form-control right-border-none" name="vat" autocomplete="off" id="vat">
+                                <span class="input-group-addon "> %</span>
+                            </div>
+                        </div>
+                                        
+                                    </div> 
+
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><?php echo $this->lang->line('vat_a_c'); ?></label>
+                                            <input type="text" name="vat_ac" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><?php echo $this->lang->line('mrp'); ?></label>
+                                            <input type="text" name="mrp" class="form-control" id="mrp">
+                                            <span class="text-danger"><?php echo form_error('mrp'); ?></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><?php echo $this->lang->line('stockist_discount'); ?></label>
+                                            <input type="text" name="stockist_discount" class="form-control" id="stockist_discount">
+                                            <span class="text-danger"><?php echo form_error('stockist_discount'); ?></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><?php echo $this->lang->line('purchase_price'); ?></label>
+                                            <input type="text" name="purchase_price" class="form-control" id="purchase_price">
+                                            <span class="text-danger"><?php echo form_error('purchase_price'); ?></span>
+                                            <span class="text-danger" id="purchase_price_error"></span>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><?php echo $this->lang->line('retailer_discount'); ?></label>
+                                            <input type="text" name="retailer_discount" class="form-control" id="retailer_discount">
+                                            <span class="text-danger"><?php echo form_error('retailer_discount'); ?></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><?php echo $this->lang->line('sale_price'); ?></label>
+                                            <input type="text" name="sale_price" class="form-control" id="sale_price">
+                                            <span class="text-danger"><?php echo form_error('sale_price'); ?></span>
+                                            <span class="text-danger" id="sale_price_error"></span>
+
+                                        </div>
+                                    </div>
+
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label><?php echo $this->lang->line('min_level'); ?></label>
@@ -172,42 +332,20 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                             <label><?php echo $this->lang->line('re_order_level'); ?></label>
                                             <input type="text" name="reorder_level" class="form-control">
                                         </div>
-                                    </div> -->
-                                    <div class="col-sm-3">
-                                        <div class="form-group"> 
-                            <label for="exampleInputEmail1"><?php echo $this->lang->line('tax'); ?></label>
-                            <div class="input-group">
-
-                            
-                                <input type="text" class="form-control right-border-none" name="vat" autocomplete="off">
-                                <span class="input-group-addon "> %</span>
-                            </div>
-                        </div>
-                                        
-                                    </div> 
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label><?php echo $this->lang->line('unit_packing'); ?></label>
-                                            <small class="req"> *</small> 
-                                            <input type="text" name="unit_packing" class="form-control">
-                                            <span class="text-danger"><?php echo form_error('unit_packing'); ?>
-                                        </div>
                                     </div>
+                                    
+                                  
+                                  
 									
-									<div class="col-sm-3">
+									<!-- <div class="col-sm-3">
                                         <div class="form-group">
                                             <label><?php echo $this->lang->line('commission'); ?></label>
                                             <small class="req"> *</small> 
                                             <input type="text" id="commission"  name="commission" class="form-control" value="<?php echo set_value('commission'); ?>">
                                             <span class="text-danger"><?php echo form_error('commission'); ?>
                                         </div>
-                                    </div>
-                                <!--    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label><?php echo $this->lang->line('vat_a_c'); ?></label>
-                                            <input type="text" name="vat_ac" class="form-control">
-                                        </div>
                                     </div> -->
+                                   
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label><?php echo $this->lang->line('note'); ?></label>
@@ -339,16 +477,16 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                         </div>
                                     </div> 
 
-                                    <div class="col-sm-3">
+                                    <!-- <div class="col-sm-3">
                                         <div class="form-group">
                                             <label><?php echo $this->lang->line('generic_name'); ?></label>
                                             <small class="req"> *</small> 
                                             <input type="text" id="generic_name" name="generic_name" value="<?php echo set_value('generic_name'); ?>" class="form-control">
                                             <span class="text-danger"><?php echo form_error('generic_name'); ?></span>
                                         </div>
-                                    </div> 
+                                    </div>  -->
 
-                                   <!-- <div class="col-sm-3">
+                                   <div class="col-sm-3">
                                         <div class="form-group">
                                             <label><?php echo $this->lang->line('medicine_composition'); ?></label>
                                             <small class="req"> *</small> 
@@ -384,7 +522,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                             <label><?php echo $this->lang->line('re_order_level'); ?></label>
                                             <input type="text" name="reorder_level" id="reorder_level"  value="<?php echo set_value('reorder_level'); ?>" class="form-control">
                                         </div>
-                                    </div> -->
+                                    </div>
                                     <div class="col-sm-3">
                                         
                         <div class="form-group"> 
@@ -1176,3 +1314,213 @@ $("input[name='checkAll']").click(function () {
 } ( jQuery ) )
 </script>
 <!-- //========datatable end===== -->
+
+<script>
+    function assignsupplier(checkbox,doctor_id){
+       
+        // console.log("checkbox_print_"+checkbox.dataset.id);
+        if(checkbox.checked){
+            alert('check');
+            status = 1;
+            // document.querySelector("#checkbox_print_"+checkbox.dataset.id).innerHTML = "<?= $this->lang->line("yes"); ?>";
+        }else{
+            alert('uncheck');
+            status = 0;
+            // document.querySelector("#checkbox_print_"+checkbox.dataset.id).innerHTML = "<?= $this->lang->line("no"); ?>";
+        }
+        $.ajax({
+                url: '<?php echo base_url(); ?>admin/pharmacy/statusUpdatepharmacy',
+                type: "POST",
+                data: {doctor_id:doctor_id,  status:status},
+                dataType: 'json',
+                success: function (data) {
+                    if(data.status == "success"){
+                        successMsg(data.message);
+                    }
+                },
+                error: function () {
+                    alert("Fail")
+                }
+            });
+    }
+
+
+    $(document).on('change','#patient_billing_rate',function(){
+       var chkmrp = $('#mrp').val();
+       var chkdictopat = $('#discount_to_patient').val();
+
+       var currentmode =$(this).val();
+       if(chkmrp == '' || chkdictopat == '' || chkgst ==''){
+        $(this).val('');
+        if(chkmrp == ''){
+            $('#pbr_error').append('please enter MRP');
+        }else if(chkdictopat == ''){
+            $('#pbr_error').append('please enter discount to patient');
+        }
+       }else{
+        $('#pbr_error').text('');
+        $('#sale_price_error').text('');
+        $('#purchase_price_error').text('');
+
+       }
+    });
+
+
+    $(document).on('change','#discount_to_patient',function(){
+        var chkmrp = $('#mrp').val();
+        var chkgst = $('#vat').val();
+
+        if(chkmrp == '' || chkgst ==''){
+            $(this).val('');
+            if(chkmrp ==''){
+             $('#discount_to_patient_error').append('please enter MRP');
+            }else if(chkgst == ''){
+             $('#discount_to_patient_error').append('please enter GST');
+            }
+        }else{
+            // var bill_rate_formula = chkmrp-(($(this).val()/100)*chkmrp);
+            var bill_rate_formula = chkmrp-(($(this).val()/100)*chkmrp);
+            var pat_bill_rate = (100*bill_rate_formula)/(100+(100*chkgst/100));
+
+            alert(pat_bill_rate);
+            $('#patient_billing_rate').val(pat_bill_rate.toFixed(2));
+            $('#patient_billing_rate').prop("readonly",true);
+            $('#pbr_error').text('');
+            $('#discount_to_patient_error').text('');
+            $('#sale_price_error').text('');
+            $('#sale_price').val('');
+            $('#purchase_price_error').text('');
+            $('#purchase_price').val('');  
+            $('#retailer_discount').val('');  
+            $('#stockist_discount').val('');  
+            $('#purchase_price').prop("readonly",false);
+            $('#sale_price').prop("readonly",false);
+            $('#valuep_error').text('');
+            $('#loyaltyp_error').text('');
+
+            $('#valuep').val('');
+            $('#loyalp').val('');
+
+
+        }
+        // alert(chkmrp);
+    });
+
+    $(document).on('change','#mrp',function(){
+        $('#pbr_error').text('');
+        $('#pbr_error').text('');
+        $('#discount_to_patient_error').text('');
+        $('#discount_to_patient').val('');
+        $('#patient_billing_rate').val('');
+        $('#patient_billing_rate').prop("readonly",false);
+
+    });
+
+    $(document).on('change','#sale_price',function(){
+        var chkRetailerDiscount = $('#retailer_discount').val();
+        var pat_bill_rate = $('#patient_billing_rate').val();
+        if(pat_bill_rate == ''){
+            $('#sale_price_error').append('please enter patient billing rate');
+        }else if(chkRetailerDiscount == ''){
+            $('#sale_price_error').append('please enter retailer discount');
+            $(this).val('');
+        }
+    });
+
+    $(document).on('change','#retailer_discount',function(){
+        $('#sale_price_error').text('');
+        var pat_bill_rate =  $('#patient_billing_rate').val();
+        var sale_price = pat_bill_rate-(pat_bill_rate*($(this).val()/100));
+        $('#sale_price').val(sale_price);
+        $('#sale_price').prop("readonly",true);
+        $('#purchase_price_error').text('');
+        $('#stockist_discount').val('');
+        $('#purchase_price').val('');
+
+    });
+
+    $(document).on('change','#purchase_price',function(){
+        var chkStockistDiscount = $('#stockist_discount').val();
+        var pat_bill_rate = $('#patient_billing_rate').val();
+
+        if(pat_bill_rate == ''){
+            $('#purchase_price_error').append('please enter patient billing rate');
+        }else if(chkStockistDiscount == ''){
+            $('#purchase_price_error').append('please enter stockist discount');
+            $(this).val('');
+        }
+    });
+
+    $(document).on('change','#stockist_discount',function(){
+        $('#purchase_price_error').text('');
+
+        var sale_price = $('#sale_price').val();
+        if(sale_price == ''){
+            $('#purchase_price_error').append('please enter sale price');
+            $(this).val('');
+        }else{
+            var purchase_price = sale_price-(sale_price*($(this).val()/100));
+            $('#purchase_price').val(purchase_price);
+            $('#purchase_price').prop("readonly",true);
+        }
+
+    });
+
+    $(document).on('change','#valuep',function(){
+      var pat_bill_rate = $('#patient_billing_rate').val();
+      var value_discount = $('#value_percentage').val();
+      if(pat_bill_rate == ''){
+        $('#valuep_error').append('please enter billing rate');
+      }else{
+        if(value_discount == ''){
+        $('#valuep_error').append('please enter value point percentage');
+        }
+      }
+    });
+
+    $(document).on('change','#value_percentage',function(){
+        $('#valuep_error').text('');
+        var pat_bill_rate = $('#patient_billing_rate').val();
+        var total =  pat_bill_rate;
+        var percentage = ($(this).val()/100);
+        var result = total * percentage;
+        $('#valuep').val(result);
+        $('#valuep').prop("readonly",true);
+
+
+    });
+
+    $(document).on('change','#loyalp',function(){
+      var pat_bill_rate = $('#patient_billing_rate').val();
+      var loyalty_discount = $('#loyalty_percentage').val();
+      if(pat_bill_rate == ''){
+        $('#loyaltyp_error').append('please enter billing rate');
+      }else{
+        if(loyalty_discount == ''){
+        $('#loyaltyp_error').append('please enter loyalty point percentage');
+        }
+      }
+    });
+
+
+    $(document).on('change','#loyalty_percentage',function(){
+        $('#loyaltyp_error').text('');
+        var pat_bill_rate = $('#patient_billing_rate').val();
+        var total =  pat_bill_rate;
+        var percentage = ($(this).val()/100);
+        var loyaltyp = total * percentage;
+
+        $('#loyalp').val(loyaltyp);
+        $('#loyalp').prop("readonly",true);
+    });
+
+
+    $(document).on('change','#vat',function(){
+        $('#discount_to_patient_error').text('');
+        $('#discount_to_patient').val('');
+        var chkmrp = $('#mrp').val();
+        if(chkmrp == ''){
+            $('#pbr_error').append('please enter MRP');
+        }
+    });
+</script>

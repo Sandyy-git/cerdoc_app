@@ -7,6 +7,9 @@
             <input type="hidden" name="day" value="<?php echo $day; ?>">
             <input type="hidden" name="doctor" value="<?php echo $doctor; ?>">
             <input type="hidden" name="shift" value="<?php echo $shift; ?>">
+            <input type="hidden" name="doctor_clinics_id" value="<?php echo $doctor_clinics_id; ?>">
+            <input type="hidden" name="week" value="<?php echo $week; ?>">
+
             <div class="">   
                 <table class="table table-bordered table-hover order-list tablewidthRS" id="tab_logic">
                     <thead>
@@ -104,6 +107,7 @@
 <script type="text/javascript">
     var form_id = "<?php echo $day ?>";
     $(function () {
+        alert('form sub');
         $('form#form_' + form_id).on('submit', function (event) {
         $('form#form_' + form_id).button('loading');
 

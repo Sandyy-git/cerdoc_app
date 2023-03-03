@@ -24,15 +24,27 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                 <?php }?> -->
 
                 <!--  -->
-                <!-- <?php  if ($result->opd_logo !='') { ?> -->
-                    <img src="<?php
+               <!-- Doctor Global Logo -->
+
+                    <!-- <img src="<?php
                     if ($result->opd_logo !='') {
                         echo base_url() . $result->opd_logo;
                     }
-                    ?>" style="height:100px; width:100%;" class="img-responsive">
-                <!-- <?php }?> -->
+                    ?>" style="height:100px; width:100%;" class="img-responsive"> -->
 
-                <!--  -->
+                    <!-- Doctor Global Logo -->
+
+                <!-- Doctor Clinicwise Logo -->
+
+                     <img src="<?php
+                    if ($result->clinic_logo !='') {
+                        echo base_url()."/uploads/clinic_images/". $result->clinic_logo;
+                    }
+                    ?>" style="height:100px; width:100%;" class="img-responsive">
+
+                    <!-- Doctor Clinicwise Logo -->
+
+            <!--  -->
 
                 
                     <div style="height: 10px; clear: both;"></div>

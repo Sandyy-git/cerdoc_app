@@ -29,7 +29,15 @@ class Roles extends Admin_Controller
             )
         );
         if ($this->form_validation->run() == false) {
+            $role                        = $this->customlib->getStaffRole();
+            $role_id                     = json_decode($role)->id;
+        if($role_id == 73){
+            $listroute         = $this->role_model->get('cw');
+        }elseif($role_id == 76){
+            $listroute         = $this->role_model->get('lab');
+        }else{
             $listroute         = $this->role_model->get();
+        } 
             $data['listroute'] = $listroute;
             $this->load->view('layout/header');
             $this->load->view('admin/roles/create', $data);

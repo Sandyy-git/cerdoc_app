@@ -30,8 +30,17 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                         <tr>
                             <td align="text-left"><h5><label><?php echo $this->lang->line('purchase_no'); ?> </label> : <?php echo $this->customlib->getSessionPrefixByType('purchase_no').$result["id"] ?></h5>
                             </td>
-                            <td align="text-left"><h5><label><?php echo $this->lang->line('bill_no'); ?> </label> :  <?php echo $result["sup_bill_no"] ?></h5>
+                            <!-- <td align="text-left"><h5><label><?php echo $this->lang->line('bill_no'); ?> </label> :  <?php echo $result["sup_bill_no"] ?></h5>
+                            </td> -->
+
+                            <td align="text-center"><h4><label><?php echo $this->lang->line('tax_invoice'); ?> </label>   </h4>
                             </td>
+
+                            <td align="text-center"><h6><?php echo $result["supplier"].','.$result["contact"].','.$result['address'].','.$result["drug_license_number"].','.$result["gst_in"]?></h6>
+                            </td>
+
+                            
+                            
                             <td align="right"><h5><label><?php echo $this->lang->line('date')?> </label> : <?php echo 
 $this->customlib->YYYYMMDDHisTodateFormat($result['date'], $this->customlib->getHospitalTimeFormat());?></h5>
                             </td>
@@ -41,17 +50,34 @@ $this->customlib->YYYYMMDDHisTodateFormat($result['date'], $this->customlib->get
                     <div class="table-responsive">
                         <table class="printablea4" cellspacing="0" cellpadding="0" width="100%">
                             <tr>
-                                <th width="20%"><?php echo $this->lang->line('supplier_name'); ?></th>
+                                <th><?php echo $this->lang->line('supplier_name'); ?></th>
                                 <!-- <td width="25%"><?php echo $detail[0]["medicine_category"]; ?></td> -->
-                                <td width="25%"><?php echo $result["supplier"]; ?>
-                                <th width="25%"><?php echo $this->lang->line('contact_no'); ?></th>
-                                <td width="30%" align="left"><?php echo $result["contact"]; ?></td>
+                                <td><?php echo $result["supplier"]; ?>
+                                <th><?php echo $this->lang->line('contact_no'); ?></th>
+                                <td align="left"><?php echo $result["contact"]; ?></td>
+
+                                <!-- <th><?php echo $this->lang->line('dispatch_through'); ?></th>
+                                <td><?php echo $result["dispatch_through"]; ?></td> -->
+                                <th><?php echo $this->lang->line('address'); ?></th>
+                                <td align="left"><?php echo $result['address']; ?></td> 
+                                <th align="left"><?php echo $this->lang->line('drug_license_number'); ?></th>
+                                <td align="left"><?php echo $result["supplier_drug_licence"]; ?></td>
+                                <th align="left"><?php echo $this->lang->line('gst_in'); ?></th>
+                                <td align="left"><?php echo $result["gst_in"]; ?></td>
                             </tr>
                             <tr>
-                                <th width="20%"><?php echo $this->lang->line('contact_person'); ?></th>
-                                <td width="25%"><?php echo $result["supplier_person"]; ?></td>
-                                <th width="25%"><?php echo $this->lang->line('address'); ?></th>
-                                <td width="30%" align="left"><?php echo $result['address']; ?></td> 
+                            <th><?php echo $this->lang->line('bill_to'); ?></th>
+                                <td><?php echo $result_supp["supplier"]; ?></td>
+                                <th><?php echo $this->lang->line('contact_no'); ?></th>
+                                <td><?php echo $result_supp["contact"]; ?></td>
+
+                              
+                                <th><?php echo $this->lang->line('address'); ?></th>
+                                <td><?php echo $result_supp['address']; ?></td>
+                                <th align="left"><?php echo $this->lang->line('drug_license_number'); ?></th>
+                                <td align="left"><?php echo $result_supp["drug_license_number"]; ?></td>
+                                <th align="left"><?php echo $this->lang->line('gst_in'); ?></th>
+                                <td align="left"><?php echo $result_supp["gst_in"]; ?></td>
                             </tr> 
                         </table>
                      </div>   
@@ -168,6 +194,32 @@ if($result["payment_note"] != ""){
 
                             </tr>
                         <?php } ?>
+
+                        <?php if (!empty($result["tax_cgst"])) { ?>
+                            <tr>
+                                <th><?php
+                                    echo $this->lang->line('tax_cgst') . " (" . $currency_symbol . ")";
+                                    ;
+                                    ?></th>
+
+                                <td align="right"><?php echo number_format($result['tax_cgst'],2); ?></td>
+
+                            </tr>
+                        <?php } ?>
+
+                        <?php if (!empty($result["tax_sgst"])) { ?>
+                            <tr>
+                                <th><?php
+                                    echo $this->lang->line('tax_sgst') . " (" . $currency_symbol . ")";
+                                    ;
+                                    ?></th>
+
+                                <td align="right"><?php echo number_format($result['tax_sgst'],2); ?></td>
+
+                            </tr>
+                        <?php } ?>
+
+
                         <?php
                         if ((!empty($result["discount"])) || (!empty($result["tax"]))) {
                             if (!empty($result["net_amount"])) {

@@ -16,6 +16,8 @@ class Printing extends Admin_Controller
         $this->session->set_userdata('sub_sidebar_menu', 'admin/printing');
         $this->session->set_userdata('sub_menu', 'admin/printing');
         $data["printing_list"] = $this->printing_model->get('', 'opdpre');
+        // echo "<pre>";
+        // print_r($data["printing_list"]); die;
         $data["function_name"] = 'index';
         $this->load->view('layout/header');
         $this->load->view('admin/printing/opdpresprinting', $data);
@@ -211,6 +213,7 @@ class Printing extends Admin_Controller
         $this->session->set_userdata('sub_sidebar_menu', 'admin/printing/ambulanceprinting');
         $this->session->set_userdata('sub_menu', 'admin/printing');
         $data["printing_list"] = $this->printing_model->get('', 'ambulance');
+        // var_dump($data["printing_list"]); die;
         $data["function_name"] = 'ambulanceprinting';
         $this->load->view('layout/header');
         $this->load->view('admin/printing/ambulanceprinting', $data);
@@ -226,6 +229,8 @@ class Printing extends Admin_Controller
         $this->session->set_userdata('sub_sidebar_menu', 'admin/printing/payslipprinting');
         $this->session->set_userdata('sub_menu', 'admin/printing');
         $data["printing_list"] = $this->printing_model->get('', 'payslip');
+        // echo "<pre>";
+        // print_r($data["printing_list"]); die;
         $data["function_name"] = 'payslipprinting';
         $this->load->view('layout/header');
         $this->load->view('admin/printing/payslipprinting', $data);
@@ -252,8 +257,10 @@ class Printing extends Admin_Controller
 
     public function update()
     {
+        // echo "<pre>";
+        // print_r($this->input->post()); die;
         $id            = $this->input->post('id');
-        $function_name = $this->input->post('function_name');
+        $function_name = $this->input->post('function_name');  //SA index
 
         $this->form_validation->set_rules('header_image', 'header_image', 'callback_handle_upload');
         if ($this->form_validation->run() == false) {
@@ -328,13 +335,14 @@ class Printing extends Admin_Controller
 
             $this->load->view('layout/footer');
         } else {
-
             $insertData = array(
                 'id'           => $id,
                 'print_footer' => $this->input->post('footer_content'),
                 'is_active'    => 'yes',
             );
             $this->printing_model->add($insertData);
+            
+
             if (!empty($_FILES["header_image"]["name"])) {
                 $fileInfo = pathinfo($_FILES["header_image"]["name"]);
                 $img_name = $id . '.' . $fileInfo['extension'];
@@ -342,6 +350,7 @@ class Printing extends Admin_Controller
                 $img_data = array('id' => $id, 'print_header' => 'uploads/printing/' . $img_name);
                 $this->printing_model->add($img_data);
             }
+            // var_dump( $img_data); die;
             if ($function_name == 'index') {
                 redirect('admin/printing');
             } elseif ($function_name == 'opdprinting') {

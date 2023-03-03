@@ -36,13 +36,7 @@ class Prescription extends Admin_Controller
     public function getPrescription($visitid)
     {
         $get_logged_in_user = $this->customlib->getUserData();
-        // echo "<pre>";
-        // print_r($get_logged_in_user['id']); die;
         $result                = $this->prescription_model->getPrescriptionByVisitID($visitid);
-        // echo "<pre>";
-        // print_r($result); die;
-
-        // print_r($result->medicines[0]->prescribe_by); die;
         if($get_logged_in_user['id'] == $result->medicines[0]->prescribe_by){
             $data["pres_editable"] = "yes";
             $data["pres_deletable"] = "yes";
@@ -181,6 +175,7 @@ class Prescription extends Admin_Controller
 
         $data['visit_details_id'] = $this->input->post('visit_detail_id');
         $data['medicineCategory'] = $this->medicine_category_model->getMedicineCategory();
+        $data['medicinesearchType'] = $this->medicine_category_model->getSearchtype();
         $data['intervaldosage']   = $this->medicine_dosage_model->getIntervalDosage();
         $data['durationdosage']   = $this->medicine_dosage_model->getDurationDosage();
         $data['medicineName']     = $this->pharmacy_model->getMedicineName();
@@ -253,9 +248,11 @@ class Prescription extends Admin_Controller
     {
         $prescription_id = $this->input->post('prescription_id');
         $result          = $this->prescription_model->getPrescriptionByTable($prescription_id, 'opd_prescription');
-        
+        // var_dump($result ); die;
         $data['medicineCategory'] = $this->medicine_category_model->getMedicineCategory();
 
+        $data['medicinesearchType'] = $this->medicine_category_model->getSearchtype();
+        $data['medListforRedWind'] = $this->pharmacy_model->getMedicineforRefWind();
         $data['intervaldosage']   = $this->medicine_dosage_model->getIntervalDosage();
         $data['durationdosage']   = $this->medicine_dosage_model->getDurationDosage();
         $data['medicineName']     = $this->pharmacy_model->getMedicineName();

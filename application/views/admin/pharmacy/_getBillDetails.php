@@ -20,6 +20,36 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
     ?>" class="img-responsive" style="height:100px; width: 100%;">
                         </div>
                     <?php }?>
+
+
+                     <?php if (!empty($general_details)) { 
+    ?>
+                        <div class="pprinta4">
+                            <div style="text-align: center;">
+                            <div><?php echo $general_details[0]['name']; ?></div>
+                            <?php if($general_details[0]['local_address'] != ''){
+                                ?>
+                                <div><?php echo "Address: ".$general_details[0]['local_address']; ?></div>
+                                <?php
+                            }else{
+                                ?>
+                                <div><?php echo "Address: ".$general_details[0]['permanent_address']; ?></div>
+                                <?php 
+                            }
+                            ?>
+                            
+                             <div><?php echo "GSTIN: ".$general_details[0]['gst_in']; ?></div>
+                             <div><?php echo "DL No: ".$general_details[0]['drug_license_number'];  ?></div>
+                        </div>
+                            <!-- <img src="<?php
+    if (!empty($print_details['print_header'])) {
+        echo base_url() . $print_details['print_header'].img_time();
+    }
+    ?>" class="img-responsive" style="height:100px; width: 100%;"> -->
+                        </div>
+                    <?php }?>
+
+
                     <table width="100%" class="printablea4" style="text-align:left;">
                         <tr>
                             <td width="77%" align="text-left"><h5><?php echo $this->lang->line('bill_no') ?> : <?php echo $this->customlib->getSessionPrefixByType('pharmacy_billing').$result["id"] ?></h5>

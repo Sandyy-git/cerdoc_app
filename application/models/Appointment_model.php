@@ -12,6 +12,7 @@ class Appointment_model extends MY_Model
         $this->db->where('appointment.date', $appointment["date"]);
         $this->db->where('appointment.shift_id', $appointment["shift_id"]);
         $this->db->where('appointment.doctor', $appointment["doctor"]);
+        $this->db->where('appointment.doctor_clinics_id', $appointment["doctor_clinics_id"]);
         $query = $this->db->get('appointment');
         $result = $query->result_array();
         return $result;
@@ -112,11 +113,12 @@ class Appointment_model extends MY_Model
         $field_variable      = (empty($field_var_array)) ? "" : "," . implode(',', $field_var_array);
         $custom_field_column = (empty($custom_field_column_array)) ? "" : "," . implode(',', $custom_field_column_array);
         $this->datatables
-            ->select('appointment.*,appointment_payment.paid_amount,staff.id as sid,staff.name,patients.id as pid, patients.patient_name as patient_name,patients.gender as gender, patients.email as email, patients.mobileno as mobileno,staff.surname,staff.employee_id,appoint_priority.appoint_priority as priorityname' . $field_variable)
+            ->select('appointment.*,appointment_payment.paid_amount,staff.id as sid,staff.name,patients.id as pid, patients.patient_name as patient_name,patients.gender as gender, patients.email as email, patients.mobileno as mobileno,staff.surname,staff.employee_id,appoint_priority.appoint_priority as priorityname,doctor_clinics.clinic_name' . $field_variable)
             ->join('appointment_payment', "appointment_payment.appointment_id=appointment.id")
             ->join('staff', 'appointment.doctor = staff.id', "inner")
             ->join('patients', 'appointment.patient_id = patients.id', "left")
             ->join('appoint_priority', 'appoint_priority.id = appointment.priority', "left")
+            ->join('doctor_clinics', 'appointment.doctor_clinics_id = doctor_clinics.id','left')
             ->searchable('patients.patient_name,appointment_payment.paid_amount,appointment.id,appointment.date,patients.mobileno,patients.gender,staff.name,appointment.source,appoint_priority.appoint_priority,appointment.live_consult' . $custom_field_column)
             ->orderable('patients.patient_name,appointment.id,appointment.date,patients.mobileno,patients.gender,staff.name,appointment.source,appoint_priority.appoint_priority,appointment.live_consult' . $custom_field_column . ', appointment_payment.paid_amount')
             ->sort('appointment.date', 'desc')
@@ -179,7 +181,8 @@ public function getDetailsAppointment($id,$is_patient=null){
         $field_variable      = (empty($field_var_array)) ? "" : "," . implode(',', $field_var_array);
         $custom_field_column = (empty($custom_field_column_array)) ? "" : "," . implode(',', $custom_field_column_array);
     
-        $this->db->select('appointment.*,blood_bank_products.name as blood_group,appointment_payment.paid_amount, appointment_queue.position as appointment_serial_no, `department`.`department_name`,appointment_payment.note as payment_note,visit_details.opd_details_id,transactions.id as transaction_id ,transactions.payment_mode,transactions.cheque_date , transactions.cheque_no, transactions.amount, transactions.attachment, appoint_priority.appoint_priority,staff.name,staff.surname,staff.employee_id,patients.mobileno as patient_mobileno,patients.email as patient_email,patients.patient_name as patients_name,patients.gender as patients_gender,patients.age,patients.day,patients.month,global_shift.name as global_shift_name,concat(date_format(doctor_shift.start_time,"%h:%i %p")," - ",date_format(doctor_shift.end_time,"%h:%i %p")) as doctor_shift_name'.$field_variable);
+        // $this->db->select('appointment.*,blood_bank_products.name as blood_group,appointment_payment.paid_amount, appointment_queue.position as appointment_serial_no, `department`.`department_name`,appointment_payment.note as payment_note,visit_details.opd_details_id,transactions.id as transaction_id ,transactions.payment_mode,transactions.cheque_date , transactions.cheque_no, transactions.amount, transactions.attachment, appoint_priority.appoint_priority,staff.name,staff.surname,staff.employee_id,patients.mobileno as patient_mobileno,patients.email as patient_email,patients.patient_name as patients_name,patients.gender as patients_gender,patients.age,patients.day,patients.month,doctor_clinics as doctor_clinic_id,doctor_clinics.clinic_name,global_shift.name as global_shift_name,concat(date_format(doctor_shift.start_time,"%h:%i %p")," - ",date_format(doctor_shift.end_time,"%h:%i %p")) as doctor_shift_name'.$field_variable);
+        $this->db->select('appointment.*,blood_bank_products.name as blood_group,appointment_payment.paid_amount, appointment_queue.position as appointment_serial_no, `department`.`department_name`,appointment_payment.note as payment_note,visit_details.opd_details_id,transactions.id as transaction_id ,transactions.payment_mode,transactions.cheque_date , transactions.cheque_no, transactions.amount, transactions.attachment, appoint_priority.appoint_priority,staff.name,staff.surname,staff.employee_id,patients.mobileno as patient_mobileno,patients.email as patient_email,patients.patient_name as patients_name,patients.gender as patients_gender,patients.age,patients.day,patients.month,global_shift.name as global_shift_name,concat(date_format(doctor_shift.start_time,"%h:%i %p")," - ",date_format(doctor_shift.end_time,"%h:%i %p")) as doctor_shift_name,doctor_clinics.id as doccliid,doctor_clinics.clinic_name'.$field_variable);
 
         $this->db->join('transactions', 'appointment.id = transactions.appointment_id', "left");
         $this->db->join('staff', 'appointment.doctor = staff.id', "left");
@@ -191,7 +194,9 @@ public function getDetailsAppointment($id,$is_patient=null){
         $this->db->join('visit_details', 'visit_details.id = appointment.visit_details_id', 'left');
         $this->db->join("appointment_payment","appointment_payment.appointment_id=appointment.id","left");
         $this->db->join('appointment_queue', 'appointment_queue.appointment_id = appointment.id', "left");
-         $this->db->join('blood_bank_products', '`patients`.`blood_bank_product_id` = blood_bank_products.id', "left");
+        $this->db->join('blood_bank_products', '`patients`.`blood_bank_product_id` = blood_bank_products.id', "left");
+        $this->db->join('doctor_clinics', 'doctor_clinics.staff_id = staff.id', 'left');
+
         $this->db->where('appointment.id', $id);
         $query = $this->db->get('appointment');
         return $query->row_array();

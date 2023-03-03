@@ -21,6 +21,8 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                             <thead>
                                                 <tr class="font13">
                                                     <th width="15%"><?php echo $this->lang->line('medicine_category'); ?><small class="req" style="color:red;"> *</small></th>
+                                                    <th width="15%"><?php echo $this->lang->line('search_type'); ?><small class="req" style="color:red;"> *</small></th>
+
                                                     <th width="15%"><?php echo $this->lang->line('medicine_name'); ?><small class="req" style="color:red;"> *</small></th>
                                                     <th width="15%"><?php echo $this->lang->line('batch_no'); ?> <small class="req" style="color:red;">*</small></th>
                                                     <th width="15%"><?php echo $this->lang->line('expiry_date'); ?><small class="req" style="color:red;"> *</small></th>
@@ -63,6 +65,24 @@ foreach ($prescription_data->medicines as $medicine_key => $medicine_value) {
                                                     <span class="text-danger"><?php echo form_error('medicine_category_id[]'); ?>
                                                     </span>
                                                 </td>
+
+                                                <td>
+                                                <select class="form-control medicine_category select3" style="width:100%" name='medicine_category_id_<?php echo $row_value;?>'>
+                                                        <option value="<?php echo set_value('medicine_category_id'); ?>"><?php echo $this->lang->line('select') ?>
+                                                        </option>
+                                                         <?php foreach ($medicineSearchType as $med_cat_key => $med_st_value) {
+                        ?>
+         <option value="<?php echo $med_st_value["id"]; ?>" ><?php echo $med_st_value["search_type"] ?>
+                          </option>
+                      <?php 
+                  }
+                      ?>
+                                                    </select>
+                                                    <span class="text-danger"><?php echo form_error('medicine_category_id[]'); ?>
+                                                    </span>
+
+                </td>
+
                                                 <td>
                                                     <select class="form-control select3 medicine_name" style="width:100%"  id="medicine_name0" name='medicine_name_id_<?php echo $row_value;?>'>
                                                         <option value=""><?php echo $this->lang->line('select') ?>

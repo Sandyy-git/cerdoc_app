@@ -2487,6 +2487,7 @@ This Function is used to Import Multiple Patient Records
         $data["yesno_condition"]    = $this->yesno_condition;
         $data["bloodgroup"]         = $this->blood_group;
         $data['medicineCategory']   = $this->medicine_category_model->getMedicineCategory();
+        $data['medicinesearchType'] = $this->medicine_category_model->getSearchtype();
         $category_dosage            = $this->medicine_dosage_model->getCategoryDosages();
         $data['category_dosage']    = $category_dosage;
         $data['medicineName']       = $this->pharmacy_model->getMedicineName();
@@ -4441,7 +4442,7 @@ This Function is used to Import Multiple Patient Records
         if (isset($total_rows) && !empty($total_rows)) {
             foreach ($total_rows as $row_key => $row_value) {
                 $medicine_category = $this->input->post('medicine_cat_' . $row_value);
-                $medicine_name     = $this->input->post('medicine_' . $row_value);
+                $medicine_name     = $this->input->post('medicine_brand_' . $row_value);
                 // $dosage            = $this->input->post('dosage_' . $row_value);
                 
                 if ($medicine_category !== "") {
@@ -4512,7 +4513,8 @@ This Function is used to Import Multiple Patient Records
                         $not_be_deleted_medicines[] = $ipd_prescription_detail_id;
                         $update_medicines[]         = array(
                             'id'               => $ipd_prescription_detail_id,
-                            'pharmacy_id'      => $this->input->post("medicine_" . $row_value),
+                            // 'pharmacy_id'      => $this->input->post("medicine_" . $row_value),
+                            'pharmacy_id'      => $this->input->post("medicine_brand_" . $row_value),
                             // 'dosage'           => $this->input->post("dosage_" . $row_value),
                             'dose_interval_id' => $this->input->post("interval_dosage_" . $row_value),
                             'dose_duration_id' => $this->input->post("duration_dosage_" . $row_value),
@@ -4523,7 +4525,8 @@ This Function is used to Import Multiple Patient Records
                     } else {
                         $insert_medicines[] = array(
                             'basic_id'         => 0,
-                            'pharmacy_id'      => $this->input->post("medicine_" . $row_value),
+                            // 'pharmacy_id'      => $this->input->post("medicine_" . $row_value),
+                            'pharmacy_id'      => $this->input->post("medicine_brand_" . $row_value),
                             // 'dosage'           => $this->input->post("dosage_" . $row_value),
                             'dose_interval_id' => $this->input->post("interval_dosage_" . $row_value),
                             'dose_duration_id' => $this->input->post("duration_dosage_" . $row_value),
@@ -4567,6 +4570,7 @@ This Function is used to Import Multiple Patient Records
             $basic_id       = $this->prescription_model->add_ipdprescription($opd_basic_array, $insert_medicines, $update_medicines, $not_be_deleted_medicines, $insert_pathology, $insert_radiology, $delete_pathology, $delete_radiology, $ipd_prescription_basic_id);
             $patient_record = $this->patient_model->get_patientidbyvisitid($visitid);
             $opd_id         = $patient_record['opd_details_id'];
+            //send pres to network staff
             $visible_module = $this->input->post('visible');
 
             if (!empty($pathology)) {
@@ -4615,7 +4619,7 @@ This Function is used to Import Multiple Patient Records
 
             if(!empty($visible_module))
             {
-                $notification_array['visible_module'] = $visible_module;
+               $notification_array['visible_module'] = $visible_module;
                $this->system_notification->send_system_notification('notification_opd_prescription_created', $event_data, $notification_array);
             }
             
@@ -6940,6 +6944,101 @@ This Function is used to Import Multiple Patient Records
         }
        
         echo json_encode($arr);
+    }
+
+    public function receive_pres(){
+        if (!$this->rbac->hasPrivilege('receive_prescription', 'can_view')) {
+            access_denied();
+        }
+        $this->session->set_userdata('top_menu', 'receive_order');
+        $this->load->view("layout/header");
+        $this->load->view("admin/patient/receive_order");
+        $this->load->view("layout/footer");
+    }
+
+
+    public function getreceiveorderdatatable()
+    { 
+        $dt_response = $this->patient_model->getAllOrderreceived();
+      
+        $fields      = $this->customfield_model->get_custom_fields('opd', 1);
+
+        $dt_response = json_decode($dt_response);
+       
+        $dt_data     = array();
+        if (!empty($dt_response->data)) {
+            foreach ($dt_response->data as $key => $value) {
+
+                $opd_id           = $value->opdid;
+                $visit_details_id = $value->visit_id;
+
+                $row = array();
+                //====================================
+                // $action = "<div class='rowoptionview rowview-mt-19'>";
+                // $action .= "<a href=" . base_url() . 'admin/patient/profile/' . $value->pid . " class='btn btn-default btn-xs'  data-toggle='tooltip' title='" . $this->lang->line('show') . "'><i class='fa fa-reorder' aria-hidden='true'></i></a>";
+                // $action .= "</div'>";
+                // $first_action = "<a href=" . base_url() . 'admin/patient/profile/' . $value->pid . ">";
+
+
+                $action = "<div class=''>";
+                // if ($this->rbac->hasPrivilege('opd_print_bill', 'can_view')) {
+                //     $action .= "<a href='javascript:void(0)' data-loading-text='<i class=\"fa fa-circle-o-notch fa-spin\"></i>' data-opd-id=" . $opd_id . " data-record-id=" . $visit_details_id . " class='btn btn-default btn-xs print_visit_bill'  data-toggle='tooltip' title='" . $this->lang->line('print_bill') . "'><i class='fa fa-file'></i></a>";
+                // }
+
+                
+                if ($this->rbac->hasPrivilege('prescription', 'can_view')) {
+                    $action .= "<a href='#' onclick='view_prescription(" . $visit_details_id . ")' class='btn btn-default btn-xs'  data-toggle='tooltip' title='" . $this->lang->line('view_prescription') . "'><i class='fas fa-file-prescription'></i></a>";
+                }
+                
+                if ($this->rbac->hasPrivilege('manual_prescription', 'can_view')) {
+                    $action .= "<a href='#' onclick='viewmanual_prescription(" . $visit_details_id . ")' class='btn btn-default btn-xs'  data-toggle='tooltip' title='" . $this->lang->line('manual_prescription') . "'><i class='fas fa fa-print'></i></a>";
+                }
+
+                // $action .= "<a href='javascript:void(0)' data-loading-text='" . $this->lang->line('please_wait') . "' data-opd-id=" . $opd_id . " data-record-id=" . $visit_details_id . " class='btn btn-default btn-xs get_opd_detail'  data-toggle='tooltip' title='" . $this->lang->line('show') . "'><i class='fa fa-reorder'></i></a>";
+
+                $action .= "</div>";
+                //==============================
+                // $row[] = $first_action . $value->patient_name . "</a>" . $action;
+                $row[] = $value->patient_name;
+                $row[] = $this->opd_prefix . $value->opdid . "</a>";
+                // $row[] = $value->name.' '. $value->surname.' '.$value->employee_id;
+                $row[] = $value->gender;
+                $row[] = $value->mobileno;
+                $row[] = composeStaffNameByString($value->name, $value->surname, $value->employee_id);
+                if($value->pbbId != ''){
+                    $row[] = "<button class='btn btn-xs' style='color:green'>Billed</button>";
+                }else{
+                    $row[] = "<button class='btn btn-xs' style='color:red'>Not Billed</button>";
+                }
+                
+                // $row[] = $this->customlib->YYYYMMDDHisTodateFormat($value->last_visit, $this->time_format);
+
+                //====================
+                // if (!empty($fields)) {
+                //     foreach ($fields as $fields_key => $fields_value) {
+
+                //         $display_field = $value->{"$fields_value->name"};
+                //         if ($fields_value->type == "link") {
+                //             $display_field = "<a href=" . $value->{"$fields_value->name"} . " target='_blank'>" . $value->{"$fields_value->name"} . "</a>";
+
+                //         }
+                //         $row[] = $display_field;
+                //     }
+                // }
+                //====================
+                // $row[]     = $value->total_visit;
+                $row[]     = $action;
+
+                $dt_data[] = $row;
+            }
+        }
+        $json_data = array(
+            "draw"            => intval($dt_response->draw),
+            "recordsTotal"    => intval($dt_response->recordsTotal),
+            "recordsFiltered" => intval($dt_response->recordsFiltered),
+            "data"            => $dt_data,
+        );
+        echo json_encode($json_data);
     }
 
 }

@@ -5,16 +5,49 @@ if (!defined('BASEPATH')) {
 }
 class Onlineappointment_model extends MY_Model
 {
-    public function getShiftdata($doctor, $day, $shift)
+    public function getShiftdata($doctor, $day, $shift,$doctor_clinics_id,$week)
     {
         $this->db->select("id,staff_id as doctor_id,date_format(start_time,'%h:%i %p') as start_time ,date_format(end_time,'%h:%i %p') as end_time");
         $this->db->where("staff_id", $doctor);
         $this->db->where("global_shift_id", $shift);
         $this->db->where("day", $day);
+        $this->db->where("doctor_clinics_id", $doctor_clinics_id);
+        $this->db->where("week", $week);
+
         $query  = $this->db->get("doctor_shift");
         $result = $query->result();
         return $result;
     }
+
+    public function getShiftdataPatSide($doctor, $day, $shift,$doctor_clinics_id)
+    {
+        $this->db->select("id,staff_id as doctor_id,date_format(start_time,'%h:%i %p') as start_time ,date_format(end_time,'%h:%i %p') as end_time");
+        $this->db->where("staff_id", $doctor);
+        $this->db->where("global_shift_id", $shift);
+        $this->db->where("day", $day);
+        $this->db->where("doctor_clinics_id", $doctor_clinics_id);
+        $query  = $this->db->get("doctor_shift");
+        // echo $this->db->last_query(); die;
+        $result = $query->result();
+        return $result;
+    }
+
+    public function getShiftdataDocSide($doctor, $day, $shift,$doctor_clinics_id)
+    {
+        $this->db->select("id,staff_id as doctor_id,date_format(start_time,'%h:%i %p') as start_time ,date_format(end_time,'%h:%i %p') as end_time");
+        $this->db->where("staff_id", $doctor);
+        $this->db->where("global_shift_id", $shift);
+        $this->db->where("day", $day);
+        $this->db->where("doctor_clinics_id", $doctor_clinics_id);
+        $query  = $this->db->get("doctor_shift");
+        // echo $this->db->last_query(); die;
+
+        $result = $query->result();
+        return $result;
+    }
+
+
+    
     
     public function getShiftByDoctor($doctor)
     {
@@ -59,10 +92,11 @@ class Onlineappointment_model extends MY_Model
         return $result;
     }
     
-    public function getShiftDetails($doctor)
+    public function getShiftDetails($doctor,$doctor_clinics_id)
     {
         $this->db->select("consult_duration,charge_id");
         $this->db->where("staff_id", $doctor);
+        $this->db->where("doctor_clinics_id", $doctor_clinics_id);
         $query  = $this->db->get("shift_details");
         $result = $query->row_array();
         return $result;
@@ -124,12 +158,14 @@ class Onlineappointment_model extends MY_Model
         return $result = $query->result();
     }
 
-    public function getDocData($doctor)
+    public function getDocData($doctor,$doctor_clinics_id)
     {
         $this->db->select("consult_duration,charge_id");
         $this->db->where("staff_id", $doctor);
+        $this->db->where("doctor_clinics_id", $doctor_clinics_id);
         $query  = $this->db->get("shift_details");
         $result = $query->row_array();
+        // echo $this->db->last_query(); die;
         return $result;
     }
     
@@ -439,6 +475,16 @@ class Onlineappointment_model extends MY_Model
         return $result;
     }
 
+    public function doctorClinicsById($doctor_id)
+    {
+        $this->db->select("doctor_clinics.*");
+        $this->db->join("doctor_shift", "doctor_shift.staff_id=doctor_clinics.id", "left");
+        $this->db->where("doctor_clinics.staff_id", $doctor_id);
+        $query  = $this->db->get("doctor_clinics");
+        $result = $query->result_array();
+        return $result;
+    }
+
     public function insertQueuePositions($insert_data, $update_data)
     {
         $this->db->insert_batch("appointment_queue", $insert_data);
@@ -526,6 +572,127 @@ class Onlineappointment_model extends MY_Model
         }
         return $query->result_array();
     }
+
+
+    public function addDoctorClinics($shift)
+    {
+        $this->db->trans_start(); # Starting Transaction
+        $this->db->trans_strict(false); # See Note 01. If you wish can remove as well
+        //=======================Code Start===========================        
+        
+        $this->db->insert("doctor_clinics", $shift);        
+        
+        $insert_id = $this->db->insert_id();
+        $message = INSERT_RECORD_CONSTANT . " On Global Shift id " . $insert_id;
+        $action = "Insert";
+        $record_id = $insert_id;
+        $this->log($message, $record_id, $action);
+        //======================Code End==============================
+
+        $this->db->trans_complete(); # Completing transaction
+        /* Optional */
+
+        if ($this->db->trans_status() === false) {
+            # Something went wrong.
+            $this->db->trans_rollback();
+            return false;
+        } else {
+            return $record_id;
+        }        
+    }
+
+
+    public function doctorClinics()
+    {
+        $staffId          = $this->customlib->getStaffID();
+        if($staffId != ''){
+            $this->db->where('doctor_clinics.staff_id',$staffId);
+        }
+        $query = $this->db
+            ->select("doctor_clinics.*,staff_locality.locality")
+            ->join('staff_locality','doctor_clinics.locality_id=staff_locality.id','left')
+            ->get("doctor_clinics");
+        $result = $query->result_array();
+        return $result;
+    }
+
+    public function editDoctorClinics($id)
+    {
+        $this->db->select("doctor_clinics.*,staff_locality.locality");
+        $this->db->join('staff_locality','doctor_clinics.locality_id=staff_locality.id','left');
+        $this->db->where("doctor_clinics.id", $id);
+        $query  = $this->db->get("doctor_clinics");
+        // echo $this->db->last_query(); die;
+        $result = $query->row_array();
+        return $result;
+    }
+
+    public function updateDocClinic($data)
+    {
+        $this->db->trans_start(); # Starting Transaction
+        $this->db->trans_strict(false); # See Note 01. If you wish can remove as well
+        //=======================Code Start===========================        
+        
+        $this->db->where("id", $data["id"]);
+        $this->db->update("doctor_clinics", $data);        
+        
+        $message = UPDATE_RECORD_CONSTANT . " On Global Shift id " . $data["id"];
+        $action = "Update";
+        $record_id = $data["id"];
+        $this->log($message, $record_id, $action);
+        //======================Code End==============================
+
+        $this->db->trans_complete(); # Completing transaction
+        /* Optional */
+
+        if ($this->db->trans_status() === false) {
+            # Something went wrong.
+            $this->db->trans_rollback();
+            return false;
+        } else {
+            return $record_id;
+        }
+    }
+
+    public function deleteDocClinics($id)
+    {
+        $this->db->trans_start(); # Starting Transaction
+        $this->db->trans_strict(false); # See Note 01. If you wish can remove as well
+        //=======================Code Start===========================
+        
+        $this->db->where('id', $id)->delete('doctor_clinics');
+        
+        $message = DELETE_RECORD_CONSTANT . " On Global Shift id " . $id;
+        $action = "Delete";
+        $record_id = $id;
+        $this->log($message, $record_id, $action);
+        //======================Code End==============================
+
+        $this->db->trans_complete(); # Completing transaction
+        /* Optional */
+
+        if ($this->db->trans_status() === false) {
+            # Something went wrong.
+            $this->db->trans_rollback();
+            return false;
+        } else {
+            return $record_id;
+        }
+    }
+
+    public function unlinkImgofDocClinic($id){
+        $this->db->select("doctor_clinics.clinic_logo");
+        $this->db->where("doctor_clinics.id", $id);
+        $query  = $this->db->get("doctor_clinics");
+        $result = $query->row_array();
+        // echo $this->db->last_query(); die;
+        return $result;
+    }
+
+    // public function delunlinkIng($id){
+    //     $delStatus = $this->db->delete("doctor_clinics")->where('doctor_clinics.id',$id);
+    //     return $delStatus;
+    // }
 
 
 }

@@ -170,7 +170,7 @@ class Conference_model extends MY_Model
             //   ->orderable('"",conferences.title,patients.patient_name,conferences.date,conferences.api_type,conferences.created_id,total_viewers')
             //   ->sort('conferences.id','desc')
               ->query_where_enable(TRUE);   
-              echo $sql; die;
+            //   echo $sql; die;
 
             
         return $this->datatables->generate('json');

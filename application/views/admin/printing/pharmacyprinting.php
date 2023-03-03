@@ -24,6 +24,8 @@
                                         <input type="hidden" class=" form-control" name="print_header">
                                         <span class="text-danger"><?php echo form_error('header_image'); ?></span>
                                     </div>
+
+
                                     <div class="form-group"><label><?php echo $this->lang->line('footer_content'); ?></label>
                                         <textarea id="compose_textarea" name="footer_content" class="form-control" style="height: 250px">
                                             <?php if(!empty($printing_list)){ echo $printing_list['print_footer'];} ?>

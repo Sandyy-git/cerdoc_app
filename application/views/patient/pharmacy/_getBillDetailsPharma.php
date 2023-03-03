@@ -6,16 +6,54 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
             <!-- left column -->
             <div class="col-md-12">
                 <div class="">
-                    <?php if (!empty($print_details['print_header'])) {
-    ?>
+
+                   <!-- <?php if (!empty($print_details['print_header'])) { ?>
                         <div class="pprinta4">
                             <img src="<?php
-if (!empty($print_details['print_header'])) {
-        echo base_url() . $print_details['print_header'].img_time();
-    }
-    ?>" class="img-responsive" style="height:100px; width: 100%;">
+                            if (!empty($print_details['print_header'])) {
+                                    echo base_url() . $print_details['print_header'].img_time();
+                                }
+                                ?>" class="img-responsive" style="height:100px; width: 100%;">
                         </div>
-                    <?php }?>
+                    <?php }?>   -->
+
+                    <!-- pharmacywise heade setting for patient pharmacy bill -->
+                    <?php if (!empty($result['print_header'])) { ?>
+                        <div class="pprinta4">
+                            <img src="<?php
+                            if (!empty($result['print_header'])) {
+                                    echo base_url() . $result['print_header'].img_time();
+                                }
+                                ?>" class="img-responsive" style="height:100px; width: 100%;">
+                        </div>
+                    <?php }?>   
+
+                    <!-- General Details of pharmacy on patient bill -->
+                    <?php if (!empty($result)) { 
+    ?>
+                        <div class="pprinta4">
+                            <div style="text-align: center;">
+                            <div><?php echo $result['clinic_name']; ?></div>
+                            <?php if($result['local_address'] != ''){
+                                ?>
+                                <div><?php echo "Address: ".$result['local_address']; ?></div>
+                                <?php
+                            }else{
+                                ?>
+                                <div><?php echo "Address: ".$result['permanent_address']; ?></div>
+                                <?php 
+                            }
+                            ?>
+                            
+                             <div><?php echo "GSTIN: ".$result['gst_in']; ?></div>
+                             <div><?php echo "DL No: ".$result['drug_license_number'];  ?></div>
+                        </div>
+                    <?php } ?>
+
+
+                    <!-- General Details of pharmacy on patient bill ends -->
+                  
+
                     <table width="100%" class="printablea4">
                         <tr>
                             <td align="text-left"><h5><?php echo $this->lang->line('bill_no') ?> : <?php echo $this->customlib->getPatientSessionPrefixByType('pharmacy_billing').$result["id"] ?></h5>

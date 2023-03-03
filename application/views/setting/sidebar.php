@@ -26,6 +26,19 @@
                   <?php if ($this->rbac->hasPrivilege('superadmin')) { ?>                                                     
                 <li><a class="<?php echo set_Innermenu('admin/roles'); ?>" href="<?php echo base_url(); ?>admin/roles"><?php echo $this->lang->line('roles_permissions'); ?></a></li> 
             <?php } ?>
+
+            <!-- CERDOC -->
+            <!-- PHARMA ROLE MODULE VISIBLILITY -->
+            <?php if ($this->rbac->hasPrivilege('is_central_pharmacy', 'can_view') && !$this->rbac->hasPrivilege('superadmin')) { ?>                                                     
+                <li><a class="<?php echo set_Innermenu('admin/roles'); ?>" href="<?php echo base_url(); ?>admin/roles"><?php echo $this->lang->line('roles_permissions'); ?></a></li> 
+            <?php } ?>
+
+            <!-- LAB ROLE MODULE VISIBLILITY -->
+            <?php if ($this->rbac->hasPrivilege('is_central_lab', 'can_view') && !$this->rbac->hasPrivilege('superadmin')) { ?>                                                     
+                <li><a class="<?php echo set_Innermenu('admin/roles'); ?>" href="<?php echo base_url(); ?>admin/roles"><?php echo $this->lang->line('roles_permissions'); ?></a></li> 
+            <?php } ?>
+<!-- CERDOC -->
+
             <li>
                 <?php if ($this->rbac->hasPrivilege('backup', 'can_view')) { ?>
             <?php } ?>

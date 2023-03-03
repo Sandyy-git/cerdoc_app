@@ -70,6 +70,24 @@ $this->rbac->hasPrivilege('patient_queue','can_view')) {
                     }
                 }
             ?>
+
+
+<!-- Receive Prescription -->
+<?php
+                if ($this->module_lib->hasActive('pharmacy') ) {
+                    if ($this->rbac->hasPrivilege('receive_prescription', 'can_view')) {
+                        ?>
+                        <li class="treeview <?php echo set_Topmenu('receive_prescription'); ?>">
+                            <a href="<?php echo base_url(); ?>admin/patient/receive_pres">
+                                <i class="fas fa-stethoscope"></i> <span> <?php echo $this->lang->line('receive_prescription'); ?></span>
+                            </a>
+                        </li>
+            <?php
+                    }
+                }
+            ?>
+<!--  -->
+
             <?php
                 if ($this->module_lib->hasActive('pharmacy')) {
                     if ($this->rbac->hasPrivilege('pharmacy_bill', 'can_view')) {
@@ -297,7 +315,7 @@ $this->rbac->hasPrivilege('patient_queue','can_view')) {
                 ?>
 
                 <!-- LC REMOVE FROM RADIOLOGY -->
-                <!-- <?php 
+                 <?php 
                     if ($this->module_lib->hasActive('live_consultation')) {
                         if (($this->rbac->hasPrivilege('live_consultation', 'can_view')) || ($this->rbac->hasPrivilege('live_meeting', 'can_view'))) {?>
                             <li class="treeview <?php echo set_Topmenu('conference'); ?>">
@@ -315,8 +333,22 @@ $this->rbac->hasPrivilege('patient_queue','can_view')) {
                 <?php
                         }
                     }
-                ?> -->
+                ?> 
 
+                <!-- ENDS -->
+
+
+                <!-- STAFF SETTINGS -->
+
+                <?php 
+                    if($this->module_lib->hasActive('human_resource')){
+                    if ($this->rbac->hasPrivilege('leave_types', 'can_view')) {?>
+                                                    <!-- <i class="fas fa-line-chart"></i> <span><?php echo $this->lang->line('reports'); ?></span> <i class="fa fa-angle-left pull-right"></i> -->
+
+                        <li class="<?php echo set_Submenu('leave_types'); ?>"><a href="<?php echo base_url('admin/leavetypes'); ?>"><i class="fas fa-user"></i> <?php echo $this->lang->line('staff_settings') ?></a></li>
+                    <?php }
+                }
+                ?>
                 <!-- ENDS -->
 
 
@@ -360,8 +392,17 @@ $this->rbac->hasPrivilege('patient_queue','can_view')) {
                         ($this->rbac->hasPrivilege('patient_bill_report', 'can_view')) || 
                         ($this->rbac->hasPrivilege('component_issue_report', 'can_view')) ||
                         ($this->rbac->hasPrivilege('referral_report', 'can_view')) ||
-                        ($this->rbac->hasPrivilege('vp_report', 'can_view'))) {
-
+                        ($this->rbac->hasPrivilege('vp_report', 'can_view'))
+                        ($this->rbac->hasPrivilege('purchase_report', 'can_view'))
+                        ($this->rbac->hasPrivilege('sales_report', 'can_view'))
+                        ($this->rbac->hasPrivilege('productwise_purchase_report', 'can_view'))
+                        ($this->rbac->hasPrivilege('productwise_sales_report', 'can_view'))
+                        ($this->rbac->hasPrivilege('chemist_purchase_report', 'can_view'))
+                        ($this->rbac->hasPrivilege('chemist_productwise_purchase_report', 'can_view'))
+                        ($this->rbac->hasPrivilege('stock_report', 'can_view'))
+                        ($this->rbac->hasPrivilege('doctorwsie_product_report', 'can_view'))
+                        ($this->rbac->hasPrivilege('patientwise_product_report', 'can_view'))) {
+   
                         ?> 
                         <li class="treeview <?php echo set_Topmenu('Reports'); ?>">
                             <a href="#">
@@ -517,10 +558,72 @@ $this->rbac->hasPrivilege('patient_queue','can_view')) {
                                     <?php
                                         }
                                         }
+                                        if ($this->module_lib->hasActive('reports')) {
+                                            if ($this->rbac->hasPrivilege('purchase_report', 'can_view')) {
+                                                ?>
+                                                <li class="<?php echo set_Submenu('reports/purchase_report'); ?>"><a href="<?php echo base_url(); ?>admin/purchase_report/purchasereport"><i class="fas fa-angle-right"></i> <?php echo $this->lang->line('purchase_report'); ?></a></li>
+                                        <?php
+                                            }
+                                            }
 
-                                    
+                                            if ($this->module_lib->hasActive('reports')) {
+                                            if ($this->rbac->hasPrivilege('sales_report', 'can_view')) {
+                                                ?>
+                                                <li class="<?php echo set_Submenu('reports/sales_report'); ?>"><a href="<?php echo base_url(); ?>admin/sales_report/salesreport"><i class="fas fa-angle-right"></i> <?php echo $this->lang->line('sales_report'); ?></a></li>
+                                        <?php
+                                            }
+                                            }
 
+                                            if ($this->module_lib->hasActive('reports')) {
+                                            if ($this->rbac->hasPrivilege('productwise_purchase_report', 'can_view')) {
+                                                ?>
+                                                <li class="<?php echo set_Submenu('reports/productwise_purchase_report'); ?>"><a href="<?php echo base_url(); ?>admin/productwise_purchase_report/productwisepurchasereport"><i class="fas fa-angle-right"></i> <?php echo $this->lang->line('productwise_purchase_report'); ?></a></li>
+                                        <?php
+                                            }
+                                            }
+                                            if ($this->module_lib->hasActive('reports')) {
+                                            if ($this->rbac->hasPrivilege('productwise_sales_report', 'can_view')) {
+                                                ?>
+                                                <li class="<?php echo set_Submenu('reports/productwise_sales_report'); ?>"><a href="<?php echo base_url(); ?>admin/productwise_sales_report/productwisesalesreport"><i class="fas fa-angle-right"></i> <?php echo $this->lang->line('productwise_sales_report'); ?></a></li>
+                                        <?php
+                                            }
+                                            }
+                                            if ($this->module_lib->hasActive('reports')) {
+                                            if ($this->rbac->hasPrivilege('chemist_purchase_report', 'can_view')) {
+                                                ?>
+                                                <li class="<?php echo set_Submenu('reports/chemist_purchase_report'); ?>"><a href="<?php echo base_url(); ?>admin/chemist_purchase_report/chemistpurchasereport"><i class="fas fa-angle-right"></i> <?php echo $this->lang->line('chemist_purchase_report'); ?></a></li>
+                                        <?php
+                                            }
+                                            }
+                                            if ($this->module_lib->hasActive('reports')) {
+                                            if ($this->rbac->hasPrivilege('chemist_productwise_purchase_report', 'can_view')) {
+                                                ?>
+                                                <li class="<?php echo set_Submenu('reports/chemist_productwise_purchase_report'); ?>"><a href="<?php echo base_url(); ?>admin/chemist_productwise_purchase_report/chemistproductwisepurchasereport"><i class="fas fa-angle-right"></i> <?php echo $this->lang->line('chemist_productwise_purchase_report'); ?></a></li>
+                                        <?php
+                                            }
+                                            }
+                                             if ($this->module_lib->hasActive('reports')) {
+                                            if ($this->rbac->hasPrivilege('stock_report', 'can_view')) {
+                                                ?>
+                                                <li class="<?php echo set_Submenu('reports/stock_report'); ?>"><a href="<?php echo base_url(); ?>admin/stock_report/stockreport"><i class="fas fa-angle-right"></i> <?php echo $this->lang->line('stock_report'); ?></a></li>
+                                        <?php
+                                            }
+                                            }
+                                            if ($this->module_lib->hasActive('reports')) {
+                                            if ($this->rbac->hasPrivilege('doctorwsie_product_report', 'can_view')) {
+                                                ?>
+                                                <li class="<?php echo set_Submenu('reports/doctorwsie_product_report'); ?>"><a href="<?php echo base_url(); ?>admin/doctorwsie_product_report/docwiseproductreport"><i class="fas fa-angle-right"></i> <?php echo $this->lang->line('doctorwise_product_report'); ?></a></li>
+                                        <?php
+                                            }
+                                            }
 
+                                            if ($this->module_lib->hasActive('reports')) {
+                                            if ($this->rbac->hasPrivilege('patientwise_product_report', 'can_view')) {
+                                                ?>
+                                                <li class="<?php echo set_Submenu('reports/patientwise_product_report'); ?>"><a href="<?php echo base_url(); ?>admin/patientwise_product_report/patwiseproductreport"><i class="fas fa-angle-right"></i> <?php echo $this->lang->line('patientwise_product_report'); ?></a></li>
+                                        <?php
+                                            }
+                                            }
                                         ?>
                                 <?php
 
@@ -687,7 +790,7 @@ $this->rbac->hasPrivilege('patient_queue','can_view')) {
                     if ($this->module_lib->hasActive('pharmacy')) {
                         if (($this->rbac->hasPrivilege('medicine_category', 'can_view') || ($this->rbac->hasPrivilege('medicine_supplier', 'can_view')) || ($this->rbac->hasPrivilege('medicine_dosage', 'can_view')))) {
                             ?>
-                                                <li class="<?php echo set_Submenu('medicine/index'); ?>"><a href="<?php echo base_url(); ?>admin/medicinecategory/index"><i class="fas fa-angle-right"></i> <?php echo $this->lang->line('pharmacy'); ?></a></li>
+                                                <li class="<?php echo set_Submenu('medicine/index'); ?>"><a href="<?php echo base_url(); ?>admin/medicinecategory/index"><i class="fas fa-angle-right"></i> <?php echo $this->lang->line('pharmacy_settings'); ?></a></li>
                                                 <?php
                 }
                     }
@@ -810,7 +913,7 @@ $this->rbac->hasPrivilege('patient_queue','can_view')) {
                     }
                 ?>
                                 
-                <?php
+                <!-- <?php
                 if($this->module_lib->hasActive('human_resource')){
                     ?>
                      <?php if ($this->rbac->hasPrivilege('leave_types', 'can_view')) { ?>
@@ -828,15 +931,9 @@ $this->rbac->hasPrivilege('patient_queue','can_view')) {
                         <?php } ?>
                         <?php
                 } 
-                ?>      
+                ?>       -->
 
-                    <?php 
-                    if($this->module_lib->hasActive('human_resource')){
-                    if ($this->rbac->hasPrivilege('leave_types', 'can_view')) {?>
-                        <li class="<?php echo set_Submenu('leave_types'); ?>"><a href="<?php echo base_url('admin/leavetypes'); ?>"><i class="fas fa-angle-right"></i> <?php echo $this->lang->line('leave_type') ?></a></li>
-                    <?php }
-                }
-                ?>
+                   
                   
 
         </ul>

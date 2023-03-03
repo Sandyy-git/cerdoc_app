@@ -319,6 +319,7 @@ class dashboard extends Patient_Controller
             $result        = $this->patient_model->getpatientDetails($id);
             $opd_details   = $this->patient_model->getpatientopddetails($id);
             $timeline_list = $this->timeline_model->getPatientTimeline($id, $timeline_status = 'yes');
+            // $chemist_list   = $this->patient_model->getchemistlist();
 
             $prescription_details = $this->prescription_model->getopdvisitPrescription($id);
         }
@@ -1060,6 +1061,8 @@ class dashboard extends Patient_Controller
         $id                    = $this->input->get('id');
         $print                 = $this->input->get('print');
         $print_details         = $this->printing_model->get('', 'pharmacy');
+        //functionality for pharmacywise header logo on patient login
+        // $print_details         = $this->printing_model->getPatientBillDetails('', 'pharmacy');
         $data["print_details"] = $print_details;
         $data['id']            = $id;
         if (isset($print)) {
@@ -2360,7 +2363,7 @@ class dashboard extends Patient_Controller
         $this->data["specialist"]    = $specialist;
         $global_shift                = $this->onlineappointment_model->doctorGlobalShift();
         $this->data["global_shift"]  = $global_shift;
-        $params                      = $this->input->post("doctor") . ',' . $this->input->post("shift") . ',' . $this->customlib->dateFormatToYYYYMMDD($this->input->post("date")) . ',' . $this->input->post("global_shift");
+        $params                      = $this->input->post("doctor") . ',' . $this->input->post("shift") . ',' . $this->customlib->dateFormatToYYYYMMDD($this->input->post("date")) . ',' . $this->input->post("global_shift") . ',' . $this->input->post("doctor_clinics");
         $custom_fields               = $this->customfield_model->getByBelongPatientPanel('appointment');
         foreach ($custom_fields as $custom_fields_key => $custom_fields_value) {
             if ($custom_fields_value['validation']) {
@@ -2375,11 +2378,12 @@ class dashboard extends Patient_Controller
         $this->form_validation->set_rules('date', $this->lang->line("date"), "trim|required|xss_clean");
         $this->form_validation->set_rules('shift', $this->lang->line("slot"), "trim|required|xss_clean");
         $this->form_validation->set_rules('global_shift', $this->lang->line("shift"), "trim|required|xss_clean");
-        $this->form_validation->set_rules('slot', $this->lang->line("available_slot"), 'trim|required|callback_check_slot[' . $params . ']');
+        // $this->form_validation->set_rules('slot', $this->lang->line("available_slot"), 'trim|required|callback_check_slot[' . $params . ']');
         $this->form_validation->set_rules('message', $this->lang->line("message"), 'trim|required');
         $this->form_validation->set_rules('live_consult', $this->lang->line("live_consult"), 'trim|required|xss_clean');
-
-        if ($this->form_validation->run() == false) {            
+        $this->form_validation->set_rules('doctor_clinics', $this->lang->line("doctor_clinics_id"), 'trim|required');
+        // var_Dump($this->form_validation->run()); die;
+        if ($this->form_validation->run() == false) {    
                 $msg = array(
                     'date'       => form_error('date'),
                     'specialist' => form_error('specialist'),
@@ -2389,6 +2393,7 @@ class dashboard extends Patient_Controller
                     'message'    => form_error('message'),
                     'slot'       => form_error('slot'),
                     'live_consult'       => form_error('live_consult'),
+                    'doctor_clinics'       => form_error('doctor_clinics'),
                 );
 
                 if (!empty($custom_fields)) {
@@ -2408,8 +2413,7 @@ class dashboard extends Patient_Controller
                 $json_array = array('status' => '0', 'error' => $error_msg);
                 echo json_encode($json_array);
             
-        } else {        
-                
+        } else {                    
                 if (empty($this->session->userdata("patient"))) {
                     $this->userlogin();
                 }
@@ -2418,12 +2422,14 @@ class dashboard extends Patient_Controller
                 $shift        = $this->input->post("shift");
                 $doctor       = $this->input->post("doctor");
                 $global_shift = $this->input->post("global_shift");
-                $slots        = $this->customlib->getSlotByDoctorShift($doctor, $shift);
+                $doctor_clinics = $this->input->post("doctor_clinics");
+                $slots        = $this->customlib->getSlotByDoctorShift($doctor, $shift,$doctor_clinics);
                 $live_consult = "No";
                 $slot         = $slots[$this->input->post("slot")];
                 $time         = date("H:i:s", strtotime($slot));
                 $cheque_date  = $this->customlib->dateFormatToYYYYMMDD($this->input->post("cheque_date"));
 
+            
                 if($this->input->post('live_consult') == 'no'){
                 $appointment  = array(
                     "patient_id"         => $this->session->userdata("patient")["patient_id"],
@@ -2439,6 +2445,8 @@ class dashboard extends Patient_Controller
                     "appointment_status" => "pending",
                     "source"             => "Offline",
                     'priority'           => $this->input->post('priority'),
+                    'doctor_clinics_id'  => $doctor_clinics,
+
                 );
             }elseif($this->input->post('live_consult') == 'yes'){
                 $appointment  = array(
@@ -2455,6 +2463,7 @@ class dashboard extends Patient_Controller
                     "appointment_status" => "pending",
                     "source"             => "Online",
                     'priority'           => $this->input->post('priority'),
+                    'doctor_clinics_id'  => $doctor_clinics,
                 );
             }
                 // echo "<pre>";

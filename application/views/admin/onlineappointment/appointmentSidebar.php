@@ -14,4 +14,10 @@
             <li><a href="<?php echo site_url('admin/onlineappointment/globalshift'); ?>" class="<?php echo set_sidebar_Submenu('admin/onlineappointment/globalshift'); ?>"><?php echo $this->lang->line("shift"); ?></a></li>
     </ul>
     <?php } ?>
+
+    <?php if ($this->rbac->hasPrivilege('add_clinics', 'can_view')) { ?>
+    <ul class="tablists">
+            <li><a href="<?php echo site_url('admin/onlineappointment/doctorclinics'); ?>" class="<?php echo set_sidebar_Submenu('admin/onlineappointment/doctorclinics'); ?>"><?php echo $this->lang->line("add_clinics"); ?></a></li>
+    </ul>
+    <?php } ?>
 </div>

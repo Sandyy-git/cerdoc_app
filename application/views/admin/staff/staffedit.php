@@ -36,10 +36,10 @@
                                                     foreach ($getStaffRole as $key => $role) {
                                                         ?>
                                                         <option value="<?php echo $role["id"] ?>" <?php
-                                                        if ($staff["user_type"] == $role["type"]) {
+                                                        if ($staff["user_type"] == $role["name"]) {
                                                             echo "selected";
                                                         }
-                                                        ?>><?php echo $role["type"] ?></option>
+                                                        ?>><?php echo $role["name"] ?></option>
                                                             <?php }
                                                             ?>
                                                 </select>
@@ -333,9 +333,95 @@
                                                 }
                                                 ?>
                                                 <input id="local_identification_number" name="local_identification_number" placeholder="" type="text" class="form-control"  value="<?php echo $staff['local_identification_number']; ?>" />
-                                                <span class="text-danger"></span></div>
+                                                <span class="text-danger"><?php echo form_error('local_identification_number'); ?></span></div>
                                         </div>
-                                        <span class="text-danger"><?php echo form_error('local_identification_number'); ?></span>
+                                       
+                                        <!-- <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1"><?php echo $this->lang->line('pincode'); ?></label><small class="req"> *</small>
+                                                <input id="pincode" name="pincode" placeholder="" type="text" class="form-control"  value="<?php echo $staff["pincode"] ?>" />
+                                                <span class="text-danger"><?php echo form_error('pincode'); ?></span>
+                                            </div>
+                                        </div> -->
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1"><?php echo $this->lang->line('pincode'); ?></label><small class="req"> *</small>
+                                                <select id="pincode" name="pincode" placeholder="" type="text" class="form-control">
+                                                    <?php foreach ($pincodes as $pckey => $pcvalue) {
+                                                        ?>
+                                                        <option value="<?php echo $pcvalue["id"] ?>" <?php echo set_select('pincode', $pcvalue['id'], set_value('pincode')); ?>><?php echo $pcvalue["pincode"] ?></option>
+                                                    <?php }
+                                                    ?>
+                                                </select> 
+                                                <span class="text-danger"><?php echo form_error('pincode'); ?></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1"><?php echo $this->lang->line('staff_locality'); ?></label><small class="req"> *</small>
+                                                <select id="specialistOpt" name="locality_id" placeholder="" type="text" class="form-control" onchange="appendCity(this)">
+                                                    <?php foreach ($stafflocality as $key => $slvalue) {
+                                                        if ($staff["locality_id"] == $slvalue["id"]) {
+                                                        ?>
+                                                        <option selected value="<?php echo $slvalue["id"] ?>" <?php echo set_select('staff_locality', $slvalue['id'], set_value('staff_locality')); ?>><?php echo $slvalue["locality"] ?></option>
+                                                        <?php }else{ ?>
+                                                        <option value="<?php echo $slvalue["id"] ?>" <?php echo set_select('staff_locality', $slvalue['id'], set_value('staff_locality')); ?>><?php echo $slvalue["locality"] ?></option>
+
+                                                        <?php }  } ?>
+                                                       
+                                                </select> 
+                                                <span class="text-danger"><?php echo form_error('staff_locality'); ?></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1"><?php echo $this->lang->line('city'); ?></label><small class="req"> *</small>
+                                                <input id="city" name="city" placeholder="" type="text" class="form-control"  value="<?php echo $staff["city"] ?>" />
+                                                <span class="text-danger"><?php echo form_error('city'); ?></span>
+                                            </div>
+                                        </div>  
+
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1"><?php echo $this->lang->line('state'); ?></label><small class="req"> *</small>
+                                                <select class="form-control" name="state">
+                                                    <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                                    <?php foreach ($state as $bgkey => $bgvalue) {
+                                                        ?>
+                                                        <option <?php
+                                                        if ($staff["blood_group"] == $bgvalue) {
+                                                            echo "selected";
+                                                        }
+                                                        ?> value="<?php echo $bgvalue ?>"><?php echo $bgvalue ?></option>           
+
+                                                    <?php } ?>
+
+                                                </select>
+                                                <span class="text-danger"><?php echo form_error('state'); ?></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1"><?php echo $this->lang->line('gst_in'); ?></label><small class="req"> *</small>
+                                                <input id="gst_in" name="gst_in" placeholder="" type="text" class="form-control"  value="<?php echo $staff["gst_in"] ?>" />
+                                                <span class="text-danger"><?php echo form_error('gst_in'); ?></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1"><?php echo $this->lang->line('drug_license_number'); ?></label><small class="req"> *</small>
+                                                <input id="drug_license_number" name="drug_license_number" placeholder="" type="text" class="form-control"  value="<?php echo $staff["drug_license_number"] ?>" />
+                                                <span class="text-danger"><?php echo form_error('drug_license_number'); ?></span>
+                                            </div>
+                                        </div>
+
+
                                         <div class="">
                                             <?php
                                              echo display_custom_fields('staff',$staff['id']);
@@ -609,6 +695,24 @@
 </section>
 </div>
 
+
+<script>
+function appendCity(ele){
+staff_loc = ele.value;
+var base_url = '<?php echo base_url() ?>';
+        $.ajax({
+            url: base_url + 'admin/staff/getLocationCity',
+            type: 'POST',
+            data: {id: staff_loc},
+            dataType: 'json',
+            success: function (result) {
+                $("#city").val(result.city);
+
+            }
+        });
+}
+
+</script>
 
 <script type="text/javascript" src="<?php echo base_url(); ?>backend/dist/js/savemode.js"></script>    
 <script>

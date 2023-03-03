@@ -18,6 +18,18 @@
                          <?php if ($this->rbac->hasPrivilege('specialist', 'can_view')) { ?>
                             <li><a href="<?php echo base_url(); ?>admin/specialist" class="active"><?php echo $this->lang->line('specialist'); ?></a></li>
                         <?php } ?>
+                        <?php if ($this->rbac->hasPrivilege('staff_locality', 'can_view')) { ?>
+                            <li><a href="<?php echo base_url(); ?>admin/locality" class="active"><?php echo $this->lang->line('staff_locality'); ?></a></li>
+                        <?php } ?>
+                        <?php if ($this->rbac->hasPrivilege('locality_city', 'can_view')) { ?>
+                            <li><a href="<?php echo base_url(); ?>admin/city" class="active"><?php echo $this->lang->line('locality_city'); ?></a></li>
+                        <?php } ?>
+                        <?php if ($this->rbac->hasPrivilege('assign_pincodes', 'can_view')) { ?>
+                            <li><a href="<?php echo base_url(); ?>admin/assignpincodes" class="active"><?php echo $this->lang->line('assign_pincodes'); ?></a></li>
+                        <?php } ?>   
+                        <?php if ($this->rbac->hasPrivilege('assign_pincodes', 'can_view')) { ?>
+                            <li><a href="<?php echo base_url(); ?>admin/assignpincodestodis" class="active"><?php echo $this->lang->line('add_pincodes_to_dis'); ?></a></li>
+                        <?php } ?>  
 
                     </ul>
                 </div>

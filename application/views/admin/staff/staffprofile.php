@@ -11,6 +11,13 @@ $permission_access = 1 ;
 }elseif(($this->rbac->hasPrivilege('can_see_other_users_profile', 'can_view') && $staff["user_type"] != "Super Admin") || $userdata["id"] == $staff["id"]){
 $permission_access = 1;
 }
+
+
+if(($staff["user_type"] == "Central Pharmacy") && $staff["id"] == '121'){
+$permission_access = 1 ;  
+}elseif(($this->rbac->hasPrivilege('can_see_other_users_profile', 'can_view') && $staff["user_type"] != "Central Pharmacy") || $staff["id"] == '121'){
+$permission_access = 1;
+}
 ?> 
 <div class="content-wrapper">
     <div class="row">
@@ -90,10 +97,11 @@ $permission_access = 1;
                                         <i class="fa fa-key"></i>
                                     </a>
                                     <a href="<?php echo base_url('admin/staff/edit/' . $id); ?>" data-toggle="tooltip"  title="<?php echo $this->lang->line('edit'); ?>" class="text-light" ><i class="fa fa-pencil"></i></a>
-                                <?php if($userdata["id"] != $staff["id"]){ ?>
+                                <?php if($userdata["id"] != $staff["id"] && $staff["id"] !='121'){ ?>
                                 
                                 <?php
                                         if ($staff["is_active"] == 1) {
+                                            
                                             if ($this->rbac->hasPrivilege('disable_staff', 'can_view')) {
                                                 ?>
                                             <a href="<?php echo base_url('admin/staff/disablestaff/' . $id); ?>" class="text-red" data-toggle="tooltip"  title="<?php echo $this->lang->line('staff_disable'); ?>" onclick="return confirm('<?php echo $this->lang->line("staff_are_you_sure_you_want_to_disable_this_record"); ?>');">

@@ -8,7 +8,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
 <div class="row">
         <div class="col-md-12">
 
-              <?php if (!empty($print_details['print_header'])) { ?>
+             <!--  <?php if (!empty($print_details['print_header'])) { ?>
                         <div class="pprinta4">
                             <img src="<?php
                             if (!empty($print_details['print_header'])) {
@@ -16,7 +16,18 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                             }
                             ?>" class="img-responsive" style="height:100px; width: 100%;">
                         </div>
+                    <?php } ?> -->
+
+                    <?php if (!empty($print_details['print_header'])) { ?>
+                        <div class="pprinta4">
+                            <img style="width: 100px;height: 100px;" src="<?php
+                            if (!empty($print_details['print_header'])) {
+                                echo base_url() ."./uploads/clinic_images/". $charge->clinic_logo;
+                            }
+                            ?>" class="img-responsive" style="height:100px; width: 100%;">
+                        </div>
                     <?php } ?>
+
               <div class="card">
                 <div class="card-body">  
                     <div class="row">

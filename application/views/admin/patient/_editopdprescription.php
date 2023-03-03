@@ -1,5 +1,5 @@
 <input type="hidden" name="action" value="update">
-<input type="hidden" name="visit_details_id" value="<?php echo $result->visit_details_id;?>">
+<input type="hidden" id="visit_details_id" name="visit_details_id" value="<?php echo $result->visit_details_id;?>">
 <input type="hidden" name="ipd_prescription_basic_id" value="<?php echo $prescription_id ?>">
 <h1>ds</h1>
 <?php  
@@ -71,6 +71,7 @@ if (!empty($result->tests)) {
                                   <?php 
                                   $medicine_row=1;
 foreach ($result->medicines as $medicine_key => $medicine_value) {
+    // var_dump($medicine_value);
    ?>
    <input type="hidden" name="ipd_prescription_detail_id_<?php echo $medicine_row?>" value="<?php echo $medicine_value->ipd_prescription_detail_id;?>">
  <tr id="row<?php echo $medicine_row?>">
@@ -83,24 +84,62 @@ foreach ($result->medicines as $medicine_key => $medicine_value) {
                                             <div class="">
                                                 <label>
                     <?php echo $this->lang->line('medicine_category'); ?></label> <small class="req"> *</small>
-                    <select class="form-control select2 medicine_category" style="width: 100%" name='medicine_cat_<?php echo $medicine_row?>'>
+                    <select class="form-control select2 medicine_category" style="width: 100%" name='medicine_cat_<?php echo $medicine_row?>' id="medicine_cat_<?php echo $medicine_row?>">
                     <option value="<?php echo set_value('medicine_category_id'); ?>"><?php echo $this->lang->line('select') ?>
                                                     </option>
                                             <?php
                                     foreach ($medicineCategory as $dkey => $dvalue) {
                                                         ?>
-                                        <option value="<?php echo $dvalue["id"]; ?>" <?php echo set_select('organisation', $dvalue["id"], ($medicine_value->medicine_category_id == $dvalue["id"]) ? true : false); ?>><?php echo $dvalue["medicine_category"] ?>
+                                        <option value="<?php echo $dvalue["id"]; ?>" ><?php echo $dvalue["medicine_category"] ?>
+
                                                         </option>   
                                                     <?php } ?>
                                                 </select>
                                             </div>
-                                        </div>     
+                                        </div> 
+                                        
+                                        
 
-                                        <div class="col-sm-6 col-xs-6">
+                                        <div class="col-sm-2 col-xs-6">
                                             <div class="">
-                                                <label><?php echo $this->lang->line('medicine'); ?></label><small class="req"> *</small>
+                                                <label>
+                    <?php echo $this->lang->line('search_type'); ?></label> <small class="req"> *</small>
+                    <select class="form-control select2 search_type" style="width: 100%" name='search_type_<?php echo $medicine_row?>' id="<?php echo $medicine_row?>">
+                    <option value="<?php echo set_value('search_type_id'); ?>"><?php echo $this->lang->line('select') ?>
+                                                    </option>
+                                            <?php
+                                    foreach ($medicinesearchType as $dkey => $stvalue) {
+                                                        ?>
+                                        <option value="<?php echo $stvalue["id"]; ?>" <?php echo set_select('organisation', $stvalue["id"], ($medicine_value->medicine_category_id == $stvalue["id"]) ? true : false); ?>><?php echo $stvalue["search_type"] ?>
+                                                        </option>   
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-8 col-xs-6">
+                                            <div class="">
+                                                <label><?php echo $this->lang->line('search'); ?></label><small class="req"> *</small>
                                                 <select class="form-control select2 medicine_name" data-rowid="<?php echo $medicine_row?>" style="width: 100%"  name="medicine_<?php echo $medicine_row?>">
                                                     <option value=""><?php echo $this->lang->line('select') ?></option>
+                                                </select>
+                                                <!-- <span id="stock_info_<?php echo $medicine_row?>"></span>
+                                                <div id="suggesstion-box0"></div> -->
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-sm-8 col-xs-6">
+                                            <div class="">
+                                                <label><?php echo $this->lang->line('medicine'); ?></label><small class="req"> *</small>
+                                                <select class="form-control select2 medicine_brand" data-rowid="<?php echo $medicine_row?>" style="width: 100%"  name="medicine_brand_<?php echo $medicine_row?>">
+                                                    <option value=""><?php echo $this->lang->line('select') ?></option>
+                                                    <?php
+                                        foreach ($medListforRedWind as $dkey => $refwindvalue) {
+                                                        ?>
+                                                    <option value="<?php echo $refwindvalue["id"]; ?>" <?php echo set_select('medicine_brand', $refwindvalue["id"], ($medicine_value->pharmacy_id == $refwindvalue["id"]) ? true : false); ?>><?php echo $refwindvalue["medicine_name"] ?>
+                                                        </option>   
+                                        <?php } ?>
                                                 </select>
                                                 <!-- <span id="stock_info_<?php echo $medicine_row?>"></span>
                                                 <div id="suggesstion-box0"></div> -->
@@ -163,11 +202,11 @@ foreach ($result->medicines as $medicine_key => $medicine_value) {
                                                 <select class="form-control select2 medicine_afbf" style="width: 100%"  name="afbf_<?php echo $medicine_row?>">
                                             <option value=""><?php echo $this->lang->line('select'); ?></option>
                                            
-                                            <option value="<?php echo$medicine_value->afbf; ?>" <?php echo set_select('afbf', $medicine_value->afbf, ("After Food" == $medicine_value->afbf) ? true : false); ?>><?php echo "After Food" ?>
+                                            <option value="<?php echo $medicine_value->afbf; ?>" <?php echo set_select('afbf', $medicine_value->afbf, ("After Food" == $medicine_value->afbf) ? true : false); ?>><?php echo "After Food" ?>
 
-                                            <option value="<?php echo$medicine_value->afbf; ?>" <?php echo set_select('afbf', $medicine_value->afbf, ("Before Food" == $medicine_value->afbf) ? true : false); ?>><?php echo "Before Food" ?>
-                                            <option value="<?php echo$medicine_value->afbf; ?>" <?php echo set_select('afbf', $medicine_value->afbf, ("With Food" == $medicine_value->afbf) ? true : false); ?>><?php echo "With Food" ?>
-                                            <option value="<?php echo$medicine_value->afbf; ?>" <?php echo set_select('afbf', $medicine_value->afbf, ("Not Applicable" == $medicine_value->afbf) ? true : false); ?>><?php echo "Not Applicable" ?>
+                                            <option value="<?php echo $medicine_value->afbf; ?>" <?php echo set_select('afbf', $medicine_value->afbf, ("Before Food" == $medicine_value->afbf) ? true : false); ?>><?php echo "Before Food" ?>
+                                            <option value="<?php echo $medicine_value->afbf; ?>" <?php echo set_select('afbf', $medicine_value->afbf, ("With Food" == $medicine_value->afbf) ? true : false); ?>><?php echo "With Food" ?>
+                                            <option value="<?php echo $medicine_value->afbf; ?>" <?php echo set_select('afbf', $medicine_value->afbf, ("Not Applicable" == $medicine_value->afbf) ? true : false); ?>><?php echo "Not Applicable" ?>
 
                                         </select>
                                             </div> 

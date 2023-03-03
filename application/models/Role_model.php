@@ -20,18 +20,63 @@ class Role_model extends MY_Model
      */
     public function get($id = null)
     {
-       
+        // var_dump($id); die;
         $this->db->select()->from('roles');
-        if ($id != null) {
+        if ($id != null && $id != 'cw' && $id != 'lab') {
             $this->db->where('roles.id', $id);
-        } else {
+        }elseif($id == 'cw'){
+            $this->db->where('roles.is_system', 0);
+            $this->db->or_where('roles.id=', 4);
+            $this->db->order_by('roles.id');
+        }elseif($id == 'lab'){
+            $this->db->where('roles.is_system', 0);
+            $this->db->or_where('roles.id=', 5);
+            $this->db->order_by('roles.id');
+        }else {
+            $this->db->where('roles.is_system', 1);
+            $this->db->where('roles.id!=', 4);
+
             $this->db->order_by('roles.id');
         }
 
         $query = $this->db->get();
-        if ($id != null) {
+        if ($id != null && $id != 'cw' && $id != 'lab') {
             $result = $query->row_array();
-        } else {
+        }elseif($id == 'cw'){
+
+            $result = $query->result_array();
+            // var_dump($result); die;
+            if ($this->session->has_userdata('hospitaladmin')) {
+                $superadmin_rest = $this->session->userdata['hospitaladmin']['superadmin_restriction'];
+                if ($superadmin_rest == 'disabled') {
+                    $search     = in_array(7, array_column($result, 'id'));
+                    $search_key = array_search(7, array_column($result, 'id'));
+
+                    if (!empty($search)) {
+                        unset($result[$search_key]);
+                        $result = array_values($result);
+                    }
+                }
+            }
+            
+        }elseif($id == 'lab'){
+
+            $result = $query->result_array();
+            // var_dump($result); die;
+            if ($this->session->has_userdata('hospitaladmin')) {
+                $superadmin_rest = $this->session->userdata['hospitaladmin']['superadmin_restriction'];
+                if ($superadmin_rest == 'disabled') {
+                    $search     = in_array(7, array_column($result, 'id'));
+                    $search_key = array_search(7, array_column($result, 'id'));
+
+                    if (!empty($search)) {
+                        unset($result[$search_key]);
+                        $result = array_values($result);
+                    }
+                }
+            }
+            
+        }else {
             $result = $query->result_array();
             // var_dump($result); die;
             if ($this->session->has_userdata('hospitaladmin')) {
@@ -51,14 +96,31 @@ class Role_model extends MY_Model
         return $result;
     }
 
+
+
     public function getSystemRoles()
     {
+        $role                        = $this->customlib->getStaffRole();
+        $role_id                     = json_decode($role)->id;
+        if($role_id == 73){
+
         $this->db->select()->from('roles');
         $this->db->where('is_system', 1);
         $query = $this->db->get();
         $result = $query->result_array();
 
         return $result;
+        }elseif($role_id == 76){
+
+            $this->db->select()->from('roles');
+            $this->db->where('is_system', 1);
+            $query = $this->db->get();
+            $result = $query->result_array();
+    
+            return $result;
+        }else{
+            return '';
+        }
     }
     /**
      * This function will delete the record based on the id
@@ -274,12 +336,28 @@ class Role_model extends MY_Model
 
     //NEWLY ADDED TO COLLECT ADMIN DATA IN LOGINS 
     public function  getRoleFromStaffUsingLid($id){
-        $query = $this->db->select("roles.*,staff.id as staff_id,staff.created_by as created_by")->join("roles", "roles.id = staff_roles.role_id")->join("staff", "staff.id = staff_roles.staff_id")->where("staff.id", $id)->get("staff_roles");
+        $query = $this->db->select("roles.*,staff.id as staff_id,staff.created_by as created_by,staff_locality.locality,staff.city,staff.locality_id")
+        ->join("roles", "roles.id = staff_roles.role_id",'left')
+        ->join("staff", "staff.id = staff_roles.staff_id",'left')
+        ->join("staff_locality", "staff_locality.id = staff.locality_id",'left')
+        ->where("staff.id", $id)->get("staff_roles");
+        // echo $this->db->last_query(); die;
         return $query->result_array();
     }
 
+   
+    public function getPurdMedofDisbyDocLoc($localityId){
+        $query = $this->db->select("staff.*")
+        ->join("staff_roles", "staff_roles.staff_id = staff.id")
+        ->where("staff.created_by", 73)
+        ->where("staff.locality_id", $localityId)
+        ->get("staff");
+        return $query->result_array();
+    }
+
+
     public function  getAdminUsingCreatedById($created_by){
-        $query = $this->db->select("roles.*,staff.id as staff_id,staff.created_by as created_by")->join("roles", "roles.id = staff_roles.role_id")->join("staff", "staff.id = staff_roles.staff_id")->where("staff.created_by", 7)->where("staff_roles.role_id", $created_by)->get("staff_roles");
+        $query = $this->db->select("roles.*,staff.id as staff_id,staff.created_by as created_by")->join("roles", "roles.id = staff_roles.role_id")->join("staff", "staff.id = staff_roles.staff_id")->where("staff.created_by", 73)->where("staff_roles.role_id", $created_by)->get("staff_roles");
         return $query->result_array();
     }
 
@@ -312,6 +390,18 @@ class Role_model extends MY_Model
         $this->db->where('staff.created_by',7);
         $this->db->where('staff_roles.role_id',6);
         $this->db->from('staff');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    public function getPatientDataByVdId($id){
+        $this->db->select('patients.locality_id');
+        
+        $this->db->join('appointment','visit_details.id=appointment.visit_details_id','left');
+        $this->db->join('patients','appointment.patient_id=patients.id','left');
+        $this->db->where('visit_details.id',$id);
+      
+        $this->db->from('visit_details');
         $query = $this->db->get();
         return $query->result_array();
     }

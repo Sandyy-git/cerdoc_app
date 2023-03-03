@@ -220,17 +220,28 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                 <?php }?> -->
 
 
-                <!--  -->
+            <!--  -->
+               <!-- Doctor Global Logo -->
 
-                <!-- <?php  if ($result->opd_logo !='') { ?> -->
-                    <img src="<?php
+                    <!-- <img src="<?php
                     if ($result->opd_logo !='') {
                         echo base_url() . $result->opd_logo;
                     }
-                    ?>" style="height:100px; width:100%;" class="img-responsive">
-                <!-- <?php }?> -->
+                    ?>" style="height:100px; width:100%;" class="img-responsive"> -->
 
-                <!--  -->
+                    <!-- Doctor Global Logo -->
+
+                <!-- Doctor Clinicwise Logo -->
+
+                     <img src="<?php
+                    if ($result->clinic_logo !='') {
+                        echo base_url()."/uploads/clinic_images/". $result->clinic_logo;
+                    }
+                    ?>" style="height:100px; width:100%;" class="img-responsive">
+
+                    <!-- Doctor Clinicwise Logo -->
+
+            <!--  -->
 
 
 
@@ -244,7 +255,8 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                     <table width="100%" class="printablea4">                       
                         <tr>
                             <th><?php echo $this->lang->line('prescription'); ?> : <?php echo $this->customlib->getSessionPrefixByType('opd_prescription').$result->prescription_id; ?></th> <td></td>
-                            <th class="text-right"></th> 
+                            <th class="text-right"><?php echo $this->lang->line('clinic_name'); ?> :<?php echo $result->clinic_name; ?></th> 
+                            <th class="text-right"><?php echo $this->lang->line('address'); ?> :<?php echo $result->address; ?></th> 
                             <th class="text-right"><?php echo $this->lang->line('date'); ?> : <?php
                                 if (!empty($result->presdate)) {
                                     echo $this->customlib->YYYYMMDDTodateFormat($date);

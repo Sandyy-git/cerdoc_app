@@ -33,6 +33,8 @@ $genderList      = $this->customlib->getGender_Patient();
                     <th width="10%"><?php echo $this->lang->line('phone'); ?></th>
                     <th><?php echo $this->lang->line('gender'); ?></th>
                     <th><?php echo $this->lang->line('doctor'); ?></th>
+                    <th style="color:palevioletred;"><?php echo $this->lang->line('clinic_name'); ?></th>
+
                     <th><?php echo $this->lang->line('source'); ?></th>
                     <th><?php echo $this->lang->line('priority'); ?></th>
                     <?php if ($this->module_lib->hasActive('live_consultation')) { ?>
@@ -101,7 +103,7 @@ $genderList      = $this->customlib->getGender_Patient();
                     <label for="exampleInputFile"><?php echo $this->lang->line('doctor'); ?></label>
                     <small class="req"> *</small>
                     <div>
-                      <select class="form-control select2 doctor_select2" name="doctorid" onchange="getDoctorShift(this);getDoctorFees(this)" <?php
+                      <select class="form-control select2 doctor_select2" name="doctorid" onchange="getDoctorShift(this);" <?php
                         if ((isset($disable_option)) && ($disable_option == true)) {
                         echo 'disabled';
                         }
@@ -121,6 +123,32 @@ $genderList      = $this->customlib->getGender_Patient();
                     <span class="text-danger"><?php echo form_error('doctor'); ?></span>
                   </div>
                 </div>
+
+
+                <!-- Doc Clinics -->
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label for="exampleInputFile"><?php echo $this->lang->line('clinic_name'); ?></label>
+                    <small class="req"> *</small>
+                    <div>
+                      <select class="form-control select2 doctor_select2" name="doctor_clinics_id" onchange="getDoctorFees(this)" <?php
+                        if ((isset($disable_option)) && ($disable_option == true)) {
+                        echo 'disabled';
+                        }
+                        ?> name='doctor_clinics_id' id="doctor_clinics_id" style="width:100%" >
+                        <option value="<?php echo set_value('clinic_name'); ?>"><?php echo $this->lang->line('select') ?></option>
+                        <?php foreach ($doctor_clinics as $dkey => $doctor_clinic) {
+                        ?>
+                        <option value="<?php echo $doctor_clinic["doctor_clinics_id"]; ?>"><?php echo $doctor_clinic["clinic_name"]; ?></option>
+                        <?php }?>
+                      </select>
+                      <!-- <input type="hidden" name="charge_id" value="" id="charge_id" /> -->
+                    </div>
+                    <span class="text-danger"><?php echo form_error('doctor'); ?></span>
+                  </div>
+                </div>
+
+                <!-- END -->
                 <div class="col-sm-3">
                   <div class="form-group">
                     <label for="doctor_fees"><?php echo $this->lang->line("doctor_fees"); ?></label>
@@ -262,6 +290,8 @@ $genderList      = $this->customlib->getGender_Patient();
                 <div class="row">
                   <input type="hidden" name="appointment_id" id="appointment_id">
                   <input type="hidden" name="appended_did" id="appendDocidnew">
+                  <input type="hidden" name="appended_docclinicid" id="appendedclinicid">
+
                   <div class="col-sm-3">
                     <div class="form-group">
                       <label for="exampleInputFile">
@@ -279,6 +309,33 @@ $genderList      = $this->customlib->getGender_Patient();
                       </div>
                     </div>
                   </div>
+
+                  <!-- Doc Clinics  -->
+                 <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="exampleInputFile">
+                      <?php echo $this->lang->line('clinic_name'); ?></label>
+                      <small class="req"> *</small>
+                      <div>
+                        <select class="form-control" style="width:100%" id="rclinic" name="rclinic" disabled>
+                          <option value="<?php echo set_value('doctor_clinics_id'); ?>"><?php echo $this->lang->line('select') ?></option>
+                          <?php foreach ($doctor_clinics as $dkey => $doctor_clinic) {
+                          ?>
+                          <option value="<?php echo $doctor_clinic["doctor_clinics_id"]; ?>"><?php echo $doctor_clinic["clinic_name"]; ?></option>
+                          <?php }?>
+                        </select>
+                        <span class="text-danger"><?php echo form_error('rclinic'); ?></span>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <!-- End -->
+
+
+              
+
+
                   <div class="col-sm-3">
                     <div class="form-group">
                       <label for="doctor_fees"><?php echo $this->lang->line("doctor_fees"); ?></label>
@@ -780,7 +837,7 @@ $("#formedit").on('submit', (function (e) {
 
   $("#rescheduleform").on('submit', (function (e) {
     alert("appointment reschedule save form clicked");
-      $("#rescheduleformbtn").button('loading');
+      // $("#rescheduleformbtn").button('loading');
       e.preventDefault();
         $.ajax({
           url: baseurl+'admin/appointment/reschedule',
@@ -881,10 +938,13 @@ function getBed(bed_group, bed = '', active, htmlid = 'bed_no') {
         data: {appointment_id: id},
         dataType: 'json',
         success: function (data) {
-
+          console.log(data); 
           $('#appendDocidnew').val(data.doctor)      //nd
+          $('#appendedclinicid').val(data.doctor_clinics_id)      //nd
           $('#customfield').html(data.custom_fields_value);  
           $("#rdoctor").val(data.doctor).trigger("change");
+          // $("#rclinic").val(data.clinic_name).trigger("change");
+
           $("#rdates").val(data.date);
           $("#rslot_edit_field").val(data.shift_id);
           $("#edit_appoint_priority").val(data.priority).trigger("change");
@@ -893,6 +953,8 @@ function getBed(bed_group, bed = '', active, htmlid = 'bed_no') {
           getDoctorShift("",data.doctor,data.global_shift_id);
           $('select[id="rdoctor"] option[value="' + data.doctor + '"]').attr("selected", "selected");
           $('select[id="edit_liveconsult"] option[value="' + data.live_consult + '"]').attr("selected", "selected");
+
+          $('select[id="rclinic"] option[value="' + data.doctor_clinics_id + '"]').attr("selected", "selected");
           
         }
       });
@@ -1071,12 +1133,13 @@ alert("D");
 <script type="text/javascript">
   function appointmentstatus(){
       var appointment_status = $('#appointment_status').val();
-      var doctor_id = $('#doctorid').val();    
+      var doctor_id = $('#doctorid').val();  
+      var doctor_clinics_id = $('#doctor_clinics_id').val();    
       if(appointment_status == 'approved'){
         $.ajax({
             url: baseurl+'admin/appointment/getDoctorFees/',
             type: "POST",
-            data: {doctor_id: doctor_id},
+            data: {doctor_id: doctor_id,doctor_clinics_id:doctor_clinics_id},
             dataType: 'json',
             success: function (res) {
               $("#doctor_fees").val(res.fees);
@@ -1091,12 +1154,14 @@ alert("D");
   function editappointmentstatus(){
       
       var edit_appointment_status = $('#edit_appointment_status').val();
-      var doctor_id = $('#rdoctor').val();    
+      var doctor_id = $('#rdoctor').val();  
+      var doctor_clinics_id = $('#rclinic').val();    
+      
       if(edit_appointment_status == 'approved'){
         $.ajax({
             url: baseurl+'admin/appointment/getDoctorFees/',
             type: "POST",
-            data: {doctor_id: doctor_id},
+            data: {doctor_id: doctor_id,doctor_clinics_id:doctor_clinics_id},
             dataType: 'json',
             success: function (res) {
               $("#rdoctor_fees_edit").val(res.fees);
@@ -1109,11 +1174,12 @@ alert("D");
   }
 
   function getDoctorFees(object){
-      let doctor_id = object.value;    
+      let doctor_clinics_id = object.value;    
+      let doctor_id  = $("#doctorid").val();
      $.ajax({
       url: baseurl+'admin/appointment/getDoctorFees/',
       type: "POST",
-      data: {doctor_id: doctor_id},
+      data: {doctor_id: doctor_id,doctor_clinics_id:doctor_clinics_id},
       dataType: 'json',
       success: function (res) {
         $("#doctor_fees").val(res.fees);
@@ -1144,14 +1210,15 @@ alert("D");
 
       var div_data = "";
       var date = $("#datetimepicker").val();
-      alert(date);
+      // alert(date);
       var doctor = $("#doctorid").val();
       var global_shift = $("#global_shift").val();
-    
+      var doctor_clinics_id = $("#doctor_clinics_id").val();
+
       $.ajax({
           url: baseurl+'admin/onlineappointment/getShift',
           type: "POST",
-          data: {doctor: doctor, date: date, global_shift:global_shift},
+          data: {doctor: doctor, date: date, global_shift:global_shift,doctor_clinics_id:doctor_clinics_id},
           dataType: 'json',
           success: function(res){
               $.each(res, function (i, obj)
@@ -1196,11 +1263,12 @@ alert("D");
       var date = $("#rdates").val();
       var doctor = $("#rdoctor").val();
       var global_shift = $("#rglobal_shift_edit").val();
-    
+      var doctor_clinics_id = $("#rclinic").val();
+
       $.ajax({
           url: baseurl+'admin/onlineappointment/getShift',
           type: "POST",
-          data: {doctor: doctor, date: date, global_shift:global_shift},
+          data: {doctor: doctor, date: date, global_shift:global_shift,doctor_clinics_id:doctor_clinics_id},
           dataType: 'json',
           success: function(res){
               $.each(res, function (i, obj)

@@ -43,14 +43,19 @@ class Printing_model extends MY_Model
 
     public function get($id = '', $setting_for = '')
     {
+        // var_dump($id);
+        // var_dump($setting_for); die;   //for pharma - 0,opdpre//
 
-        $staffId          = $this->customlib->getStaffID();   //logged in staff ids 
+        $staffId          = $this->customlib->getStaffID();   //for pha-124//cp-121//dis-122//sa-1
+        $role                        = $this->customlib->getStaffRole();
+        $role_id                     = json_decode($role)->id;
+        // var_dump($staffId); die;  
         if($staffId !=null){
             $print_setting = $this->getStaffIdfromprinting($staffId,$setting_for);
             // var_dump($print_setting); die;
             if(!empty($print_setting)){
-                $id= $print_setting[0]->id;
-            }elseif ($this->getParentStaffId($staffId) !=null){
+                $id= $print_setting[0]->id;  //for pha-1117//cp-1087//dis-1097//sa-""
+            }elseif ($this->getParentStaffId($staffId) !=null && $role_id != 4){
                 $pid = $this->getParentStaffId($staffId);
                 $printstaffId = $this->getStaffIdfromprinting($pid[0]->parent_staff_id,$setting_for);
                 if(!empty($printstaffId)){
@@ -59,21 +64,25 @@ class Printing_model extends MY_Model
                 }
             }
         }
-        // var_dump($id); die;
         if (!empty($id)) {
 
             if(!empty($setting_for)){
                 $query =  $this->db->where("id", $id)->where("setting_for", $setting_for)->get("print_setting");
                 $retrun =  $query->row_array();
+                // echo $this->db->last_query(); die;
                 return  $retrun;
             }else{
                 $query =  $this->db->where("id", $id)->get("print_setting");
-                return $query->row_array();
+                $retrun =  $query->row_array();
+                // echo $this->db->last_query(); die;
+                return  $retrun;
             }
 
         } else {
             $query = $this->db->where("setting_for", $setting_for)->where("staff_id", "0")->get("print_setting");
-            return $query->row_array();
+            $retrun = $query->row_array();
+            // echo $this->db->last_query(); die;
+            return $retrun;
         }
     }
 
@@ -116,6 +125,7 @@ class Printing_model extends MY_Model
             $this->db->where('print_setting.setting_for',$setting_for);
         }
         $query = $this->db->get();
+        // echo $this->db->last_query(); die;
         return $query->result();
 
 
@@ -130,4 +140,8 @@ class Printing_model extends MY_Model
 
 
     }
+
+    // public function getPatientBillDetails(){
+
+    // }
 }

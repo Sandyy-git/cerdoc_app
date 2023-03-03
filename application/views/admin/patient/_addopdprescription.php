@@ -1,4 +1,4 @@
-<input type="test" name="visit_details_id" value="<?php echo $visit_details_id;?>">
+<input type="hidden" id="visit_details_id" name="visit_details_id" value="<?php echo $visit_details_id;?>">
 <input type="hidden" name="action" value="add">
 <input type="hidden" name="ipd_prescription_basic_id" value="0">
                 <div class="row">
@@ -61,7 +61,7 @@
                                             <div class="">
                                                 <label>
                                             <?php echo $this->lang->line('medicine_category'); ?></label><small class="req"> *</small>
-                                            <select class="form-control select2 medicine_category" style="width: 70%" name='medicine_cat_1'>
+                                            <select class="form-control select2 medicine_category" style="width: 70%" name='medicine_cat_1' id="medicine_cat_1">
                                             <option value="<?php echo set_value('medicine_category_id'); ?>"><?php echo $this->lang->line('select'); ?>
                                                     </option>
                                             <?php
@@ -72,10 +72,31 @@
                                                     <?php } ?>
                                                 </select>
                                             </div>
-                                        </div>                      
-                                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" style="right:4%">
+                                        </div>    
+                                        
+                                        
+                                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" style="right:4%">
+
                                             <div class="">
-                                                <label><?php echo $this->lang->line('medicine'); ?></label><small class="req"> *</small>
+                                                <label>
+                                            <?php echo $this->lang->line('search_type'); ?></label><small class="req"> *</small>
+                                            <select class="form-control select2 search_type" style="width: 70%" name='search_type_1' id="1">
+                                            <option value="<?php echo set_value('search_type_id'); ?>"><?php echo $this->lang->line('select'); ?>
+                                                    </option>
+                                            <?php
+                                            foreach ($medicinesearchType as $dkey => $stvalue) {
+                                            ?>
+                                            <option value="<?php echo $stvalue["id"]; ?>"><?php echo $stvalue["search_type"] ?>
+                                                        </option>   
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12" style="right:8%">
+                                            <div class="">
+                                                <label><?php echo $this->lang->line('search'); ?></label><small class="req"> *</small>
                                                 <select class="form-control select2 medicine_name" data-rowid="1" style="width: 100%"  name="medicine_1">
                                                     <option value=""><?php echo $this->lang->line('select');?></option>
                                                 </select>
@@ -84,9 +105,21 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" style="right:4%">
+
+                                        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
                                             <div class="">
-                                                <label></label><small class="req"></small>
+                                                <label><?php echo $this->lang->line('medicine'); ?></label><small class="req"> *</small>
+                                                <select class="form-control select2 medicine_brand" data-rowid="1" style="width: 100%"  name="medicine_brand_1">
+                                                    <option value=""><?php echo $this->lang->line('select');?></option>
+                                                </select>
+                                                <!-- <div id="suggesstion-box0"><small id="stock_info_1"> </small></div> -->
+                                                
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" style="right:0%">
+                                            <div class="">
+                                                <label><?php echo $this->lang->line('available_qty'); ?></label><small class="req"></small>
                                             <div id="suggesstion-box0" class="form-control"><small id="stock_info_1"> </small></div>                                                
                                             </div>
                                         </div>
@@ -102,7 +135,7 @@
                                             </div> 
                                         </div> -->
 
-                                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6" style="right:4%">
+                                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" style="right:0%">
                                             <div class="">
                                                <label><?php echo $this->lang->line("dose_frequency"); ?></label> 
                                                <select class="form-control  select2 interval_dosage" style="width:100%" id="interval_dosage_id" name='interval_dosage_1'>
@@ -144,7 +177,7 @@
                                             <option value="BF">Before Food</option>
                                             <option value="AF">After Food</option>
                                             <option value="With Food">With Food</option>
-                                            <option value="With Food">Not Applicable</option>
+                                            <option value="Not Applicable">Not Applicable</option>
 
 
                                                 </select>
@@ -209,7 +242,7 @@
                              </select>
                         </div>
                     </div>
-                    <div class="col-sm-12">
+                    <!-- <div class="col-sm-12">
                     <div class="ptt10">
                         <label for="exampleInputEmail1"><?php echo $this->lang->line('notification_to'); ?></label>
                              <?php
@@ -227,30 +260,10 @@
                                     }
                                     ?>
 
-                                    <!-- Central Staffs -->
-                                    <!-- <?php
-                                foreach ($centralStaffs as $role_key => $cs_value) {
-                                            $userdata = $this->customlib->getUserData();
-                                            $role_id = $userdata["role_id"];
-                                            ?>
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" name="visible[]" value="<?php echo $cs_value['id']; ?>" <?php if ($cs_value["id"] == $role_id) {
-                                                 echo "checked onclick='return false;'";
-                                                }
-                                             ?> <?php echo set_checkbox('visible[]', $cs_value['id'], false) ?> /> <b><?php echo $cs_value['name']; ?></b> </label>
-                                    </div>
-                                    <?php
-                                    }
-                                    ?> -->
-                                    <!-- END CENTARL STAFFS -->
-
+                                   
 
                      </div>
-                    </div>
-<!--  -->
-                    <!-- <div id='vp_container'>
-        
-    </div> -->
+                    </div> -->
 
     
     <select multiple="" class="form-control" id="health_institutions1">

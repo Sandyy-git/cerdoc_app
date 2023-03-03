@@ -55,11 +55,77 @@ class Pharmacy_model extends MY_Model
             return $record_id;
         }        
     }
+
+//ORIGINAL FOR STOCK QUANTITY
+
+    // public function get_medicine_stockinfo($pharmacy_id)
+    // {
+    //     return $this->db->select('medicine_batch_details.available_quantity,`pharmacy`.`min_level`, (SELECT sum(available_quantity) FROM `medicine_batch_details` WHERE pharmacy_id=pharmacy.id) as `total_qty`,IFNULL((SELECT SUM(quantity) FROM `pharmacy_bill_detail` WHERE medicine_batch_detail_id=medicine_batch_details.id),0) as used_quantity')->from('medicine_batch_details')->join('pharmacy', 'pharmacy.id=medicine_batch_details.pharmacy_id', 'inner')->where('pharmacy.id', $pharmacy_id)->get()->row_array();
+    // }
     
+    //IN CASE OF ADMIN WISE MED SUPPLY
     public function get_medicine_stockinfo($pharmacy_id)
     {
-        return $this->db->select('medicine_batch_details.available_quantity,`pharmacy`.`min_level`, (SELECT sum(available_quantity) FROM `medicine_batch_details` WHERE pharmacy_id=pharmacy.id) as `total_qty`,IFNULL((SELECT SUM(quantity) FROM `pharmacy_bill_detail` WHERE medicine_batch_detail_id=medicine_batch_details.id),0) as used_quantity')->from('medicine_batch_details')->join('pharmacy', 'pharmacy.id=medicine_batch_details.pharmacy_id', 'inner')->where('pharmacy.id', $pharmacy_id)->get()->row_array();
+
+        $visit_details_id = $this->input->post("visit_details_id");
+        $getPatLocality = $this->role_model->getPatientDataByVdId($visit_details_id);
+            
+
+        $userLoggedInFirst = $this->customlib->getLoggedInUserId();
+        $userRoleIn = $this->role_model->getRoleFromStaffUsingLid($userLoggedInFirst);
+      
+        
+        if($userRoleIn[0]['created_by'] == 7 && $userRoleIn[0]['name'] == 'Doctor'){
+            //By Passing Doctor locality
+            // $getPurchasedMedlistofDisbyDoclocation = $this->role_model->getPurdMedofDisbyDocLoc($userRoleIn[0]['locality_id']);
+           
+            //By Passing Patient Locality
+           $getPurchasedMedlistofDisbyDoclocation = $this->role_model->getPurdMedofDisbyDocLoc($getPatLocality[0]['locality_id']);
+            
+           $staff_items = array();
+             foreach($getPurchasedMedlistofDisbyDoclocation as $username) {
+             $staff_items[] = $username['id'];
+             }
+            //  var_dump($staff_items); die;
+
+            //  return $this->db->select('medicine_batch_details.available_quantity,`pharmacy`.`min_level`, `medicine_batch_details`.`available_quantity` as `total_qty`,IFNULL((SELECT SUM(quantity) FROM `pharmacy_bill_detail` WHERE medicine_batch_detail_id=medicine_batch_details.id),0) as used_quantity')
+            return $this->db->select('medicine_batch_details.available_quantity,`pharmacy`.`min_level`, (SELECT sum(available_quantity) FROM `medicine_batch_details` WHERE pharmacy_id=pharmacy.id) as `total_qty`,IFNULL((SELECT SUM(quantity) FROM `pharmacy_bill_detail` WHERE medicine_batch_detail_id=medicine_batch_details.id),0) as used_quantity') 
+            ->from('medicine_batch_details')
+             ->join('pharmacy', 'pharmacy.id=medicine_batch_details.pharmacy_id', 'inner')
+             ->join('supplier_bill_basic', 'supplier_bill_basic.id = medicine_batch_details.supplier_bill_basic_id', 'left')
+            //  ->where('pharmacy.id', $pharmacy_id)   
+            ->where('medicine_batch_details.pharmacy_id', $pharmacy_id)   
+             ->where_in('supplier_bill_basic.received_by', $staff_items)
+             ->get()->result_array();
+         }else{
+
+        return $this->db->select('medicine_batch_details.available_quantity,`pharmacy`.`min_level`, (SELECT sum(available_quantity) FROM `medicine_batch_details` WHERE pharmacy_id=pharmacy.id) as `total_qty`,IFNULL((SELECT SUM(quantity) FROM `pharmacy_bill_detail` WHERE medicine_batch_detail_id=medicine_batch_details.id),0) as used_quantity')
+        ->from('medicine_batch_details')
+        ->join('pharmacy', 'pharmacy.id=medicine_batch_details.pharmacy_id', 'inner')
+        ->join('supplier_bill_basic', 'supplier_bill_basic.id = medicine_batch_details.supplier_bill_basic_id', 'left')
+        ->where('pharmacy.id', $pharmacy_id)        
+        ->get()->row_array();
+         }
     }
+
+    //IN CASE OF CHEMIST WISE MED SUPPLYING
+    // public function get_medicine_stockinfo($pharmacy_id)
+    // {
+    //     $userLoggedInFirst = $this->customlib->getLoggedInUserId();
+    //     $userRoleIn = $this->role_model->getRoleFromStaffUsingLid($userLoggedInFirst);
+
+    //     if($userRoleIn[0]['created_by'] == 7 && $userRoleIn[0]['name'] == 'Doctor'){
+    //         $getPurchasedMedlistofDisbyDoclocation = $this->role_model->getPurdMedofDisbyDocLoc($userRoleIn[0]['locality_id']);
+    //          $this->db->join('supplier_bill_basic', 'supplier_bill_basic.id = medicine_batch_details.supplier_bill_basic_id', 'left');
+    //      }
+    //     $query =  $this->db->select('medicine_batch_details.available_quantity,`pharmacy`.`min_level`, `medicine_batch_details`.`available_quantity` as `total_qty`,IFNULL((SELECT SUM(quantity) FROM `pharmacy_bill_detail` WHERE medicine_batch_detail_id=medicine_batch_details.id),0) as used_quantity')
+    //     ->from('medicine_batch_details')
+    //     ->join('pharmacy', 'pharmacy.id=medicine_batch_details.pharmacy_id', 'inner')
+    //     ->where('medicine_batch_details.id', $pharmacy_id)
+    //     ->get()->row_array();
+    // //    echo $this->db->last_query(); die;
+    //     return $query;
+    // }
     
     public function getAllpharmacyRecord()
     {
@@ -70,10 +136,14 @@ class Pharmacy_model extends MY_Model
 //ne
                 //PREV
         $this->datatables
-            ->select('pharmacy.*,medicine_category.id as medicine_categoryid,medicine_category.medicine_category,(SELECT sum(available_quantity) FROM `medicine_batch_details` WHERE pharmacy_id=pharmacy.id) as `total_qty`')
+            ->select('pharmacy.*,medicine_category.id as medicine_categoryid,medicine_category.medicine_category,medicine_search_type.search_type as sea_type,(SELECT sum(available_quantity) FROM `medicine_batch_details` WHERE pharmacy_id=pharmacy.id) as `total_qty`')
             ->join('medicine_category', 'pharmacy.medicine_category_id = medicine_category.id', 'left')
             ->join('medicine_batch_details', 'pharmacy.id = medicine_batch_details.pharmacy_id', 'left')
             ->join('pharmacy_bill_detail', 'pharmacy_bill_detail.medicine_batch_detail_id = medicine_batch_details.id', 'left')
+            
+            ->join('medicine_search_type', 'medicine_search_type.id = pharmacy.search_type', 'left')
+
+            
             ->searchable('pharmacy.medicine_name,pharmacy.medicine_company,pharmacy. medicine_composition,pharmacy.medicine_category_id,pharmacy.medicine_group')
             ->orderable('pharmacy.id,pharmacy.medicine_name,pharmacy.medicine_company,pharmacy. medicine_composition,pharmacy.medicine_category_id,pharmacy.medicine_group,pharmacy.unit')
             ->group_by('pharmacy.id')
@@ -81,6 +151,39 @@ class Pharmacy_model extends MY_Model
             ->where('`pharmacy`.`medicine_category_id`=`medicine_category`.`id`') //this line comm while adding below line pharmacy med sep
            //na
                     ->where('pharmacy.added_by', $login_user_id)
+                    // ->or_where('pharmacy.is_central_pharm', 'yes')
+
+                    //ne
+            ->from('pharmacy');
+        return $this->datatables->generate('json');
+    }
+
+
+    public function getAllpharmacyRecordtoDownload()
+    {
+         //na pharmacy
+        $login_user = $this->customlib->getUserData();
+        $login_user_id = $login_user['id'];
+        // var_dump($login_user_id ); die;
+//ne
+                //PREV
+        $this->datatables
+            ->select('pharmacy.*,medicine_category.id as medicine_categoryid,medicine_category.medicine_category,medicine_search_type.search_type as sea_type,(SELECT sum(available_quantity) FROM `medicine_batch_details` WHERE pharmacy_id=pharmacy.id) as `total_qty`')
+            ->join('medicine_category', 'pharmacy.medicine_category_id = medicine_category.id', 'left')
+            ->join('medicine_batch_details', 'pharmacy.id = medicine_batch_details.pharmacy_id', 'left')
+            ->join('pharmacy_bill_detail', 'pharmacy_bill_detail.medicine_batch_detail_id = medicine_batch_details.id', 'left')
+            
+            ->join('medicine_search_type', 'medicine_search_type.id = pharmacy.search_type', 'left')
+
+            
+            ->searchable('pharmacy.medicine_name,pharmacy.medicine_company,pharmacy. medicine_composition,pharmacy.medicine_category_id,pharmacy.medicine_group')
+            ->orderable('pharmacy.id,pharmacy.medicine_name,pharmacy.medicine_company,pharmacy. medicine_composition,pharmacy.medicine_category_id,pharmacy.medicine_group,pharmacy.unit')
+            ->group_by('pharmacy.id')
+            ->sort('pharmacy.id', 'desc')
+            ->where('`pharmacy`.`medicine_category_id`=`medicine_category`.`id`') //this line comm while adding below line pharmacy med sep
+           //na
+                    ->where('pharmacy.added_by', 121)
+                    ->where('pharmacy.active', 1)
                     // ->or_where('pharmacy.is_central_pharm', 'yes')
 
                     //ne
@@ -128,7 +231,7 @@ class Pharmacy_model extends MY_Model
         return $query->result_array();
     }
 
-    public function check_medicine_exists($medicine_name,$added_by)
+    public function check_medicine_exists($medicine_name,$added_by,$med_cat_check)
     {
         //PREV
         //$this->db->where(array('medicine_category_id' => $medicine_category_id, 'medicine_name' => $medicine_name));
@@ -138,7 +241,38 @@ class Pharmacy_model extends MY_Model
         // $this->db->where(array('medicine_category_id' => $medicine_category_id, 'medicine_name' => $medicine_name,'pharmacy.added_by' => $added_by));
 
         //WITHOUT CAT ID
-        $this->db->where(array('medicine_name' => $medicine_name,'pharmacy.added_by' => $added_by));
+        $this->db->where(array('medicine_name' => $medicine_name,'pharmacy.added_by' => $added_by,'pharmacy.medicine_category_id' => $med_cat_check));
+        $query = $this->db->join("medicine_category", "medicine_category.id = pharmacy.medicine_category_id")->get('pharmacy');
+        // echo $this->db->last_query(); die;
+        if ($query->num_rows() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // public function check_distributor_stocks($medicine_name,$added_by,$med_cat_check)
+    // {
+    //     //PREV
+    //     //$this->db->where(array('medicine_category_id' => $medicine_category_id, 'medicine_name' => $medicine_name));
+    //    //na pharmacy
+
+    //    //WITH CAT ID
+    //     // $this->db->where(array('medicine_category_id' => $medicine_category_id, 'medicine_name' => $medicine_name,'pharmacy.added_by' => $added_by));
+
+    //     //WITHOUT CAT ID
+    //     $this->db->where(array('medicine_name' => $medicine_name,'pharmacy.added_by' => $added_by,'pharmacy.medicine_category_id' => $med_cat_check));
+    //     $query = $this->db->join("medicine_category", "medicine_category.id = pharmacy.medicine_category_id")->get('pharmacy');
+    //     if ($query->num_rows() > 0) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
+    public function check_medicine_exists_approved($medicine_name,$added_by,$med_cat_check)
+    {
+        $this->db->where(array('medicine_name' => $medicine_name,'pharmacy.added_by' => $added_by,'pharmacy.medicine_category_id' => $med_cat_check));
         $query = $this->db->join("medicine_category", "medicine_category.id = pharmacy.medicine_category_id")->get('pharmacy');
         if ($query->num_rows() > 0) {
             return true;
@@ -146,6 +280,20 @@ class Pharmacy_model extends MY_Model
             return false;
         }
     }
+
+    public function check_medicine_exists_productId($productId)
+    {
+        $this->db->where(array('pharmacy.product_id' => $productId));
+        $query = $this->db->join("medicine_category", "medicine_category.id = pharmacy.medicine_category_id")->get('pharmacy');
+        // echo $this->db->last_query(); die;
+        if ($query->num_rows() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    
 
     public function bulkdelete($id)
     {
@@ -199,6 +347,14 @@ class Pharmacy_model extends MY_Model
         $query = $this->db->where('id', $pharmacy['id'])
             ->update('pharmacy', $pharmacy);
     }
+
+    public function qtyupdatetombdtable($mbdupdate)
+    {
+        $query = $this->db->where('id', $mbdupdate['id'])
+            ->update('medicine_batch_details', $mbdupdate);
+    }
+
+    
 
     public function delete($id)
     {
@@ -271,6 +427,62 @@ class Pharmacy_model extends MY_Model
         return $query->result_array();
     }
 
+
+    public function getMedicineforRefWind()
+    {
+
+        $userLoggedInFirst = $this->customlib->getLoggedInUserId();
+        $userRoleIn = $this->role_model->getRoleFromStaffUsingLid($userLoggedInFirst);
+        
+      
+        if($userRoleIn[0]['created_by'] == 7 && $userRoleIn[0]['name'] == 'Doctor'){
+            $getPurchasedMedlistofDisbyDoclocation = $this->role_model->getPurdMedofDisbyDocLoc($userRoleIn[0]['locality_id']);
+            $staff_items = array();
+             foreach($getPurchasedMedlistofDisbyDoclocation as $username) {
+             $staff_items[] = $username['id'];
+             }
+            //  var_dump($staff_items); die;
+ 
+             $this->db->join('medicine_batch_details', 'medicine_batch_details.pharmacy_id = pharmacy.id', 'inner');
+             $this->db->join('supplier_bill_basic', 'supplier_bill_basic.id = medicine_batch_details.supplier_bill_basic_id', 'inner');
+             $this->db->where_in('supplier_bill_basic.received_by', $staff_items);
+
+         }
+
+         if($userRoleIn[0]['created_by'] != 7 && $userRoleIn[0]['name'] == 'Pharmacist'){
+            // $col_dis = $this->db->select('staff.*, CONCAT("",staff.name,staff.surname," (",staff.employee_id,")") as supplier')
+            //  ->join('staff_roles', 'staff.id = staff_roles.staff_id')
+            //  ->where("staff.is_active",1)
+            //  ->where("staff_roles.role_id",$userRoleIn[0]['created_by'])
+            //  ->get("staff");
+            //  $dis_id = $col_dis->row_array();
+            //  $disId = $dis_id['id'];
+
+            $this->db->join('medicine_batch_details', 'medicine_batch_details.pharmacy_id = pharmacy.id', 'right');
+            $this->db->join('supplier_bill_basic', 'supplier_bill_basic.id = medicine_batch_details.supplier_bill_basic_id', 'right');
+            // $this->db->where('supplier_bill_basic.received_by', $disId);
+            $this->db->where('supplier_bill_basic.received_by', $userLoggedInFirst);
+         }
+
+
+            if($userRoleIn[0]['created_by'] == 7 && $userRoleIn[0]['name'] == 'Doctor'){
+
+                
+
+                //IN CASE OF ADMIN WISE MED SUPPLY
+                // $this->db->select('medicine_batch_details.id as id,pharmacy.medicine_name as medicine_name,pharmacy.medicine_composition as medicine_composition');
+                //IN CASE OF CHEMIST WISE MED SUPPLYING
+                $this->db->select('pharmacy.*');
+                $this->db->group_by("pharmacy.medicine_name");
+            }
+            $this->db->where('pharmacy.active', 1);
+            $this->db->order_by("pharmacy.valuep desc");
+            $query = $this->db->get('pharmacy');
+            // echo $this->db->last_query(); die;
+            return $query->result_array();
+        
+    }
+
     public function getMedicineNamePat()
     {
         $query = $this->db->select('pharmacy.id,pharmacy.medicine_name')->get('pharmacy');
@@ -279,6 +491,12 @@ class Pharmacy_model extends MY_Model
 
     public function addBill($data, $insert_array, $update_array, $delete_array, $payment_array)
     {    
+        // echo "<pre>";
+        // print_r($data);
+        // print_r($insert_array);
+        // print_r($update_array);
+        // print_r($delete_array);
+        // print_r($payment_array); die;
         $this->db->trans_start(); # Starting Transaction
         $this->db->trans_strict(false); # See Note 01. If you wish can remove as well
         if (isset($data['id']) && $data['id'] != 0) {
@@ -612,22 +830,13 @@ class Pharmacy_model extends MY_Model
          //na pharmacy
          $login_user = $this->customlib->getUserData();
          $login_user_id = $login_user['created_by'];
+        //  var_dump($login_user_id); die;
          
          if($login_user_id == 7){
             $staffRoles_id = $login_user['id'];
-         }else{
-         $this->db->select('staff_roles.*');
-         $this->db->where('staff_roles.role_id', $login_user_id);
-         $query_staff_roles = $this->db->get('staff_roles');
-         $staffRoles = $query_staff_roles->result_array();
-         $staffRoles_id = $staffRoles[0]['id'];
-         }
-         //na e
-        //  echo "<pre>";
-        //  print_r($login_user ); die;
 
-        $this->datatables
-            ->select('supplier_bill_basic.*,medicine_supplier.supplier,medicine_supplier.sup_bill_no')
+            $this->datatables
+            ->select('supplier_bill_basic.*,medicine_supplier.supplier')
             ->join('medicine_supplier', 'medicine_supplier.id = supplier_bill_basic.supplier_id')
             ->searchable('supplier_bill_basic.id,supplier_bill_basic.invoice_no,supplier')
             ->orderable('supplier_bill_basic.id,supplier_bill_basic.date,supplier_bill_basic.invoice_no,supplier,supplier_bill_basic.total,supplier_bill_basic.tax,supplier_bill_basic.discount,supplier_bill_basic.net_amount')
@@ -635,6 +844,118 @@ class Pharmacy_model extends MY_Model
             ->where('supplier_bill_basic.received_by', $staffRoles_id)
             ->from('supplier_bill_basic');
         return $this->datatables->generate('json');
+
+         }elseif($login_user_id == 73){
+            $staffRoles_id = $login_user['id'];
+
+            $this->datatables
+            ->select('supplier_bill_basic.*,medicine_supplier.supplier')
+            ->join('medicine_supplier', 'medicine_supplier.id = supplier_bill_basic.supplier_id')
+            ->searchable('supplier_bill_basic.id,supplier_bill_basic.invoice_no,supplier')
+            ->orderable('supplier_bill_basic.id,supplier_bill_basic.date,supplier_bill_basic.invoice_no,supplier,supplier_bill_basic.total,supplier_bill_basic.tax,supplier_bill_basic.discount,supplier_bill_basic.net_amount')
+            ->sort('supplier_bill_basic.id', 'desc')
+            ->where('supplier_bill_basic.received_by', $staffRoles_id)
+            ->from('supplier_bill_basic');
+        return $this->datatables->generate('json');
+
+         }else{
+
+         $staffRoles_id = $login_user['id'];
+         $this->datatables
+        
+        ->select('supplier_bill_basic.*, CONCAT("",staff.name,staff.surname," (",staff.employee_id,")") as supplier')
+        // ->join('medicine_supplier', 'medicine_supplier.id = supplier_bill_basic.supplier_id')
+        ->join('staff', 'staff.id = supplier_bill_basic.received_by')
+        ->searchable('supplier_bill_basic.id,supplier_bill_basic.invoice_no,staff.name as supplier')
+        ->orderable('supplier_bill_basic.id,supplier_bill_basic.date,supplier_bill_basic.invoice_no,staff.name as supplier,supplier_bill_basic.total,supplier_bill_basic.tax,supplier_bill_basic.discount,supplier_bill_basic.net_amount')
+        ->sort('supplier_bill_basic.id', 'desc')
+        ->where('supplier_bill_basic.received_by', $staffRoles_id)
+        ->from('supplier_bill_basic');
+
+     return $this->datatables->generate('json');
+
+         }
+         //na e
+        //  echo "<pre>";
+
+        //  $this->datatables
+        //     ->select('supplier_bill_basic.*,medicine_supplier.supplier')
+        //     ->join('medicine_supplier', 'medicine_supplier.id = supplier_bill_basic.supplier_id')
+        //     ->searchable('supplier_bill_basic.id,supplier_bill_basic.invoice_no,supplier')
+        //     ->orderable('supplier_bill_basic.id,supplier_bill_basic.date,supplier_bill_basic.invoice_no,supplier,supplier_bill_basic.total,supplier_bill_basic.tax,supplier_bill_basic.discount,supplier_bill_basic.net_amount')
+        //     ->sort('supplier_bill_basic.id', 'desc')
+        //     ->where('supplier_bill_basic.received_by', $staffRoles_id)
+        //     ->from('supplier_bill_basic');
+        // return $this->datatables->generate('json');
+
+       
+    }
+
+
+    public function getAllpharmacypurchaseRecordStockPush($arry_pha)
+    {
+         //na pharmacy
+         $login_user = $this->customlib->getUserData();
+         $login_user_id = $login_user['created_by'];
+         
+         if($login_user_id == 7){
+            $staffRoles_id = $login_user['id'];
+
+            $this->datatables
+            ->select('supplier_bill_basic.*,medicine_supplier.supplier')
+            ->join('medicine_supplier', 'medicine_supplier.id = supplier_bill_basic.supplier_id')
+            ->searchable('supplier_bill_basic.id,supplier_bill_basic.invoice_no,supplier')
+            ->orderable('supplier_bill_basic.id,supplier_bill_basic.date,supplier_bill_basic.invoice_no,supplier,supplier_bill_basic.total,supplier_bill_basic.tax,supplier_bill_basic.discount,supplier_bill_basic.net_amount')
+            ->sort('supplier_bill_basic.id', 'desc')
+            ->where('supplier_bill_basic.received_by', $staffRoles_id)
+            ->from('supplier_bill_basic');
+        return $this->datatables->generate('json');
+
+         }elseif($login_user_id == 73){
+            $staffRoles_id = $login_user['id'];
+
+            $this->datatables
+            ->select('supplier_bill_basic.*,CONCAT("",staff.name,staff.surname," (",staff.employee_id,")") as supplier')
+            ->join('medicine_supplier', 'medicine_supplier.id = supplier_bill_basic.supplier_id','left')
+            ->join('staff', 'staff.id = supplier_bill_basic.received_by','left')
+            ->searchable('supplier_bill_basic.id,supplier_bill_basic.invoice_no,supplier')
+            ->orderable('supplier_bill_basic.id,supplier_bill_basic.date,supplier_bill_basic.invoice_no,supplier,supplier_bill_basic.total,supplier_bill_basic.tax,supplier_bill_basic.discount,supplier_bill_basic.net_amount')
+            ->sort('supplier_bill_basic.id', 'desc')
+            ->where_in('supplier_bill_basic.received_by', $arry_pha)
+            ->from('supplier_bill_basic');
+        return $this->datatables->generate('json');
+
+         }else{
+
+         $staffRoles_id = $login_user['id'];
+         $this->datatables
+        
+        ->select('supplier_bill_basic.*, CONCAT("",staff.name,staff.surname," (",staff.employee_id,")") as supplier')
+        // ->join('medicine_supplier', 'medicine_supplier.id = supplier_bill_basic.supplier_id')
+        ->join('staff', 'staff.id = supplier_bill_basic.received_by')
+        ->searchable('supplier_bill_basic.id,supplier_bill_basic.invoice_no,staff.name as supplier')
+        ->orderable('supplier_bill_basic.id,supplier_bill_basic.date,supplier_bill_basic.invoice_no,staff.name as supplier,supplier_bill_basic.total,supplier_bill_basic.tax,supplier_bill_basic.discount,supplier_bill_basic.net_amount')
+        ->sort('supplier_bill_basic.id', 'desc')
+        ->where('supplier_bill_basic.received_by', $staffRoles_id)
+        ->from('supplier_bill_basic');
+
+     return $this->datatables->generate('json');
+
+         }
+         //na e
+        //  echo "<pre>";
+
+        //  $this->datatables
+        //     ->select('supplier_bill_basic.*,medicine_supplier.supplier')
+        //     ->join('medicine_supplier', 'medicine_supplier.id = supplier_bill_basic.supplier_id')
+        //     ->searchable('supplier_bill_basic.id,supplier_bill_basic.invoice_no,supplier')
+        //     ->orderable('supplier_bill_basic.id,supplier_bill_basic.date,supplier_bill_basic.invoice_no,supplier,supplier_bill_basic.total,supplier_bill_basic.tax,supplier_bill_basic.discount,supplier_bill_basic.net_amount')
+        //     ->sort('supplier_bill_basic.id', 'desc')
+        //     ->where('supplier_bill_basic.received_by', $staffRoles_id)
+        //     ->from('supplier_bill_basic');
+        // return $this->datatables->generate('json');
+
+       
     }
 
     public function getBillBasic($limit = "", $start = "")
@@ -908,62 +1229,283 @@ class Pharmacy_model extends MY_Model
     //     }
     // }
 
-    public function get_medicine_name($medicine_category_id)
+    public function get_medicine_name($medicine_category_id,$search_type)
     {
+        $visit_details_id = $this->input->post("visit_details_id");
+        $getPatLocality = $this->role_model->getPatientDataByVdId($visit_details_id);
+        // var_dump($getPatLocality[0]['locality_id']); die;
+
         $userLoggedInFirst = $this->customlib->getLoggedInUserId();
         $userRoleIn = $this->role_model->getRoleFromStaffUsingLid($userLoggedInFirst);
-        // if( $userRoleIn[0]['created_by'] == 7){
-        //     // $userLoggedIn = $userRoleIn[0]['staff_id'];
-        //     $getfromcp = $this->role_model->getfromcp();
-        //     $userLoggedIn = $getfromcp[0]['id'];
-        // }else{
-        // $userGetAdmin = $this->role_model->getAdminUsingCreatedById($userRoleIn[0]['created_by']);
-        // $userLoggedIn = $userGetAdmin[0]['staff_id'];
-        // }
-
-        if( $userRoleIn[0]['created_by'] == 7 && $userRoleIn[0]['name'] == 'Pharmacist'){
-            // $userLoggedIn = $userRoleIn[0]['staff_id'];  //PREV
-            $getfromcp = $this->role_model->getfromcp();
-            $userLoggedIn = $getfromcp[0]['id'];
-           
-        }elseif( $userRoleIn[0]['created_by'] == 7 && $userRoleIn[0]['name'] == 'Doctor'){
-            // $userLoggedIn = $userRoleIn[0]['staff_id'];  //PREV
-            $getfromcp = $this->role_model->getfromcp();
-            $userLoggedIn = $getfromcp[0]['id'];
-           
-        }elseif($userRoleIn[0]['created_by'] != 7  && $userRoleIn[0]['name'] == 'Doctor'){
-            $userGetAdmin = $this->role_model->getAdminUsingCreatedById($userRoleIn[0]['created_by']);
-            $userLoggedIn = $userGetAdmin[0]['staff_id'];
-        }elseif($userRoleIn[0]['created_by'] != 7  && $userRoleIn[0]['name'] == 'Pharmacist'){
-            $userGetAdmin = $this->role_model->getAdminUsingCreatedById($userRoleIn[0]['created_by']);
-            $userLoggedIn = $userGetAdmin[0]['staff_id'];
-        }else{
-            $userLoggedIn = $userLoggedInFirst;
-        }
-
-        $this->db->select('medicine_category.*');
-        $this->db->where('medicine_category.id', $medicine_category_id);
-        $query1 = $this->db->get('medicine_category');
+        // echo "<pre>";
+        // print_r($userRoleIn); die;
+        
+        $this->db->select('medicine_search_type.*');
+        $this->db->where('medicine_search_type.id', $search_type);
+        $query1 = $this->db->get('medicine_search_type');
         $collectMedCatName = $query1->result_array();
-        if($collectMedCatName[0]['medicine_category'] == "Generic"){
+
+        // var_dump($userRoleIn[0]['created_by']);
+        // var_dump($userRoleIn[0]['name']); die;
+
+        if($userRoleIn[0]['created_by'] == 7 && $userRoleIn[0]['name'] == 'Doctor'){
+            //By Passing Doctor Id
+            // $getPurchasedMedlistofDisbyDoclocation = $this->role_model->getPurdMedofDisbyDocLoc($userRoleIn[0]['locality_id']);
+          
+            //By Passing Patient visit_details_id
+            $getPurchasedMedlistofDisbyDoclocation = $this->role_model->getPurdMedofDisbyDocLoc($getPatLocality[0]['locality_id']);
+
+            $staff_items = array();
+             foreach($getPurchasedMedlistofDisbyDoclocation as $username) {
+             $staff_items[] = $username['id'];
+             }
+            //  var_dump($staff_items); die;
+ 
+             $this->db->join('medicine_batch_details', 'medicine_batch_details.pharmacy_id = pharmacy.id', 'inner');
+             $this->db->join('supplier_bill_basic', 'supplier_bill_basic.id = medicine_batch_details.supplier_bill_basic_id', 'inner');
+             $this->db->where_in('supplier_bill_basic.received_by', $staff_items);
+
+         }
+
+         if($userRoleIn[0]['created_by'] != 7 && $userRoleIn[0]['name'] == 'Pharmacist'){
+            // $col_dis = $this->db->select('staff.*, CONCAT("",staff.name,staff.surname," (",staff.employee_id,")") as supplier')
+            //  ->join('staff_roles', 'staff.id = staff_roles.staff_id')
+            //  ->where("staff.is_active",1)
+            //  ->where("staff_roles.role_id",$userRoleIn[0]['created_by'])
+            //  ->get("staff");
+            //  $dis_id = $col_dis->row_array();
+            //  $disId = $dis_id['id'];
+
+            $this->db->join('medicine_batch_details', 'medicine_batch_details.pharmacy_id = pharmacy.id', 'right');
+            $this->db->join('supplier_bill_basic', 'supplier_bill_basic.id = medicine_batch_details.supplier_bill_basic_id', 'right');
+            // $this->db->where('supplier_bill_basic.received_by', $disId);
+            $this->db->where('supplier_bill_basic.received_by', $userLoggedInFirst);
+         }
+
+        if($collectMedCatName[0]['search_type'] == "Composition"){
+
+            if($userRoleIn[0]['created_by'] == 7 && $userRoleIn[0]['name'] == 'Doctor'){
+                //IN CASE OF ADMIN WISE MED SUPPLY
+                // $this->db->select('medicine_batch_details.id as id,pharmacy.medicine_name as medicine_name,pharmacy.medicine_composition as medicine_composition');
+                //IN CASE OF CHEMIST WISE MED SUPPLYING
+                // $this->db->select('pharmacy.*');
+                $this->db->select('pharmacy.medicine_composition,pharmacy.id,pharmacy.medicine_category_id');
+            }else{
             $this->db->select('pharmacy.*');
+            $this->db->group_by("pharmacy.medicine_name");
+            }
             $this->db->where('pharmacy.medicine_category_id', $medicine_category_id);
-             $this->db->where('pharmacy.added_by', $userLoggedIn);
+            $this->db->where('pharmacy.active', 1);
             $this->db->order_by("pharmacy.valuep desc");
             $query = $this->db->get('pharmacy');
+            // echo $this->db->last_query(); die;
             return $query->result_array();
-        }elseif($collectMedCatName[0]['medicine_category'] == "Branded"){
-            $this->db->select('pharmacy.medicine_name,pharmacy.id,pharmacy.medicine_category_id');
-             $this->db->where('pharmacy.added_by', $userLoggedIn);  
+        }elseif($collectMedCatName[0]['search_type'] == "Branded"){
+
+            if($userRoleIn[0]['created_by'] == 7 && $userRoleIn[0]['name'] == 'Doctor'){
+                //IN CASE OF ADMIN WISE MED SUPPLY
+                // $this->db->select('medicine_batch_details.id as id,pharmacy.medicine_name as medicine_name,pharmacy.medicine_composition as medicine_composition');
+               //IN CASE OF CHEMIST WISE MED SUPPLYING
+                $this->db->select('pharmacy.medicine_name,pharmacy.id,pharmacy.medicine_category_id');
+                $this->db->group_by("pharmacy.medicine_name");
+
+            }else{
+                $this->db->select('pharmacy.medicine_name,pharmacy.id,pharmacy.medicine_category_id');
+                $this->db->group_by("pharmacy.medicine_name");
+            }
+            $this->db->where('pharmacy.medicine_category_id', $medicine_category_id);
+            $this->db->where('pharmacy.active', 1);
             $this->db->order_by("pharmacy.valuep desc");
             $query = $this->db->get('pharmacy');
+            // echo $this->db->last_query(); die;
             return $query->result_array();
         }
     }
 
 
 
-   
+    public function get_medicine_brand($medicine_category_id,$search_type,$medicine_name)
+    {
+        $visit_details_id = $this->input->post("visit_details_id");
+        $getPatLocality = $this->role_model->getPatientDataByVdId($visit_details_id);
+
+        $userLoggedInFirst = $this->customlib->getLoggedInUserId();
+        $userRoleIn = $this->role_model->getRoleFromStaffUsingLid($userLoggedInFirst);
+        
+        $this->db->select('medicine_search_type.*');
+        $this->db->where('medicine_search_type.id', $search_type);
+        $query1 = $this->db->get('medicine_search_type');
+        $collectMedCatName = $query1->result_array();
+
+        $getCompositionofId = $this->db->select('pharmacy.*')->where('pharmacy.id', $medicine_name)->get('pharmacy')->result_array();
+        $med_comp_by_id = $getCompositionofId[0]['medicine_composition'];
+
+        if($userRoleIn[0]['created_by'] == 7 && $userRoleIn[0]['name'] == 'Doctor'){
+            //By Passing Doc Id
+            //$getPurchasedMedlistofDisbyDoclocation = $this->role_model->getPurdMedofDisbyDocLoc($userRoleIn[0]['locality_id']);
+            
+            //By Passing Patient visit_details_id
+            $getPurchasedMedlistofDisbyDoclocation = $this->role_model->getPurdMedofDisbyDocLoc($getPatLocality[0]['locality_id']);
+
+            $staff_items = array();
+             foreach($getPurchasedMedlistofDisbyDoclocation as $username) {
+             $staff_items[] = $username['id'];
+             }
+            //  var_dump($staff_items); die;
+ 
+             $this->db->join('medicine_batch_details', 'medicine_batch_details.pharmacy_id = pharmacy.id', 'inner');
+             $this->db->join('supplier_bill_basic', 'supplier_bill_basic.id = medicine_batch_details.supplier_bill_basic_id', 'inner');
+             $this->db->where_in('supplier_bill_basic.received_by', $staff_items);
+
+         }
+
+         if($userRoleIn[0]['created_by'] != 7 && $userRoleIn[0]['name'] == 'Pharmacist'){
+            // $col_dis = $this->db->select('staff.*, CONCAT("",staff.name,staff.surname," (",staff.employee_id,")") as supplier')
+            //  ->join('staff_roles', 'staff.id = staff_roles.staff_id')
+            //  ->where("staff.is_active",1)
+            //  ->where("staff_roles.role_id",$userRoleIn[0]['created_by'])
+            //  ->get("staff");
+            //  $dis_id = $col_dis->row_array();
+            //  $disId = $dis_id['id'];
+
+            $this->db->join('medicine_batch_details', 'medicine_batch_details.pharmacy_id = pharmacy.id', 'right');
+            $this->db->join('supplier_bill_basic', 'supplier_bill_basic.id = medicine_batch_details.supplier_bill_basic_id', 'right');
+            // $this->db->where('supplier_bill_basic.received_by', $disId);
+            $this->db->where('supplier_bill_basic.received_by', $userLoggedInFirst);
+         }
+
+        if($collectMedCatName[0]['search_type'] == "Composition"){
+
+            if($userRoleIn[0]['created_by'] == 7 && $userRoleIn[0]['name'] == 'Doctor'){
+
+                //IN CASE OF ADMIN WISE MED SUPPLY
+                // $this->db->select('medicine_batch_details.id as id,pharmacy.medicine_name as medicine_name,pharmacy.medicine_composition as medicine_composition');
+                //IN CASE OF CHEMIST WISE MED SUPPLYING
+                $this->db->select('pharmacy.*');
+                $this->db->where('pharmacy.medicine_composition', $med_comp_by_id);
+                $this->db->group_by("pharmacy.medicine_name");
+            }else{
+            $this->db->select('pharmacy.*');
+            }
+            $this->db->where('pharmacy.medicine_category_id', $medicine_category_id);
+            $this->db->where('pharmacy.active', 1);
+            $this->db->order_by("pharmacy.valuep desc");
+            $query = $this->db->get('pharmacy');
+            // echo $this->db->last_query(); die;
+            return $query->result_array();
+        }elseif($collectMedCatName[0]['search_type'] == "Branded"){
+
+            if($userRoleIn[0]['created_by'] == 7 && $userRoleIn[0]['name'] == 'Doctor'){
+                //IN CASE OF ADMIN WISE MED SUPPLY
+                // $this->db->select('medicine_batch_details.id as id,pharmacy.medicine_name as medicine_name,pharmacy.medicine_composition as medicine_composition');
+               //IN CASE OF CHEMIST WISE MED SUPPLYING
+
+                $this->db->select("pharmacy.medicine_name,pharmacy.id,pharmacy.medicine_category_id");
+                $this->db->where('pharmacy.medicine_composition', $med_comp_by_id);
+                $this->db->group_by("pharmacy.medicine_name");
+
+            }else{
+                $this->db->select('pharmacy.medicine_name,pharmacy.id,pharmacy.medicine_category_id');
+            }
+             $this->db->where('pharmacy.medicine_category_id', $medicine_category_id);
+            $this->db->where('pharmacy.active', 1);
+            $this->db->order_by("pharmacy.valuep desc");
+            $query = $this->db->get('pharmacy');
+            // echo $this->db->last_query(); die;
+            return $query->result_array();
+        }
+    }
+
+
+    public function get_medicine_name_without_st($medicine_category_id)
+    {
+        $userLoggedInFirst = $this->customlib->getLoggedInUserId();
+        $userRoleIn = $this->role_model->getRoleFromStaffUsingLid($userLoggedInFirst);
+
+        if($userRoleIn[0]['created_by'] == 7 && $userRoleIn[0]['name'] == 'Doctor'){
+            $getPurchasedMedlistofDisbyDoclocation = $this->role_model->getPurdMedofDisbyDocLoc($userRoleIn[0]['locality_id']);
+            $staff_items = array();
+             foreach($getPurchasedMedlistofDisbyDoclocation as $username) {
+             $staff_items[] = $username['id'];
+             }
+ 
+             $this->db->join('medicine_batch_details', 'medicine_batch_details.pharmacy_id = pharmacy.id', 'left');
+             $this->db->join('supplier_bill_basic', 'supplier_bill_basic.id = medicine_batch_details.supplier_bill_basic_id', 'left');
+             $this->db->where_in('supplier_bill_basic.received_by', $staff_items);
+         }
+            $this->db->select('pharmacy.*');
+            $this->db->where('pharmacy.medicine_category_id', $medicine_category_id);
+            $this->db->where('pharmacy.active', 1);
+
+            $this->db->order_by("pharmacy.valuep desc");
+            $query = $this->db->get('pharmacy');
+            return $query->result_array();
+    }
+
+
+    public function get_medicine_name_to_push_stock($medicine_category_id,$search_type)
+    {
+        $userLoggedInFirst = $this->customlib->getLoggedInUserId();
+        $userRoleIn = $this->role_model->getRoleFromStaffUsingLid($userLoggedInFirst);
+        
+
+        // if( $userRoleIn[0]['created_by'] == 7 && $userRoleIn[0]['name'] == 'Pharmacist'){
+        //     // $userLoggedIn = $userRoleIn[0]['staff_id'];  //PREV
+        //     $getfromcp = $this->role_model->getfromcp();
+        //     $userLoggedIn = $getfromcp[0]['id'];
+           
+        // }elseif( $userRoleIn[0]['created_by'] == 7 && $userRoleIn[0]['name'] == 'Doctor'){
+        //     $getfromcp = $this->role_model->getfromcp();
+        //     $userLoggedIn = $getfromcp[0]['id'];
+           
+        // }elseif($userRoleIn[0]['created_by'] != 7  && $userRoleIn[0]['name'] == 'Doctor'){
+        //     $userGetAdmin = $this->role_model->getAdminUsingCreatedById($userRoleIn[0]['created_by']);
+        //     $userLoggedIn = $userGetAdmin[0]['staff_id'];
+        // }elseif($userRoleIn[0]['created_by'] != 7  && $userRoleIn[0]['name'] == 'Pharmacist'){
+        //     $userGetAdmin = $this->role_model->getAdminUsingCreatedById($userRoleIn[0]['created_by']);
+        //     $userLoggedIn = $userGetAdmin[0]['staff_id'];
+        // }else{
+        //     $userLoggedIn = $userLoggedInFirst;
+        // }
+
+
+        $this->db->select('medicine_search_type.*');
+        $this->db->where('medicine_search_type.id', $search_type);
+        $query1 = $this->db->get('medicine_search_type');
+        $collectMedCatName = $query1->result_array();
+
+        
+ 
+             $this->db->join('medicine_batch_details', 'medicine_batch_details.pharmacy_id = pharmacy.id', 'left');
+             $this->db->join('supplier_bill_basic', 'supplier_bill_basic.id = medicine_batch_details.supplier_bill_basic_id', 'left');
+             $this->db->where('supplier_bill_basic.received_by', $userLoggedInFirst);
+             $this->db->group_by('medicine_batch_details.pharmacy_id');
+
+
+         
+        if($collectMedCatName[0]['search_type'] == "Composition"){
+            $this->db->select('pharmacy.*,medicine_batch_details.id as mbdId,supplier_bill_basic.id as sbbId,supplier_bill_basic.received_by');
+            $this->db->where('pharmacy.medicine_category_id', $medicine_category_id);
+            //  $this->db->where('pharmacy.added_by', $userLoggedIn);
+            $this->db->where('pharmacy.active', 1);
+
+            $this->db->order_by("pharmacy.valuep desc");
+            $query = $this->db->get('pharmacy');
+            // echo $this->db->last_query(); die;
+            return $query->result_array();
+        }elseif($collectMedCatName[0]['search_type'] == "Branded"){
+            $this->db->select('pharmacy.medicine_name,pharmacy.id,pharmacy.medicine_category_id,medicine_batch_details.id as mbdId,supplier_bill_basic.id as sbbId,supplier_bill_basic.received_by');
+             $this->db->where('pharmacy.medicine_category_id', $medicine_category_id);
+            //  $this->db->where('pharmacy.added_by', $userLoggedIn);  
+            $this->db->where('pharmacy.active', 1);
+            $this->db->order_by("pharmacy.valuep desc");
+            $query = $this->db->get('pharmacy');
+            // echo $this->db->last_query(); die;
+            return $query->result_array();
+        }
+    }
+
+
     // public function get_medicine_searchBy_name($medicine_category_id)
     // {
        
@@ -1081,9 +1623,11 @@ class Pharmacy_model extends MY_Model
             }
         }
         $field_variable = implode(',', $field_var_array);       
-        $this->db->select('pharmacy_bill_basic.*,IFNULL((select sum(amount) as amount_paid from transactions WHERE transactions.pharmacy_bill_basic_id =pharmacy_bill_basic.id and transactions.type="payment" ),0) as paid_amount, IFNULL((select sum(amount) as refund from transactions WHERE transactions.pharmacy_bill_basic_id =pharmacy_bill_basic.id and transactions.type="refund" ),0) as refund_amount,staff.name,staff.surname,staff.id as staff_id,staff.employee_id,patients.patient_name,patients.id as patientid,patients.id as patient_unique_id,patients.mobileno,patients.age,' . $field_variable);
+        $this->db->select('pharmacy_bill_basic.*,print_setting.print_header,sch_settings.name as clinic_name,staff.drug_license_number,staff.gst_in,staff.local_address,staff.permanent_address,IFNULL((select sum(amount) as amount_paid from transactions WHERE transactions.pharmacy_bill_basic_id =pharmacy_bill_basic.id and transactions.type="payment" ),0) as paid_amount, IFNULL((select sum(amount) as refund from transactions WHERE transactions.pharmacy_bill_basic_id =pharmacy_bill_basic.id and transactions.type="refund" ),0) as refund_amount,staff.name,staff.surname,staff.id as staff_id,staff.employee_id,patients.patient_name,patients.id as patientid,patients.id as patient_unique_id,patients.mobileno,patients.age,' . $field_variable);
         $this->db->join('patients', 'pharmacy_bill_basic.patient_id = patients.id');
         $this->db->join('staff', 'pharmacy_bill_basic.generated_by = staff.id');
+        $this->db->join('print_setting', 'print_setting.staff_id = staff.id');
+        $this->db->join('sch_settings', 'sch_settings.staff_id = pharmacy_bill_basic.generated_by');
         $this->db->where('pharmacy_bill_basic.id', $id);
         $query = $this->db->get('pharmacy_bill_basic');
         return $query->row_array();
@@ -1091,29 +1635,80 @@ class Pharmacy_model extends MY_Model
 
     public function getAllBillDetails($id)
     {
-        $sql = "SELECT pharmacy_bill_detail.*,medicine_batch_details.expiry,medicine_batch_details.pharmacy_id,medicine_batch_details.batch_no,medicine_batch_details.tax,pharmacy.medicine_name,pharmacy.unit,pharmacy.id as `medicine_id`,pharmacy.medicine_category_id,medicine_category.medicine_category,pharmacy.generic_name FROM `pharmacy_bill_detail` INNER JOIN medicine_batch_details on medicine_batch_details.id=pharmacy_bill_detail.medicine_batch_detail_id INNER JOIN pharmacy on pharmacy.id= medicine_batch_details.pharmacy_id INNER JOIN medicine_category on medicine_category.id= pharmacy.medicine_category_id WHERE pharmacy_bill_basic_id =" . $this->db->escape($id);
+        //ORIGINAL
+        $sql = "SELECT pharmacy_bill_detail.*,medicine_batch_details.expiry,medicine_batch_details.pharmacy_id,medicine_batch_details.batch_no,medicine_batch_details.tax,pharmacy.medicine_name,pharmacy.unit,pharmacy.id as `medicine_id`,pharmacy.medicine_category_id,medicine_category.medicine_category,pharmacy.medicine_composition FROM `pharmacy_bill_detail` INNER JOIN medicine_batch_details on medicine_batch_details.id=pharmacy_bill_detail.medicine_batch_detail_id INNER JOIN pharmacy on pharmacy.id= medicine_batch_details.pharmacy_id INNER JOIN medicine_category on medicine_category.id= pharmacy.medicine_category_id WHERE pharmacy_bill_basic_id =" . $this->db->escape($id);
         $query = $this->db->query($sql);
         return $query->result_array();
     }
 
     public function getSupplierDetails($id)
     {
-        $this->db->select('supplier_bill_basic.*,medicine_supplier.supplier,medicine_supplier.supplier_person,medicine_supplier.contact,medicine_supplier.address,medicine_supplier.supplier,medicine_supplier.sup_bill_no');
-        $this->db->join('medicine_supplier', 'medicine_supplier.id=supplier_bill_basic.supplier_id');
-        $this->db->where('supplier_bill_basic.id', $id);
-        $query = $this->db->get('supplier_bill_basic');
-        return $query->row_array();
+
+        $userLoggedInFirst = $this->customlib->getLoggedInUserId();
+        $userRoleIn = $this->role_model->getRoleFromStaffUsingLid($userLoggedInFirst);
+        if($userRoleIn[0]['created_by'] == 73){
+            $this->db->select('supplier_bill_basic.*,medicine_supplier.supplier,medicine_supplier.contact,medicine_supplier.address,medicine_supplier.supplier,medicine_supplier.supplier_drug_licence,medicine_supplier.gst_in');
+            $this->db->join('medicine_supplier', 'medicine_supplier.id=supplier_bill_basic.supplier_id');
+            $this->db->where('supplier_bill_basic.id', $id);
+            $query = $this->db->get('supplier_bill_basic');
+            return $query->row_array();
+        }else{
+            $this->db->select('supplier_bill_basic.*,CONCAT("",staff.name,staff.surname," (",staff.employee_id,")") as supplier,staff.contact_no as contact,staff.permanent_address as address');
+            $this->db->join('staff', 'staff.id=supplier_bill_basic.received_by');
+
+            // $this->db->join('medicine_supplier', 'medicine_supplier.id=supplier_bill_basic.supplier_id');
+            $this->db->where('supplier_bill_basic.id', $id);
+            $query = $this->db->get('supplier_bill_basic');
+            return $query->row_array();
+        }
+    }
+
+    public function getSupplierDetailsStockPush($id)
+    {
+
+       
+            $this->db->select('supplier_bill_basic.*,CONCAT("",staff.name,staff.surname," (",staff.employee_id,")") as supplier,staff.contact_no as contact,staff.permanent_address as address,staff.drug_license_number,staff.gst_in');
+            $this->db->join('staff', 'staff.id=supplier_bill_basic.received_by');
+
+            $this->db->where('supplier_bill_basic.id', $id);
+            $query = $this->db->get('supplier_bill_basic');
+            return $query->row_array();
+        
+    }
+
+    public function getSupplierDetailsSuppliedBy()
+    {
+
+        $userLoggedInFirst = $this->customlib->getLoggedInUserId();
+        $this->db->select('CONCAT("",staff.name,staff.surname," (",staff.employee_id,")") as supplier,staff.contact_no as contact,staff.permanent_address as address,staff.drug_license_number,staff.gst_in');
+            $this->db->where('staff.id', $userLoggedInFirst);
+            $query = $this->db->get('staff');
+            return $query->row_array();
+        
     }
 
     public function getAllSupplierDetails($id)
     {
-        $query = $this->db->select('medicine_batch_details.*,pharmacy.medicine_name,pharmacy.unit,pharmacy.id as medicine_id,medicine_category.medicine_category,medicine_category.id as medicine_category_id,pharmacy.generic_name')
+        $query = $this->db->select('medicine_batch_details.*,pharmacy.medicine_name,pharmacy.unit,pharmacy.id as medicine_id,medicine_category.medicine_category,medicine_category.id as medicine_category_id,pharmacy.medicine_composition')
             ->join('pharmacy', 'medicine_batch_details.pharmacy_id = pharmacy.id')
             ->join('medicine_category', 'pharmacy.medicine_category_id = medicine_category.id')
             ->where('medicine_batch_details.supplier_bill_basic_id', $id)
             ->get('medicine_batch_details');
         return $query->result_array();
     }
+
+    public function getAllSupplierDetailsStockPush($id)
+    {
+        $query = $this->db->select('medicine_batch_details.*,pharmacy.medicine_name,pharmacy.unit,pharmacy.id as medicine_id,medicine_category.medicine_category,medicine_category.id as medicine_category_id,pharmacy.medicine_composition')
+            ->join('pharmacy', 'medicine_batch_details.pharmacy_id = pharmacy.id')
+            ->join('medicine_category', 'pharmacy.medicine_category_id = medicine_category.id')
+            ->where('medicine_batch_details.supplier_bill_basic_id', $id)
+            ->get('medicine_batch_details');
+        return $query->result_array();
+    }
+
+
+    
 
     public function getBillDetailsPharma($id)
     {
@@ -1298,13 +1893,84 @@ class Pharmacy_model extends MY_Model
         return $query->row_array();
     }
 
+    public function getmedicinedetailsbyidtopushstocks($id)
+    {
+        $userLoggedInFirst = $this->customlib->getLoggedInUserId();
+        $userRoleIn = $this->role_model->getRoleFromStaffUsingLid($userLoggedInFirst);
+        
+             
+
+        $query = $this->db->select('pharmacy.*,medicine_batch_details.id as mbdId,medicine_batch_details.available_quantity')
+        
+       ->join('medicine_batch_details', 'medicine_batch_details.pharmacy_id = pharmacy.id', 'left')
+        ->join('supplier_bill_basic', 'supplier_bill_basic.id = medicine_batch_details.supplier_bill_basic_id', 'left')
+        ->where('supplier_bill_basic.received_by', $userLoggedInFirst)
+        // ->where("medicine_batch_details.id", $id)
+        ->where("medicine_batch_details.batch_no", $id)
+
+        ->get('pharmacy');
+            // echo $this->db->last_query(); die;
+        return $query->row_array();
+    }
+
    
     public function getBatchNoList($pharmacy_id)
     {
-     $sql = "SELECT medicine_batch_details.*, (medicine_batch_details.available_quantity-IFNULL((SELECT SUM(quantity) FROM `pharmacy_bill_detail` WHERE medicine_batch_detail_id=medicine_batch_details.id),0)) as remaining_quantity FROM `medicine_batch_details` WHERE medicine_batch_details.pharmacy_id=".$this->db->escape($pharmacy_id)." HAVING remaining_quantity > 0";
-           $query = $this->db->query($sql);
-        return $query->result_array();
+        $userLoggedInFirst = $this->customlib->getLoggedInUserId();
+        $userRoleIn = $this->role_model->getRoleFromStaffUsingLid($userLoggedInFirst);
+        
+        if($userRoleIn[0]['created_by'] != 7 && $userRoleIn[0]['name'] == 'Pharmacist'){
+
+            $sql = "SELECT medicine_batch_details.*, (medicine_batch_details.available_quantity-IFNULL((SELECT SUM(quantity) FROM `pharmacy_bill_detail` WHERE medicine_batch_detail_id=medicine_batch_details.id),0)) as remaining_quantity FROM `medicine_batch_details` LEFT JOIN  supplier_bill_basic on supplier_bill_basic.id=medicine_batch_details.supplier_bill_basic_id WHERE supplier_bill_basic.received_by = $userLoggedInFirst AND medicine_batch_details.pharmacy_id=".$this->db->escape($pharmacy_id)." HAVING remaining_quantity > 0";
+            $query = $this->db->query($sql);
+            return $query->result_array();
+         }else{
+
+            $sql = "SELECT medicine_batch_details.*, (medicine_batch_details.available_quantity-IFNULL((SELECT SUM(quantity) FROM `pharmacy_bill_detail` WHERE medicine_batch_detail_id=medicine_batch_details.id),0)) as remaining_quantity FROM `medicine_batch_details` WHERE medicine_batch_details.pharmacy_id=".$this->db->escape($pharmacy_id)." HAVING remaining_quantity > 0";
+            $query = $this->db->query($sql);
+            return $query->result_array();
+
+         }
+
+    //  $sql = "SELECT medicine_batch_details.*, (medicine_batch_details.available_quantity-IFNULL((SELECT SUM(quantity) FROM `pharmacy_bill_detail` WHERE medicine_batch_detail_id=medicine_batch_details.id),0)) as remaining_quantity FROM `medicine_batch_details` WHERE medicine_batch_details.pharmacy_id=".$this->db->escape($pharmacy_id)." HAVING remaining_quantity > 0";
+    //  $query = $this->db->query($sql);
+    //  return $query->result_array();
     }
+
+    public function getBatchNoListtopushstocks($pharmacy_id)
+    {
+        $userLoggedInFirst = $this->customlib->getLoggedInUserId();
+        $userRoleIn = $this->role_model->getRoleFromStaffUsingLid($userLoggedInFirst);
+        
+        if($userRoleIn[0]['created_by'] != 7 && $userRoleIn[0]['name'] == 'Pharmacist'){
+
+            $sql = "SELECT medicine_batch_details.*, (medicine_batch_details.available_quantity-IFNULL((SELECT SUM(quantity) FROM `pharmacy_bill_detail` WHERE medicine_batch_detail_id=medicine_batch_details.id),0)) as remaining_quantity FROM `medicine_batch_details` LEFT JOIN  supplier_bill_basic on supplier_bill_basic.id=medicine_batch_details.supplier_bill_basic_id WHERE supplier_bill_basic.received_by = $userLoggedInFirst AND medicine_batch_details.pharmacy_id=".$this->db->escape($pharmacy_id)." HAVING remaining_quantity > 0";
+            $query = $this->db->query($sql);
+            return $query->result_array();
+         }else{
+
+        $query = $this->db->select('pharmacy.*,medicine_batch_details.id as mbdId,medicine_batch_details.available_quantity,medicine_batch_details.batch_no')
+        
+       ->join('medicine_batch_details', 'medicine_batch_details.pharmacy_id = pharmacy.id', 'left')
+        ->join('supplier_bill_basic', 'supplier_bill_basic.id = medicine_batch_details.supplier_bill_basic_id', 'left')
+        ->where('supplier_bill_basic.received_by', $userLoggedInFirst)
+        ->where("medicine_batch_details.pharmacy_id", $pharmacy_id)
+        ->get('pharmacy');
+            // echo $this->db->last_query(); die;
+        return $query->result_array();
+
+         }
+    }
+
+
+    // public function getBatchNoListSt($pharmacy_id)
+    // {
+    //  $sql = "SELECT medicine_batch_details.*, (medicine_batch_details.available_quantity-IFNULL((SELECT SUM(quantity) FROM `pharmacy_bill_detail` WHERE medicine_batch_detail_id=medicine_batch_details.id),0)) as remaining_quantity FROM `medicine_batch_details` WHERE medicine_batch_details.pharmacy_id=".$this->db->escape($pharmacy_id)." HAVING remaining_quantity > 0";
+    //        $query = $this->db->query($sql);
+    //        echo $this->db->last_query(); die;
+    //     return $query->result_array();
+
+    // }
 
 
     public function addBadStock($data)
@@ -1425,5 +2091,13 @@ class Pharmacy_model extends MY_Model
         $query = $this->db->get('ipd_prescription_basic');
         return $query->row();
     }
+
+    public function updateactivepharmacy($data){
+        $this->db->where('id', $data['id']);
+        $this->db->update('pharmacy', $data);
+        $record_id = $data['id'];
+        return $record_id;
+}
+
 
 }

@@ -45,6 +45,9 @@ class Appointment extends Admin_Controller
         $doctors                       = $this->staff_model->getStaffbyrole(3);
         $data["doctors"]               = $doctors;
 
+        $doctor_clinics                       = $this->staff_model->getClinics(3);
+        $data["doctor_clinics"]               = $doctor_clinics;
+
         $patients                      = $this->patient_model->getPatientListall();
         $data["patients"]              = $patients;
         $data["appointment_status"]    = $this->appointment_status;
@@ -88,6 +91,7 @@ class Appointment extends Admin_Controller
         $this->form_validation->set_rules('global_shift', $this->lang->line('shift'), 'trim|required');
         $this->form_validation->set_rules('slot', $this->lang->line('slot'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('appointment_status', $this->lang->line('status'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('doctor_clinics_id', $this->lang->line('doctor_clinics_id'), 'trim|required|xss_clean');
 
         if ($this->input->post("payment_mode") == "Cheque") {
             $this->form_validation->set_rules('cheque_no', $this->lang->line('cheque_no'), 'trim|required');
@@ -107,7 +111,7 @@ class Appointment extends Admin_Controller
                 'cheque_no'          => form_error('cheque_no'),
                 'cheque_date'        => form_error('cheque_date'),
                 'document'        => form_error('document'),
-
+                'doctor_clinics_id'        => form_error('doctor_clinics_id'),
             );
             if (!empty($custom_fields)) {
                 foreach ($custom_fields as $custom_fields_key => $custom_fields_value) {
@@ -128,9 +132,11 @@ class Appointment extends Admin_Controller
         } else {
             //na
             $date_appoint         = $this->customlib->dateFormatToYYYYMMDD($this->input->post('date'));
+            // var_Dump($this->form_validation->run());
             $shift        = $this->input->post("slot");
             $doctor       = $this->input->post('doctorid');
-            $slots        = $this->customlib->getSlotByDoctorShift($doctor, $shift);
+            $doctor_clinics_id = $this->input->post('doctor_clinics_id');
+            $slots        = $this->customlib->getSlotByDoctorShift($doctor, $shift,$doctor_clinics_id);
             $slot         = $slots[0];
             $time         = date("H:i:s", strtotime($slot));
             //na end
@@ -140,13 +146,15 @@ class Appointment extends Admin_Controller
             $patient_id   = $this->input->post('patient_id');
             $consult      = $this->input->post('live_consult');
             $cheque_date  = $this->customlib->dateFormatToYYYYMMDD($this->input->post("cheque_date"));
-
+// echo "dada"; die;
             $appointment = array(
                 'patient_id'         => $patient_id,
                 'date'               => $date_appoint." ".$time,
                 "time"               => $time,                             //na
                 'priority'           => $this->input->post('priority'),
                 'doctor'             => $this->input->post('doctorid'),
+                'doctor_clinics_id'  => $this->input->post('doctor_clinics_id'),
+
                 'message'            => $this->input->post('message'),
                 'global_shift_id'    => $this->input->post('global_shift'),
                 'shift_id'           => $this->input->post('slot'),
@@ -585,6 +593,7 @@ class Appointment extends Admin_Controller
                 $row[] = $value->mobileno;
                 $row[] = $value->gender;
                 $row[] = composeStaffNameByString($value->name, $value->surname, $value->employee_id);
+                $row[] = $value->clinic_name;
                 $row[] = $value->source;
                 $row[] = $value->priorityname;
                 if ($this->module_lib->hasActive('live_consultation')) {
@@ -1001,7 +1010,8 @@ This Function is Used to move patient from appointment to other module
     public function getDoctorFees()
     {
         $doctor_id      = $this->input->post("doctor_id");
-        $shift_details  = $this->onlineappointment_model->getShiftDetails($doctor_id);
+        $doctor_clinics_id     = $this->input->post("doctor_clinics_id");
+        $shift_details  = $this->onlineappointment_model->getShiftDetails($doctor_id,$doctor_clinics_id);
         $charge_details = $this->charge_model->getChargeDetailsById($shift_details['charge_id']);
         echo json_encode(
             array(
@@ -1099,10 +1109,13 @@ This Function is Used to move patient from appointment to other module
              $date_appoint         = $this->customlib->dateFormatToYYYYMMDD($this->input->post('appointment_date'));
              $shift        = $this->input->post("rslot");
              $doctor       = $this->input->post('appended_did');
-             $slots        = $this->customlib->getSlotByDoctorShift($doctor, $shift);
+             $doctor_clinics_id       = $this->input->post('appended_docclinicid');
+             $slots        = $this->customlib->getSlotByDoctorShift($doctor, $shift,$doctor_clinics_id);
              $slot         = $slots[0];
              $time         = date("H:i:s", strtotime($slot));
              $approved_static = "approved";
+             
+             
             // if($this->input->post('edit_appointment_status') == 'cancel'){
             //     $approved_static =$this->input->post('edit_appointment_status');
             // }elseif($this->input->post('edit_appointment_status') == 'pending'){

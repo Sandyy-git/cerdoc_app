@@ -52,7 +52,7 @@ $genderList = $this->customlib->getGender();
                  <div class="row">
                     <div class="col-lg-5 col-md-5 col-sm-5 col-xs-9">
                      <div class="p-2 select2-full-width">
-                        <select name="supplier_id" class="form-control select2 supplier_select2"  id="" name='' >
+                        <select name="supplier_id" class="form-control select2 supplier_select2"  id="" name='' onchange="get_state_of_supplier(this.value)">
                                 <option value=""><?php echo $this->lang->line('select_supplier'); ?></option>
                                 <?php foreach ($supplierCategory as $dkey => $dvalue) {
                                     ?>
@@ -60,12 +60,14 @@ $genderList = $this->customlib->getGender();
                                     if ((isset($supplier_select)) && ($supplier_select == $dvalue["id"])) {
                                         echo "selected";
                                     }
-                                    ?>><?php echo $dvalue["supplier"]; ?></option>   
+                                    ?>><?php echo $dvalue["supplier"].' '.$dvalue["gst_in"]; ?></option>   
                             <?php } ?>
                             </select>
 
                             <span class="text-danger"><?php echo form_error('refference'); ?></span>
                          </div>   
+
+                         <input type="hidden" name="gst_partition" id="gst_partition">
                        </div>
                  </div>
             </div><!--./modal-header-->
@@ -106,6 +108,10 @@ $genderList = $this->customlib->getGender();
                                                 <thead>
                                                 <tr class="white-space-nowrap">
                                                     <th  width="10%"><?php echo $this->lang->line('medicine_category'); ?><small class="req"> *</small></th>
+                                                    
+                                                    <th  width="10%"><?php echo $this->lang->line('search_type'); ?><small class="req"> *</small></th>
+
+                                                    
                                                     <th  width="10%"><?php echo $this->lang->line('medicine_name'); ?><small class="req" style="color:red;"> *</small></th>
                                                     <th ><?php echo $this->lang->line('batch_no'); ?><small class="req" > *</small></th>
                                                     <th><?php echo $this->lang->line('expiry_date'); ?><small class="req"> *</small></th>
@@ -127,7 +133,7 @@ $genderList = $this->customlib->getGender();
                                                 <tbody>
                                                 <tr id="row0" class="white-space-nowrap">
                                                     <td>      
-                                                        <select class="form-control" name='medicine_category_id[]'  onchange="getmedicine_name(this.value, '0')">
+                                                        <select class="form-control" name='medicine_category_id[]' id="medicine_category_id_0">
                                                             <option value="<?php echo set_value('medicine_category_id'); ?>"><?php echo $this->lang->line('select'); ?>
                                                             </option>
                                                             <?php foreach ($medicineCategory as $dkey => $dvalue) {
@@ -139,6 +145,22 @@ $genderList = $this->customlib->getGender();
                                                         <span class="text-danger"><?php echo form_error('medicine_category_id[]'); ?>
                                                         </span>
                                                     </td>
+
+                                                    <td>      
+                                                        <select class="form-control" name='search_type[]'  onchange="getmedicine_name(this.value, '0')">
+                                                            <option value="<?php echo set_value('search_type'); ?>"><?php echo $this->lang->line('select'); ?>
+                                                            </option>
+                                                            <?php foreach ($medicineSearchtype as $dkey => $stvalue) {
+                                                                ?>
+                                                                <option value="<?php echo $stvalue["id"]; ?>"><?php echo $stvalue["search_type"] ?>
+                                                                </option>   
+                                                        <?php } ?>
+                                                        </select>
+                                                        <span class="text-danger"><?php echo form_error('search_type[]'); ?>
+                                                        </span>
+                                                    </td>
+
+
                                                     <td>
                                                         <select class="form-control select2" style="width:100%" onchange="getmedicinedetails(this.value, 0)" id="medicine_name0" name='medicine_name[]'>
                                                             <option value=""><?php echo $this->lang->line('select'); ?>
@@ -158,39 +180,40 @@ $genderList = $this->customlib->getGender();
                                                     </td>
                                                     <td>
                                                         <!-- na -->
-                                                        <input type="text"  name="mrp[]"  id="mrp0" class="form-control">
+                                                        <input type="text"  name="mrp[]"  id="mrp0" class="form-control" readonly>
                                                         <span class="text-danger"><?php echo form_error('mrp[]'); ?>
                                                         </span>
                                                     </td>
                                                     <td>
-                                                        <input type="text" name="batch_amount[]" id="batch_amount" class="form-control">
+                                                        <input type="text" name="batch_amount[]" id="batch_amount0" class="form-control" readonly>
                                                         <span class="text-danger"></span>
                                                     </td>
 													
                                                     <td>
-                                                        <input type="text"  name="sale_rate[]"  id="sale_price0" class="form-control">
+                                                        <input type="text"  name="sale_rate[]"  id="sale_price0" class="form-control" readonly>
                                                         <span class="text-danger"><?php echo form_error('sale_rate[]'); ?>
                                                         </span>
                                                     </td>
                                                     <td>
-                                                        <input type="text"  name="packing_qty[]"  id="packing_qty" class="form-control">
+                                                        <input type="text"  name="packing_qty[]"  id="packing_qty0" class="form-control" readonly>
                                                         <span class="text-danger"><?php echo form_error('packing_qty[]'); ?>
                                                         </span>
                                                     </td> 
                                                     <td>
                                                         <div class="input-group">
                                                             <input type="text" name="quantity[]" onchange="multiply(0)"  id="quantity0" class="form-control text-right">
+
                                                         </div> 
                                                     </td>
                                                     <td class="text-right">
-                                                        <input type="text" name="purchase_price[]" onchange="multiply(0)" id="purchase_price0" placeholder="" class="form-control text-right">
+                                                        <input type="text" name="purchase_price[]" onchange="multiply(0)" id="purchase_price0" placeholder="" class="form-control text-right" readonly>
                                                         <span class="text-danger"><?php echo form_error('purchase_price[]'); ?></span>
                                                     </td>
                                                     <td class="text-right">
                                                         <div class=""> 
                                                                 <div class="input-group">
                                                                     <!-- na -->
-                                                                <input type="text" onchange="multiply(0)" class="form-control right-border-none"  name="purchase_tax[]" id="purchase_tax0"  autocomplete="off">
+                                                                <input type="text" onchange="multiply(0)" class="form-control right-border-none"  name="purchase_tax[]" id="purchase_tax0"  autocomplete="off" readonly>
                                                                 <span class="input-group-addon "> %</span>
                                                                 </div>
                                                         </div>
@@ -239,6 +262,27 @@ $genderList = $this->customlib->getGender();
                                                             <input type="text" placeholder="Tax amount" name="tax" value="0" id="tax" style="width: 85%; float: right" class="form-control"/>
                                                         </td>
                                                     </tr>
+
+                                                    <tr>
+                                                        <th><?php echo $this->lang->line('tax_cgst') . " (" . $currency_symbol . ")"; ?></th>
+                                                        <td class="text-right ipdbilltable">
+                                                            <h4 style="float: right;font-size: 12px;padding-left: 3px;"> </h4>
+                                                        </td>
+                                                        <td class="text-right ipdbilltable">
+                                                            <input type="text" placeholder="Tax amount" name="tax_cgst" value="0" id="tax_cgst" style="width: 85%; float: right" class="form-control"/>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <th><?php echo $this->lang->line('tax_sgst') . " (" . $currency_symbol . ")"; ?></th>
+                                                        <td class="text-right ipdbilltable">
+                                                            <h4 style="float: right;font-size: 12px;padding-left: 3px;"> </h4>
+                                                        </td>
+                                                        <td class="text-right ipdbilltable">
+                                                            <input type="text" placeholder="Tax amount" name="tax_sgst" value="0" id="tax_sgst" style="width: 85%; float: right" class="form-control"/>
+                                                        </td>
+                                                    </tr>
+
                                                     <tr>
                                                         <th><?php echo $this->lang->line('net_amount') . " (" . $currency_symbol . ")"; ?></th>
                                                         <td colspan="2" class="text-right ipdbilltable">
@@ -469,7 +513,7 @@ $genderList = $this->customlib->getGender();
 </script>
 <script type="text/javascript">
             function holdModal(modalId) {
-                alert(modalId);
+                // alert(modalId);
                 $('#' + modalId).modal({
                     backdrop: 'static',
                     keyboard: false,
@@ -479,24 +523,29 @@ $genderList = $this->customlib->getGender();
 </script>
 <script>
             function getmedicine_name(id, rowid) {
+                var medcatid = $("#medicine_category_id_" + rowid);
+                var med_cat_id = medcatid.val();
+                // alert(rowid);
+                // alert(medcatid.val());
+                // alert(id);
                 var div_data = "";
-                alert("purchase medicine")
+                // alert("purchase medicine")
                 $("#medicine_name" + rowid).html("<option value='l'><?php echo $this->lang->line('loading') ?></option>");
                 $('#medicine_name' + rowid).select2("val", 'l');
                 $.ajax({
                     url: '<?php echo base_url(); ?>admin/pharmacy/get_medicine_name',
                     type: "POST",
-                    data: {medicine_category_id: id},
+                    data: {medicine_category_id: med_cat_id,search_type:id},
                     dataType: 'json',
                     success: function (res) {
                         $.each(res, function (i, obj)
                         {
-                            if(obj.generic_name == undefined){
-                                  obj.generic_name="";
+                            if(obj.medicine_composition == undefined){
+                                  obj.medicine_composition="";
                              }
 
                             var sel = "";
-                            div_data += "<option value=" + obj.id + ">" + obj.medicine_name + " " + obj.generic_name +"</option>";
+                            div_data += "<option value=" + obj.id + ">" + obj.medicine_name + " " + obj.medicine_composition +"</option>";
                         });
                         $("#medicine_name" + rowid).html("<option value=''>Select</option>");
                         $('#medicine_name' + rowid).append(div_data);
@@ -538,7 +587,7 @@ $genderList = $this->customlib->getGender();
                 var table = document.getElementById("tableID");
                 var table_len = (table.rows.length);
                 var id = parseInt(table_len - 1);
-                var div = "<td><select class='form-control' name='medicine_category_id[]' onchange='getmedicine_name(this.value," + id + ")'><option value='<?php echo set_value('medicine_category_id'); ?>'><?php echo $this->lang->line('select') ?></option><?php foreach ($medicineCategory as $dkey => $dvalue) { ?><option value='<?php echo $dvalue["id"]; ?>'><?php echo $dvalue["medicine_category"] ?></option><?php } ?></select></td><td><select class='form-control select2' style='width:100%' name='medicine_name[]' onchange='getmedicinedetails(this.value," + id + ")' id='medicine_name" + id + "' ><option value='<?php echo set_value('medicine_name'); ?>'><?php echo $this->lang->line('select') ?></option></select></td><td><input type='text' name='batch_no[]' id='batchno" + id + "' class='form-control batch_no'></td><td><input type='text' name='expiry_date[]' id='expiry" + id + "' class='form-control expiry_date'></td><td><input type='text' name='mrp[]' id='mrp" + id + "' class='form-control mrp'></td><td><input type='text' name='batch_amount[]' id='batch_amount" + id + "' class='form-control mrp'></td><td><input type='text' name='sale_rate[]' id='sale_price" + id + "' class='form-control sale_rate'></td><td><input type='text' name='packing_qty[]' id='packingqty" + id + "' class='form-control packing_qty'></td><td><div class='input-group'><input type='text' name='quantity[]' onchange='multiply(" + id + ")' onfocus='getQuantity(" + id + ")' id='quantity" + id + "' class='form-control text-right'></div></td><td><input type='text' onchange='multiply(" + id + ")' name='purchase_price[]' id='purchase_price" + id + "'  class='form-control text-right'></td><td><div class=''><div class='input-group'><input type='text' onchange='multiply(" + id + ")' class='form-control right-border-none'  name='purchase_tax[]' id='purchase_tax" + id + "'  autocomplete='off'><span class='input-group-addon '> %</span></div></div></td><td><input type='text' name='amount[]' id='amount" + id + "'  class='form-control text-right'></td>";
+                var div = "<td><select class='form-control' name='medicine_category_id[]' id='medicine_category_id_"+ id +"'><option value='<?php echo set_value('medicine_category_id'); ?>'><?php echo $this->lang->line('select') ?></option><?php foreach ($medicineCategory as $dkey => $dvalue) { ?><option value='<?php echo $dvalue["id"]; ?>'><?php echo $dvalue["medicine_category"] ?></option><?php } ?></select></td><td><select class='form-control' name='search_type[]' id='search_type_"+ id +"' onchange='getmedicine_name(this.value," + id + ")'><option value='<?php echo set_value('search_type'); ?>'><?php echo $this->lang->line('select') ?></option><?php foreach ($medicineSearchtype as $dkey => $stvalue) { ?><option value='<?php echo $stvalue["id"]; ?>'><?php echo $stvalue["search_type"] ?></option><?php } ?></select></td><td><select class='form-control select2' style='width:100%' name='medicine_name[]' onchange='getmedicinedetails(this.value," + id + ")' id='medicine_name" + id + "' ><option value='<?php echo set_value('medicine_name'); ?>'><?php echo $this->lang->line('select') ?></option></select></td><td><input type='text' name='batch_no[]' id='batchno" + id + "' class='form-control batch_no'></td><td><input type='text' name='expiry_date[]' id='expiry" + id + "' class='form-control expiry_date'></td><td><input type='text' name='mrp[]' id='mrp" + id + "' class='form-control mrp' readonly></td><td><input type='text' name='batch_amount[]' id='batch_amount" + id + "' class='form-control mrp' readonly></td><td><input type='text' name='sale_rate[]' id='sale_price" + id + "' class='form-control sale_rate' readonly></td><td><input type='text' name='packing_qty[]' id='packing_qty" + id + "' class='form-control packing_qty' readonly></td><td><div class='input-group'><input type='text' name='quantity[]' onchange='multiply(" + id + ")' onfocus='getQuantity(" + id + ")' id='quantity" + id + "' class='form-control text-right'></div></td><td><input type='text' onchange='multiply(" + id + ")' name='purchase_price[]' id='purchase_price" + id + "'  class='form-control text-right' readonly></td><td><div class=''><div class='input-group'><input type='text' onchange='multiply(" + id + ")' class='form-control right-border-none'  name='purchase_tax[]' id='purchase_tax" + id + "'  autocomplete='off' readonly><span class='input-group-addon '> %</span></div></div></td><td><input type='text' name='amount[]' id='amount" + id + "'  class='form-control text-right'></td>";
 //na
                 var row = table.insertRow(table_len).outerHTML = "<tr id='row" + id + "'>" + div + "<td><button type='button' onclick='delete_row(" + id + ")' class='closebtn'><i class='fa fa-remove'></i></button></td></tr>";
                 $('.select2').select2();
@@ -550,6 +599,29 @@ $genderList = $this->customlib->getGender();
                     minViewMode: "months",
                     autoclose: true
                 });
+            }
+
+
+            function get_state_of_supplier(id){
+                // alert(id);
+                var supId = id;
+                $.ajax({
+                    url: '<?php echo base_url(); ?>admin/pharmacy/fromtosupplierstatepurchase',
+                    type: "POST",
+                    data: {id: id},
+                    dataType: 'json',
+                    success: function (res) {
+                        
+                        from_sup = res.med_supplier['state'];
+                        to_sup = res.staff['state'];
+                        if(from_sup == to_sup){
+                            $('#gst_partition').val('inner');
+                        }else{
+                            $('#gst_partition').val('outer');
+                        }
+                    }
+                });
+
             }
          
             function delete_row(id) {
@@ -563,6 +635,7 @@ $genderList = $this->customlib->getGender();
                 var tax_amount=0;
                 var sale_price = document.getElementsByName('amount[]');
                 var tax = document.getElementsByName('purchase_tax[]');
+
                 for (var i = 0; i < sale_price.length; i++) {
                     var inp = sale_price[i];
                     var tax_inp = tax[i];
@@ -583,18 +656,42 @@ $genderList = $this->customlib->getGender();
                 }
 
                 var discount_percent = $("#discount_percent").val();
+                
                 var tax_percent = $("#tax_percent").val();
                 if (discount_percent != '') {
                     var discount = (total * discount_percent) / 100;
                     $("#discount").val(discount.toFixed(2));
                 } else {
                     var discount = $("#discount").val();
+
+                }
+
+                var gst_partition = $("#gst_partition").val();
+                if(gst_partition == 'inner'){
+                    var divtwo = ((tax_amount/2).toFixed(2));
+                    $("#tax").val(0);
+                    $("#tax_cgst").val(divtwo);
+                    $("#tax_sgst").val(divtwo);
+                }else{
+                    $("#tax").val(tax_amount.toFixed(2));
+                    $("#tax_cgst").val(0);
+                    $("#tax_sgst").val(0);
                 }
                 
-                $("#tax").val(tax_amount.toFixed(2));
+                // $("#tax").val(tax_amount.toFixed(2));
                 $("#total").val(total.toFixed(2));
                 var tax = $("#tax").val();
-                var net_amount = parseFloat(total) + parseFloat(tax) - parseFloat(discount); 
+
+                var tax_cgst = $("#tax_cgst").val();
+                var tax_sgst = $("#tax_sgst").val();
+
+
+
+                
+                var y = parseFloat(total) + parseFloat(tax) + parseFloat(tax_cgst) + parseFloat(tax_sgst);
+                var net_amount = parseFloat(total) + parseFloat(tax) + parseFloat(tax_cgst) + parseFloat(tax_sgst) - y*(parseFloat(discount/100)); 
+
+
                 var cnet_amount = net_amount.toFixed(2)
                 $("#net_amount").val(cnet_amount);
                 $("#payment_amount").val(cnet_amount);
@@ -665,7 +762,7 @@ $genderList = $this->customlib->getGender();
             }
              
             function multiply(id) {
-                alert(id);
+                // alert(id);
                 var quantity = $('#quantity' + id).val();
                 var availquantity = $('#available_quantity' + id).val();
                 if (parseInt(quantity) > parseInt(availquantity)) {
@@ -681,7 +778,7 @@ $genderList = $this->customlib->getGender();
                 var mrp = $('#mrp' + id).val();
                 var tax = $('#purchase_tax' + id).val();
                 // var sale_price = $('#sale_price' + id).val(mrp);
-                var sale_price = $('#sale_price' + id).val(mrp*(100-tax)/100);
+                // var sale_price = $('#sale_price' + id).val(mrp*(100-tax)/100);
 
             }
 
@@ -702,6 +799,8 @@ $genderList = $this->customlib->getGender();
             }            
 
             function getmedicinedetails(id, rowid) {
+                // alert(id);
+                // alert(rowid);
                 $.ajax({
                     type: "POST",
                     url: base_url + "admin/pharmacy/getmedicinedetails",
@@ -710,6 +809,12 @@ $genderList = $this->customlib->getGender();
                     success: function (res) {
                          if (res) {
                             $('#purchase_tax'+ rowid).val(res.vat);
+                            $('#mrp'+ rowid).val(res.mrp);
+                            $('#batch_amount'+ rowid).val(res.units_per_shipper_pack);
+                            $('#packing_qty'+ rowid).val(res.unit_packing);
+                            $('#sale_price'+ rowid).val(res.sale_price);
+                            $('#purchase_price'+ rowid).val(res.purchase_price);
+
                            
                         } 
                     }
@@ -788,7 +893,6 @@ $genderList = $this->customlib->getGender();
         }
     }
     function printData(id) {
-        
         var base_url = '<?php echo base_url() ?>';
         $.ajax({
             url: base_url + 'admin/pharmacy/getSupplierDetails/' + id,
