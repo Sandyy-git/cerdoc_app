@@ -363,7 +363,10 @@ class Pharmacy extends Admin_Controller
                 $patient_id        = $prescription_data->patient_id;
                 $patient_name      = $prescription_data->patient_name;
                 $total_rows        = count($prescription_data->medicines);
-                $return_array      = array('status' => 1, 'page' => $page, 'patient_id' => $patient_id, 'patient_name' => $patient_name, 'total_rows' => $total_rows, 'case_reference_id' => $case_reference_id);
+
+                $presc_doctor      = $prescription_data->prescribe_by;
+
+                $return_array      = array('status' => 1, 'page' => $page, 'patient_id' => $patient_id, 'patient_name' => $patient_name, 'total_rows' => $total_rows, 'case_reference_id' => $case_reference_id,'prescribe_by'=>$presc_doctor);
             } else {
                 $return_array = array('status' => 0, 'msg' => $this->lang->line('no_prescription_found'));
             }
@@ -1944,9 +1947,11 @@ class Pharmacy extends Admin_Controller
         $duplicate_medicine = false;
         $medicines          = array();
         $prescription_no    = $this->input->post('prescription_no');
+        $consultant_doctor    = $this->input->post('consultant_doctor');
 
         $custom_fields = $this->customfield_model->getByBelong('pharmacy');
         $action_type   = $this->input->post('action_type');
+        // var_dump($action_type); die;
         foreach ($custom_fields as $custom_fields_key => $custom_fields_value) {
             if ($custom_fields_value['validation']) {
                 $custom_fields_id   = $custom_fields_value['id'];
@@ -1956,6 +1961,20 @@ class Pharmacy extends Admin_Controller
         }
         $this->form_validation->set_rules('bill_no', $this->lang->line('bill_no'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('net_amount', $this->lang->line('net_amount'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('prescription_no', $this->lang->line('prescription'), 'trim|required|xss_clean');
+        // $split_prescription_no     = splitPrefixID($prescription_no);
+        // $this->form_validation->set_rules('consultant_doctor', $this->lang->line('consultant_doctor'), 'trim|required|xss_clean');
+
+        // na
+        //if (!empty($split_prescription_no)) {
+
+            $this->form_validation->set_rules('consultant_doctor', $this->lang->line('consultant_doctor'), array('required',
+            array('check_exists', array($this->pharmacy_model,'check_consultdoctor_exists')),
+            )
+            ); 
+        //}
+        // na end
+        
         if ($this->input->post('payment_mode') == "Cheque") {
             $this->form_validation->set_rules('cheque_no', $this->lang->line('cheque_no'), 'required');
             $this->form_validation->set_rules('cheque_date', $this->lang->line('cheque_date'), 'required');
@@ -2049,6 +2068,8 @@ class Pharmacy extends Admin_Controller
                 'cheque_no'            => form_error('cheque_no'),
                 'cheque_date'          => form_error('cheque_date'),
                 'document'             => form_error('document'),
+                'prescription_no'      => form_error('prescription_no'),
+                'consultant_doctor'    => form_error('consultant_doctor'),
             );
             if (!empty($custom_fields)) {
                 foreach ($custom_fields as $custom_fields_key => $custom_fields_value) {
@@ -2066,6 +2087,13 @@ class Pharmacy extends Admin_Controller
             }
             $array = array('status' => 'fail', 'error' => $error_msg, 'message' => '');
         } else {
+            $prescription_num     = splitPrefixID($prescription_no);
+          //  if($prescription_no != '' && $action_type != 'update'){
+                $chck_pres_billed = $this->pharmacy_model->checkPresBilled($prescription_num);
+                if($chck_pres_billed && $action_type != 'update'){
+                    $array = array('status' => 0, 'error' => '','message' => $this->lang->line('prescription_billed'));
+                }else{
+
             $payment_section        = $this->config->item('payment_section');
             $patient_id             = $this->input->post('patient_id');
             $bill_date              = $this->input->post("date");
@@ -2073,16 +2101,41 @@ class Pharmacy extends Admin_Controller
             $pharmacy_bill_basic_id = $this->input->post('pharmacy_bill_basic_id');
             $case_reference_id      = $this->input->post('case_reference_id');
 
-            if (empty($case_reference_id)) {
-                $case_reference_id = null;
-            }
+            // Previous
+            // if (empty($case_reference_id)) {
+            //     $case_reference_id = null;
+            // }
 
+            // if ($prescription_no != "") {
+            //     $prescription_prefix = splitPrefixType($prescription_no);
+            //     $prescription_no     = splitPrefixID($prescription_no);
+            // } else {
+            //     $prescription_no = null;
+            // }
+
+            // NEW//
             if ($prescription_no != "") {
+                $prefixes                 = $this->prefix_model->getByCategory(array('ipd_prescription', 'opd_prescription'));
+                $prefix_type              = "";
+                $case_reference_id        = "";
+    
                 $prescription_prefix = splitPrefixType($prescription_no);
                 $prescription_no     = splitPrefixID($prescription_no);
+                if (!empty($prefixes)) {
+                    $prefix_type = findPrefixType($prefixes, $prescription_prefix);
+                }
+    
+                $prescription_data = $this->prescription_model->getPrescriptionByTable($prescription_no, $prefix_type);
+    
+                $data['prescription_data'] = $prescription_data;
+    
+                if (!empty($prescription_data)) {
+                    $case_reference_id = $prescription_data->case_reference_id;
+                }
             } else {
                 $prescription_no = null;
             }
+            // NEW END//
 
             $data['opd_prefix'] = $this->opd_prefix;
             $bill_detail        = array(
@@ -2299,6 +2352,8 @@ class Pharmacy extends Admin_Controller
                 $array = array('status' => 0, 'message' => $this->lang->line('something_went_wrong'));
             }
         }
+   // }
+}
         echo json_encode($array);
     }
 
@@ -2453,6 +2508,10 @@ class Pharmacy extends Admin_Controller
         $id                          = $this->input->post('id');
         $medicineCategory            = $this->medicine_category_model->getMedicineCategory();
         $data["medicineCategory"]    = $medicineCategory;
+
+        $medicineSearchtype       = $this->medicine_category_model->getSearchtype();
+        $data["medicineSearchtype"] = $medicineSearchtype;
+
         $patients                    = $this->patient_model->getPatientListall();
         $data["patients"]            = $patients;
         $doctors                     = $this->staff_model->getStaffbyrole(3);

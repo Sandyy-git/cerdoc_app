@@ -2278,6 +2278,9 @@ $lang["doctorwise_product_report"] = "Doctorwise Product Report";
 $lang["patientwise_product_report"] = "Patientwise Product Report";
 
 $lang["prescription_record_exist"] = "Prescription has sent already";
+$lang["consultant_doctor_error"] = "Please enter same doctor who prescribed the Rx";
+$lang["prescription_billed"] = "Rx billed already";
+
 
 
 

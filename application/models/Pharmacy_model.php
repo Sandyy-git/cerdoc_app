@@ -2097,7 +2097,46 @@ class Pharmacy_model extends MY_Model
         $this->db->update('pharmacy', $data);
         $record_id = $data['id'];
         return $record_id;
-}
+    }
+
+    public function check_consultdoctor_exists()
+    {
+        $prescription_no    = $this->input->post('prescription_no');
+        $consultant_doctor    = $this->input->post('consultant_doctor');
+        $split_prescription_no     = splitPrefixID($prescription_no);
+        if($consultant_doctor != ''){
+        if ($this->check_presc_doc_for_pres($split_prescription_no,$consultant_doctor)) {
+            return true;
+        } else {
+            $this->form_validation->set_message('check_exists', "Prescribed doctor name can't be changed");
+            return false;
+        }
+    }else{
+        $this->form_validation->set_message('check_exists', 'Please attach the prescribed doctor');
+    }
+    }
+
+    public function check_presc_doc_for_pres($split_prescription_no,$consultant_doctor)
+    {
+            $data  = array('id' => $split_prescription_no, 'prescribe_by' => $consultant_doctor);
+            $query = $this->db->where($data)->get('ipd_prescription_basic');
+            if ($query->num_rows() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+    }
+
+    public function checkPresBilled($id){
+        $data  = array('ipd_prescription_basic_id' => $id);
+        $query = $this->db->where($data)->get('pharmacy_bill_basic');
+        if ($query->num_rows() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
 
 }

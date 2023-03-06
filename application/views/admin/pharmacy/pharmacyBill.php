@@ -103,6 +103,7 @@ $genderList      = $this->customlib->getGender();
                         <div class="p-2">           
                             <div class="input-group">
                                 <input type="text" class="form-control border-0" id="prescription_no" placeholder="<?php echo $this->lang->line('prescription_no'); ?>" name="prescription_no">
+                                <span class="text-danger"><?php echo form_error('prescription_no'); ?></span>
                                 <div class="input-group-btn">
                                   <button class="btn btn-default btn-group-custom" type="button" id="search_prescription">
                                     <i class="fa fa-search"></i>
@@ -279,8 +280,13 @@ function getPrescriptionData(){
       if(res.status === 0){
       errorMsg(res.msg);
       }else{
-         $('#billModal .modal-body').html(res.page);
+      $('#billModal .modal-body').html(res.page);
       $('#case_reference_id').val(res.case_reference_id);
+
+
+      $('#consultant_doctor').val(res.prescribe_by).attr("selected", "selected");
+      var reference_name = $("#consultant_doctor option:selected").text();
+      $('#doctname').val(reference_name);
     
       var option = new Option(res.patient_name+" ("+res.patient_id+")", res.patient_id, true, true);
       $("#bill .patient_list_ajax").append(option).trigger('change');
@@ -773,6 +779,8 @@ var table = document.getElementById("tableID");
                             message += value;
                         });
                         errorMsg(message);
+                    } else if(data.status == 0){
+                        errorMsg(data.message);
                     } else {
                         successMsg(data.message);
                         if(click_btn_id == "billsave"){

@@ -18,6 +18,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                             <thead>
                                             <tr class="font13">
                                                     <th width="12%"><?php echo $this->lang->line('medicine_category'); ?><small class="req" style="color:red;"> *</small></th>
+                                                    <th width="15%"><?php echo $this->lang->line('search_type'); ?><small class="req" style="color:red;"> *</small></th>
                                                     <th width="12%"><?php echo $this->lang->line('medicine_name'); ?><small class="req" style="color:red;"> *</small></th>
                                                     <th width="10%"><?php echo $this->lang->line('batch_no'); ?> <small class="req" style="color:red;">*</small></th>
                                                     <th width="12%"><?php echo $this->lang->line('expiry_date'); ?><small class="req" style="color:red;"> *</small></th>
@@ -53,7 +54,7 @@ foreach ($detail as $bill_detail_key => $bill_detail_value) {
 
 
 
-         <select class="form-control medicine_category select3" style="width:100%" name='medicine_category_id_<?php echo $row_value;?>'>
+         <select class="form-control medicine_category select3" style="width:100%" name='medicine_category_id_<?php echo $row_value;?>' id='medicine_cat_1'>
          <option value=""><?php echo $this->lang->line('select'); ?></option>
                     <?php foreach ($medicineCategory as $med_cat_key => $med_cat_value) {
                         ?>
@@ -66,6 +67,25 @@ foreach ($detail as $bill_detail_key => $bill_detail_value) {
                                                     <span class="text-danger"><?php echo form_error('medicine_category_id[]'); ?>
                                                     </span>
                                                 </td>
+
+
+
+                                                 <td>
+                                                    <input type="hidden" name="search_type[]" id="calculate" value="1">
+                                                    <select class="form-control search_type select3" style="width:100%" name='search_type_1' id='1'>
+                                                        <option value="<?php echo set_value('search_type'); ?>"><?php echo $this->lang->line('select'); ?>
+                                                        </option>
+                                                        <?php foreach ($medicineSearchtype as $dkey => $stvalue) {
+    ?>
+                                                            <option value="<?php echo $stvalue["id"]; ?>"><?php echo $stvalue["search_type"] ?>
+                                                            </option>
+                                                        <?php }?>
+                                                    </select>
+                                                    <span class="text-danger"><?php echo form_error('search_type[]'); ?>
+                                                    </span>
+                                                </td>
+
+
                                                 <td width="24%">
 
                                                     <select class="form-control select3 medicine_name" style="width:100%"  id="medicine_name<?php echo $row_value;?>" name='medicine_name_id_<?php echo $row_value;?>'>

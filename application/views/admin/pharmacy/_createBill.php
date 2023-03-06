@@ -120,7 +120,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                                             <div class="form-group">
                                                                 <label for="exampleInputFile">
                                                                     <?php echo $this->lang->line('hospital_doctor'); ?></label>
-                                                                <div><select name='consultant_doctor' style="width:100%;" id="consultant_doctor" class="form-control select3" <?php
+                                                                <div><select  name='consultant_doctor' style="width:100%;" id="consultant_doctor" class="form-control select3" <?php
 if ($disable_option == true) {
     echo "disabled";
 }
