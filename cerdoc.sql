@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 03, 2023 at 02:22 PM
+-- Generation Time: Mar 07, 2023 at 01:04 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -151,7 +151,7 @@ CREATE TABLE `appointment` (
 --
 
 INSERT INTO `appointment` (`id`, `patient_id`, `case_reference_id`, `visit_details_id`, `date`, `time`, `priority`, `specialist`, `doctor`, `doctor_clinics_id`, `amount`, `message`, `appointment_status`, `source`, `is_opd`, `is_ipd`, `global_shift_id`, `shift_id`, `is_queue`, `live_consult`, `created_at`) VALUES
-(1, 1, 1, 1, '2023-03-06 10:00:00', '10:00:00', '2', '', 110, 11, '', '', 'approved', 'Offline', '', '', 1, 9, 0, 'NO', '2023-03-03 11:28:30');
+(1, 1, 1, 1, '2023-03-13 10:00:00', '10:00:00', '2', '', 110, 1, '', 'added by doc', 'approved', 'Offline', '', '', 1, 4, 0, 'NO', '2023-03-06 09:38:41');
 
 -- --------------------------------------------------------
 
@@ -176,7 +176,7 @@ CREATE TABLE `appointment_payment` (
 --
 
 INSERT INTO `appointment_payment` (`id`, `appointment_id`, `charge_id`, `paid_amount`, `payment_mode`, `payment_type`, `transaction_id`, `note`, `date`) VALUES
-(1, 1, 6, 177.00, NULL, 'Offline', NULL, NULL, '2023-03-03 16:58:30');
+(1, 1, 4, 224.00, NULL, 'Offline', NULL, NULL, '2023-03-06 15:08:41');
 
 -- --------------------------------------------------------
 
@@ -485,7 +485,7 @@ CREATE TABLE `case_references` (
 --
 
 INSERT INTO `case_references` (`id`, `created_at`) VALUES
-(1, '2023-03-03 11:28:30');
+(1, '2023-03-06 09:38:41');
 
 -- --------------------------------------------------------
 
@@ -1417,8 +1417,28 @@ CREATE TABLE `finding` (
 --
 
 INSERT INTO `finding` (`id`, `name`, `description`, `finding_category_id`, `added_by`, `is_central_login`, `created_at`) VALUES
-(1, 'Fever Finding', 'Fever Finding', 1, 0, '', '2023-01-03 13:25:07'),
-(2, 'Fever with running nose', 'Fever with running nose', 1, 0, '', '2023-01-03 13:26:15');
+(11, 'A Hemophilia (Hemophilia)', '', 5, 0, '', '2023-03-07 11:52:22'),
+(12, 'A Hemophilia (Hemophilia)', '', 6, 0, '', '2023-03-07 11:52:28'),
+(13, 'A Therapists List of Top Ten Phobias', '', 5, 0, '', '2023-03-07 11:52:36'),
+(14, 'A Therapists List of Top Ten Phobias', '', 6, 0, '', '2023-03-07 11:52:41'),
+(15, 'AA (Alopecia Areata)', '', 5, 0, '', '2023-03-07 11:52:49'),
+(16, 'AA (Alopecia Areata)', '', 6, 0, '', '2023-03-07 11:52:55'),
+(17, 'AAA (Abdominal Aortic Aneurysm)', '', 5, 0, '', '2023-03-07 11:53:06'),
+(18, 'AAA (Abdominal Aortic Aneurysm)', '', 6, 0, '', '2023-03-07 11:53:11'),
+(19, 'Abbreviations Medical Terms (Common Medical Abbreviations and Terms)', '', 5, 0, '', '2023-03-07 11:54:38'),
+(20, 'Abbreviations Medical Terms (Common Medical Abbreviations and Terms)', '', 6, 0, '', '2023-03-07 11:54:44'),
+(21, 'Bad Breath', '', 5, 0, '', '2023-03-07 11:55:06'),
+(22, 'Bad Breath', '', 6, 0, '', '2023-03-07 11:55:12'),
+(23, 'Barium Swallow (Upper GI Series)', '', 5, 0, '', '2023-03-07 11:55:35'),
+(24, 'Barium Swallow (Upper GI Series)', '', 6, 0, '', '2023-03-07 11:55:41'),
+(25, 'Carpal Tunnel Syndrome', '', 5, 0, '', '2023-03-07 11:55:56'),
+(26, 'Carpal Tunnel Syndrome', '', 6, 0, '', '2023-03-07 11:56:02'),
+(27, 'Cataract Surgery', '', 5, 0, '', '2023-03-07 11:56:22'),
+(28, 'Cataract Surgery', '', 6, 0, '', '2023-03-07 11:56:28'),
+(29, 'Dental Bridges (Bridges)', '', 5, 0, '', '2023-03-07 11:56:41'),
+(30, 'Dental Bridges (Bridges)', '', 6, 0, '', '2023-03-07 11:56:46'),
+(31, 'Drug Induced Liver Disease (Drug Induced Liver Disease)', '', 5, 0, '', '2023-03-07 11:57:12'),
+(32, 'Drug Induced Liver Disease (Drug Induced Liver Disease)', '', 6, 0, '', '2023-03-07 11:57:17');
 
 -- --------------------------------------------------------
 
@@ -1439,10 +1459,8 @@ CREATE TABLE `finding_category` (
 --
 
 INSERT INTO `finding_category` (`id`, `category`, `added_by`, `is_central_login`, `created_at`) VALUES
-(1, 'Fever', 0, '', '2022-04-09 07:03:39'),
-(2, 'cold', 0, '', '2022-06-27 06:49:59'),
-(3, 'stomach', 0, '', '2022-06-27 06:50:08'),
-(4, 'headache', 0, '', '2022-06-27 06:50:22');
+(5, 'Initial Diagnosis', 0, '', '2023-03-07 04:15:18'),
+(6, 'Final Diagnosis', 0, '', '2023-03-07 04:15:27');
 
 -- --------------------------------------------------------
 
@@ -1823,6 +1841,7 @@ CREATE TABLE `ipd_prescription_basic` (
   `header_note` text DEFAULT NULL,
   `footer_note` text DEFAULT NULL,
   `finding_description` text DEFAULT NULL,
+  `symptoms_description` text DEFAULT NULL,
   `is_finding_print` varchar(100) DEFAULT NULL,
   `date` date NOT NULL,
   `generated_by` int(11) DEFAULT NULL,
@@ -1837,8 +1856,8 @@ CREATE TABLE `ipd_prescription_basic` (
 -- Dumping data for table `ipd_prescription_basic`
 --
 
-INSERT INTO `ipd_prescription_basic` (`id`, `ipd_id`, `visit_details_id`, `header_note`, `footer_note`, `finding_description`, `is_finding_print`, `date`, `generated_by`, `prescribe_by`, `opd_logo`, `created_at`, `manual_prescription`, `mp_image`) VALUES
-(1, NULL, 1, '<p>hea</p>', '<p>footer</p>', ' diaa', 'yes', '2023-03-03', 110, 110, 'uploads/printing/977.jpg', '2023-03-03 11:30:06', NULL, NULL);
+INSERT INTO `ipd_prescription_basic` (`id`, `ipd_id`, `visit_details_id`, `header_note`, `footer_note`, `finding_description`, `symptoms_description`, `is_finding_print`, `date`, `generated_by`, `prescribe_by`, `opd_logo`, `created_at`, `manual_prescription`, `mp_image`) VALUES
+(4, NULL, 1, '<p>Header</p>', '<p>Footer</p>', 'Initial Diagnosis                                                            -Sweating\n', 'Fever\r\nSudden FeverAcute', 'yes', '2023-03-07', 110, 110, 'uploads/printing/977.jpg', '2023-03-07 11:43:21', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1863,7 +1882,7 @@ CREATE TABLE `ipd_prescription_details` (
 --
 
 INSERT INTO `ipd_prescription_details` (`id`, `basic_id`, `pharmacy_id`, `dosage`, `dose_interval_id`, `dose_duration_id`, `instruction`, `afbf`, `created_at`) VALUES
-(1, 1, 15, NULL, 0, 5, '1s', 'With Food', '2023-03-03 11:30:06');
+(4, 4, 15, NULL, 16, 4, 'All, Zef Bra, As need, 1 mon CP, AF', 'AF', '2023-03-07 11:26:00');
 
 -- --------------------------------------------------------
 
@@ -9458,7 +9477,138 @@ INSERT INTO `logs` (`id`, `message`, `record_id`, `user_id`, `action`, `ip_addre
 (7416, 'New Record inserted On Ipd Prescription Basic id 1', 1, 110, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-03 11:30:06', '2023-03-03'),
 (7417, 'New Record inserted On Pharmacy Bill Basic id 1', 1, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-03 11:31:03', '2023-03-03'),
 (7418, 'New Record inserted On Pharmacy Bill Basic id 2', 2, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-03 11:35:33', '2023-03-03'),
-(7419, 'New Record inserted On Pharmacy Bill Basic id 3', 3, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-03 11:41:59', '2023-03-03');
+(7419, 'New Record inserted On Pharmacy Bill Basic id 3', 3, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-03 11:41:59', '2023-03-03'),
+(7420, 'Record deleted On Ipd Prescription Basic id 1', 1, 110, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 03:47:11', '2023-03-06'),
+(7421, 'New Record inserted On Ipd Prescription Basic id 2', 2, 110, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 03:48:13', '2023-03-06'),
+(7422, 'New Record inserted On Pharmacy Bill Basic id 4', 4, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 04:42:08', '2023-03-06'),
+(7423, 'New Record inserted On Pharmacy Bill Basic id 5', 5, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 06:07:18', '2023-03-06'),
+(7424, 'Record deleted On Pharmacy Bill Detail id 1', 1, 124, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 06:09:40', '2023-03-06'),
+(7425, 'Record deleted On Pharmacy Bill Detail id 2', 2, 124, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 06:09:45', '2023-03-06'),
+(7426, 'Record deleted On Pharmacy Bill Detail id 3', 3, 124, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 06:09:50', '2023-03-06'),
+(7427, 'Record deleted On Pharmacy Bill Detail id 4', 4, 124, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 06:09:55', '2023-03-06'),
+(7428, 'New Record inserted On Pharmacy Bill Basic id 6', 6, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 06:10:32', '2023-03-06');
+INSERT INTO `logs` (`id`, `message`, `record_id`, `user_id`, `action`, `ip_address`, `platform`, `agent`, `time`, `created_at`) VALUES
+(7429, 'New Record inserted On Pharmacy Bill Basic id 7', 7, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 06:17:31', '2023-03-06'),
+(7430, 'New Record inserted On Pharmacy Bill Basic id 8', 8, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 06:36:37', '2023-03-06'),
+(7431, 'Record deleted On Pharmacy Bill Detail id 5', 5, 124, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 06:37:33', '2023-03-06'),
+(7432, 'Record deleted On Pharmacy Bill Detail id 6', 6, 124, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 06:37:38', '2023-03-06'),
+(7433, 'Record deleted On Pharmacy Bill Detail id 7', 7, 124, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 06:37:43', '2023-03-06'),
+(7434, 'New Record inserted On Pharmacy Bill Basic id 9', 9, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 06:38:14', '2023-03-06'),
+(7435, 'New Record inserted On Pharmacy Bill Basic id 10', 10, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 06:41:56', '2023-03-06'),
+(7436, 'Record deleted On Pharmacy Bill Detail id 8', 8, 124, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 06:46:13', '2023-03-06'),
+(7437, 'Record deleted On Pharmacy Bill Detail id 10', 10, 124, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 06:46:18', '2023-03-06'),
+(7438, 'Record deleted On Pharmacy Bill Detail id 9', 9, 124, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 06:46:25', '2023-03-06'),
+(7439, 'New Record inserted On Pharmacy Bill Basic id 11', 11, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 06:47:06', '2023-03-06'),
+(7440, 'New Record inserted On Pharmacy Bill Basic id 12', 12, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 07:22:49', '2023-03-06'),
+(7441, 'New Record inserted On Pharmacy Bill Basic id 13', 13, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 07:30:08', '2023-03-06'),
+(7442, 'New Record inserted On Pharmacy Bill Basic id 14', 14, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 07:30:38', '2023-03-06'),
+(7443, 'New Record inserted On Pharmacy Bill Basic id 15', 15, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 07:47:51', '2023-03-06'),
+(7444, 'Record deleted On Pharmacy Bill Detail id 14', 14, 124, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 07:52:40', '2023-03-06'),
+(7445, 'Record updated On Pharmacy Bill Basic id 15', 15, 124, 'Update', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 07:53:36', '2023-03-06'),
+(7446, 'New Record inserted On Pharmacy Bill Basic id 16', 16, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 08:13:25', '2023-03-06'),
+(7447, 'Record deleted On Pharmacy Bill Detail id 16', 16, 124, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 08:13:33', '2023-03-06'),
+(7448, 'New Record inserted On Pharmacy Bill Basic id 1', 1, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 08:50:59', '2023-03-06'),
+(7449, 'Record updated On Pharmacy Bill Basic id 1', 1, 124, 'Update', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 09:28:02', '2023-03-06'),
+(7450, 'Record updated On Pharmacy Bill Basic id 1', 1, 124, 'Update', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 09:31:53', '2023-03-06'),
+(7451, 'New Record inserted On Pharmacy Bill Basic id 2', 2, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 09:32:52', '2023-03-06'),
+(7452, 'New Record inserted On Appointment Created 1', 1, 110, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 09:38:41', '2023-03-06'),
+(7453, 'New Record inserted On Ipd Prescription Basic id 1', 1, 110, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 09:42:36', '2023-03-06'),
+(7454, 'New Record inserted On Pharmacy Bill Basic id 1', 1, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 09:45:57', '2023-03-06'),
+(7455, 'Record deleted On Pharmacy Bill Detail id 1', 1, 124, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 09:52:36', '2023-03-06'),
+(7456, 'New Record inserted On Pharmacy Bill Basic id 2', 2, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 09:53:24', '2023-03-06'),
+(7457, 'Record deleted On Pharmacy Bill Detail id 2', 2, 124, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 09:53:52', '2023-03-06'),
+(7458, 'New Record inserted On Pharmacy Bill Basic id 3', 3, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 09:54:42', '2023-03-06'),
+(7459, 'Record deleted On Pharmacy Bill Detail id 3', 3, 124, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 09:55:08', '2023-03-06'),
+(7460, 'New Record inserted On Pharmacy Bill Basic id 4', 4, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 09:55:27', '2023-03-06'),
+(7461, 'New Record inserted On Transactions id 8', 8, 124, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 09:56:47', '2023-03-06'),
+(7462, 'Record deleted On Ipd Prescription Basic id 1', 1, 110, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 10:58:20', '2023-03-06'),
+(7463, 'New Record inserted On Ipd Prescription Basic id 2', 2, 110, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 10:58:54', '2023-03-06'),
+(7464, 'Record deleted On Ipd Prescription Basic id 2', 2, 110, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-06 12:38:46', '2023-03-06'),
+(7465, 'Record deleted On Finding Category id 1', 1, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 04:14:54', '2023-03-07'),
+(7466, 'Record deleted On Finding Category id 1', 1, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 04:14:56', '2023-03-07'),
+(7467, 'Record deleted On Finding Category id 2', 2, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 04:14:58', '2023-03-07'),
+(7468, 'Record deleted On Finding Category id 2', 2, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 04:15:00', '2023-03-07'),
+(7469, 'Record deleted On Finding Category id 3', 3, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 04:15:02', '2023-03-07'),
+(7470, 'Record deleted On Finding Category id 4', 4, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 04:15:05', '2023-03-07'),
+(7471, 'New Record inserted On Finding Category id 5', 5, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 04:15:18', '2023-03-07'),
+(7472, 'New Record inserted On Finding Category id 6', 6, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 04:15:27', '2023-03-07'),
+(7473, 'New Record inserted On Finding id 3', 3, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 04:19:29', '2023-03-07'),
+(7474, 'Record updated On Finding id 3', 3, 1, 'Update', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 04:19:37', '2023-03-07'),
+(7475, 'New Record inserted On Finding id 4', 4, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 04:19:50', '2023-03-07'),
+(7476, 'New Record inserted On Finding id 5', 5, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 04:23:30', '2023-03-07'),
+(7477, 'New Record inserted On Finding id 6', 6, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 04:23:37', '2023-03-07'),
+(7478, 'New Record inserted On Finding id 7', 7, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 04:23:53', '2023-03-07'),
+(7479, 'New Record inserted On Finding id 8', 8, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 04:23:59', '2023-03-07'),
+(7480, 'New Record inserted On Finding id 9', 9, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 04:24:13', '2023-03-07'),
+(7481, 'New Record inserted On Finding id 10', 10, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 04:24:17', '2023-03-07'),
+(7482, 'New Record inserted On Ipd Prescription Basic id 3', 3, 110, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 09:56:16', '2023-03-07'),
+(7483, 'Record deleted On Ipd Prescription Basic id 3', 3, 110, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 09:58:36', '2023-03-07'),
+(7484, 'New Record inserted On Symptoms Classification id 9', 9, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 10:12:55', '2023-03-07'),
+(7485, 'Record deleted On Symptoms Classification id 7', 7, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 10:13:01', '2023-03-07'),
+(7486, 'New Record inserted On Symptoms Classification id 10', 10, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 10:13:14', '2023-03-07'),
+(7487, 'Record deleted On Symptoms id 6', 6, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 10:13:21', '2023-03-07'),
+(7488, 'New Record inserted On Symptoms id 8', 8, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 10:13:32', '2023-03-07'),
+(7489, 'Record updated On Symptoms id 8', 8, 1, 'Update', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 10:13:50', '2023-03-07'),
+(7490, 'New Record inserted On Symptoms id 9', 9, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 10:14:09', '2023-03-07'),
+(7491, 'New Record inserted On Symptoms id 10', 10, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 10:14:32', '2023-03-07'),
+(7492, 'New Record inserted On Symptoms id 11', 11, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 10:14:45', '2023-03-07'),
+(7493, 'New Record inserted On Symptoms id 12', 12, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 10:18:18', '2023-03-07'),
+(7494, 'New Record inserted On Ipd Prescription Basic id 4', 4, 110, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:26:00', '2023-03-07'),
+(7495, 'Record deleted On Finding id 3', 3, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:51:47', '2023-03-07'),
+(7496, 'Record deleted On Finding id 3', 3, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:51:49', '2023-03-07'),
+(7497, 'Record deleted On Finding id 4', 4, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:51:50', '2023-03-07'),
+(7498, 'Record deleted On Finding id 4', 4, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:51:51', '2023-03-07'),
+(7499, 'Record deleted On Finding id 4', 4, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:51:52', '2023-03-07'),
+(7500, 'Record deleted On Finding id 4', 4, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:51:53', '2023-03-07'),
+(7501, 'Record deleted On Finding id 6', 6, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:51:54', '2023-03-07'),
+(7502, 'Record deleted On Finding id 5', 5, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:51:54', '2023-03-07'),
+(7503, 'Record deleted On Finding id 5', 5, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:51:59', '2023-03-07'),
+(7504, 'Record deleted On Finding id 7', 7, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:52:00', '2023-03-07'),
+(7505, 'Record deleted On Finding id 7', 7, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:52:01', '2023-03-07'),
+(7506, 'Record deleted On Finding id 7', 7, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:52:03', '2023-03-07'),
+(7507, 'Record deleted On Finding id 8', 8, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:52:04', '2023-03-07'),
+(7508, 'Record deleted On Finding id 8', 8, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:52:05', '2023-03-07'),
+(7509, 'Record deleted On Finding id 8', 8, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:52:06', '2023-03-07'),
+(7510, 'Record deleted On Finding id 9', 9, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:52:07', '2023-03-07'),
+(7511, 'Record deleted On Finding id 9', 9, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:52:08', '2023-03-07'),
+(7512, 'Record deleted On Finding id 10', 10, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:52:11', '2023-03-07'),
+(7513, 'New Record inserted On Finding id 11', 11, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:52:22', '2023-03-07'),
+(7514, 'New Record inserted On Finding id 12', 12, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:52:28', '2023-03-07'),
+(7515, 'New Record inserted On Finding id 13', 13, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:52:36', '2023-03-07'),
+(7516, 'New Record inserted On Finding id 14', 14, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:52:41', '2023-03-07'),
+(7517, 'New Record inserted On Finding id 15', 15, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:52:49', '2023-03-07'),
+(7518, 'New Record inserted On Finding id 16', 16, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:52:55', '2023-03-07'),
+(7519, 'New Record inserted On Finding id 17', 17, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:53:06', '2023-03-07'),
+(7520, 'New Record inserted On Finding id 18', 18, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:53:11', '2023-03-07'),
+(7521, 'New Record inserted On Finding id 19', 19, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:54:38', '2023-03-07'),
+(7522, 'New Record inserted On Finding id 20', 20, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:54:44', '2023-03-07'),
+(7523, 'New Record inserted On Finding id 21', 21, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:55:06', '2023-03-07'),
+(7524, 'New Record inserted On Finding id 22', 22, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:55:12', '2023-03-07'),
+(7525, 'New Record inserted On Finding id 23', 23, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:55:35', '2023-03-07'),
+(7526, 'New Record inserted On Finding id 24', 24, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:55:41', '2023-03-07'),
+(7527, 'New Record inserted On Finding id 25', 25, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:55:56', '2023-03-07'),
+(7528, 'New Record inserted On Finding id 26', 26, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:56:02', '2023-03-07'),
+(7529, 'New Record inserted On Finding id 27', 27, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:56:22', '2023-03-07'),
+(7530, 'New Record inserted On Finding id 28', 28, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:56:28', '2023-03-07'),
+(7531, 'New Record inserted On Finding id 29', 29, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:56:41', '2023-03-07'),
+(7532, 'New Record inserted On Finding id 30', 30, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:56:46', '2023-03-07'),
+(7533, 'New Record inserted On Finding id 31', 31, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:57:12', '2023-03-07'),
+(7534, 'New Record inserted On Finding id 32', 32, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:57:17', '2023-03-07'),
+(7535, 'Record deleted On Symptoms id 8', 8, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:57:28', '2023-03-07'),
+(7536, 'Record deleted On Symptoms id 9', 9, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:57:30', '2023-03-07'),
+(7537, 'Record deleted On Symptoms id 11', 11, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:57:34', '2023-03-07'),
+(7538, 'Record deleted On Symptoms id 10', 10, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:57:37', '2023-03-07'),
+(7539, 'Record deleted On Symptoms id 12', 12, 1, 'Delete', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:57:41', '2023-03-07'),
+(7540, 'New Record inserted On Symptoms id 13', 13, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:58:22', '2023-03-07'),
+(7541, 'New Record inserted On Symptoms id 14', 14, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:58:29', '2023-03-07'),
+(7542, 'New Record inserted On Symptoms id 15', 15, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:58:37', '2023-03-07'),
+(7543, 'New Record inserted On Symptoms id 16', 16, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:58:58', '2023-03-07'),
+(7544, 'New Record inserted On Symptoms id 17', 17, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:59:08', '2023-03-07'),
+(7545, 'New Record inserted On Symptoms id 18', 18, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:59:14', '2023-03-07'),
+(7546, 'New Record inserted On Symptoms id 19', 19, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:59:25', '2023-03-07'),
+(7547, 'New Record inserted On Symptoms id 20', 20, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:59:31', '2023-03-07'),
+(7548, 'New Record inserted On Symptoms id 21', 21, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 11:59:55', '2023-03-07'),
+(7549, 'New Record inserted On Symptoms id 22', 22, 1, 'Insert', '::1', 'Windows 10', 'Chrome 110.0.0.0', '2023-03-07 12:00:01', '2023-03-07');
 
 -- --------------------------------------------------------
 
@@ -9790,7 +9940,7 @@ CREATE TABLE `opd_details` (
 --
 
 INSERT INTO `opd_details` (`id`, `case_reference_id`, `patient_id`, `generated_by`, `is_ipd_moved`, `discharged`, `created_at`) VALUES
-(1, 1, 1, 110, 0, 'no', '2023-03-03 11:28:30');
+(1, 1, 1, 110, 0, 'no', '2023-03-06 09:38:42');
 
 -- --------------------------------------------------------
 
@@ -10294,7 +10444,7 @@ CREATE TABLE `patient_charges` (
 --
 
 INSERT INTO `patient_charges` (`id`, `date`, `ipd_id`, `opd_id`, `qty`, `charge_id`, `standard_charge`, `tpa_charge`, `tax`, `apply_charge`, `amount`, `note`, `created_at`) VALUES
-(1, '2023-03-03 16:58:30', NULL, 1, 1, 6, 150.00, 0.00, 18.00, 150.00, 177.00, NULL, '2023-03-03 11:28:30');
+(1, '2023-03-06 15:08:41', NULL, 1, 1, 4, 200.00, 0.00, 12.00, 200.00, 224.00, NULL, '2023-03-06 09:38:41');
 
 -- --------------------------------------------------------
 
@@ -10894,9 +11044,7 @@ CREATE TABLE `pharmacy_bill_basic` (
 --
 
 INSERT INTO `pharmacy_bill_basic` (`id`, `date`, `patient_id`, `ipd_prescription_basic_id`, `case_reference_id`, `customer_name`, `customer_type`, `doctor_name`, `file`, `total`, `discount_percentage`, `discount`, `tax_percentage`, `tax`, `net_amount`, `note`, `generated_by`, `created_at`) VALUES
-(1, '2023-03-03 17:00:00', 1, NULL, NULL, '', NULL, 'Independent 01 Doctor (INDE_DOCTOR_01)', '', 167.34, 0.00, 0.00, NULL, 20.08, 187.42, 'billed by DIS01PHARMA01', 124, '2023-03-03 11:31:03'),
-(2, '2023-03-03 17:05:00', 1, 1, 1, '', NULL, 'Independent doctor 02 (IND_DOC_02)', '', 167.34, 0.00, 0.00, NULL, 20.08, 187.42, 'ewa', 124, '2023-03-03 11:35:33'),
-(3, '2023-03-03 17:11:00', 1, NULL, NULL, '', NULL, 'Independent doctor 02 (IND_DOC_02)', '', 167.34, 0.00, 0.00, NULL, 20.08, 187.42, 'billed by D01pharma01', 124, '2023-03-03 11:41:59');
+(4, '2023-03-06 15:25:00', 1, 1, 1, '', NULL, 'Independent 01 Doctor (INDE_DOCTOR_01)', '', 167.34, 0.00, 0.00, NULL, 20.08, 187.42, '', 124, '2023-03-06 09:55:27');
 
 -- --------------------------------------------------------
 
@@ -10919,9 +11067,7 @@ CREATE TABLE `pharmacy_bill_detail` (
 --
 
 INSERT INTO `pharmacy_bill_detail` (`id`, `pharmacy_bill_basic_id`, `medicine_batch_detail_id`, `quantity`, `sale_price`, `amount`, `created_at`) VALUES
-(1, 1, 5, '1', 167.34, 0.00, '2023-03-03 11:31:03'),
-(2, 2, 5, '1', 167.34, 0.00, '2023-03-03 11:35:33'),
-(3, 3, 5, '1', 167.34, 0.00, '2023-03-03 11:41:59');
+(4, 4, 5, '1', 167.34, 0.00, '2023-03-06 09:55:27');
 
 -- --------------------------------------------------------
 
@@ -12414,7 +12560,8 @@ INSERT INTO `read_notification` (`id`, `staff_id`, `notification_id`, `is_active
 (22, 143, 1, 'no', '2023-03-01 07:56:28'),
 (23, 143, 2, 'no', '2023-03-01 07:56:29'),
 (24, 110, 1, 'no', '2023-03-02 09:15:36'),
-(25, 110, 2, 'no', '2023-03-02 09:15:37');
+(25, 110, 2, 'no', '2023-03-02 09:15:37'),
+(26, 124, 1, 'no', '2023-03-06 03:48:50');
 
 -- --------------------------------------------------------
 
@@ -16041,7 +16188,9 @@ INSERT INTO `roles_permissions` (`id`, `role_id`, `perm_cat_id`, `can_view`, `ca
 (5234, 75, 411, 1, 0, 0, 0, '2023-03-02 08:39:48'),
 (5235, 3, 416, 1, 0, 0, 0, '2023-03-02 09:09:05'),
 (5236, 73, 416, 1, 0, 0, 0, '2023-03-02 11:31:38'),
-(5237, 73, 417, 1, 0, 0, 0, '2023-03-02 11:34:23');
+(5237, 73, 417, 1, 0, 0, 0, '2023-03-02 11:34:23'),
+(5238, 73, 267, 1, 1, 1, 1, '2023-03-06 11:45:29'),
+(5239, 73, 279, 1, 1, 1, 1, '2023-03-06 11:45:29');
 
 -- --------------------------------------------------------
 
@@ -16202,7 +16351,8 @@ CREATE TABLE `send_pres_to_chemist` (
 --
 
 INSERT INTO `send_pres_to_chemist` (`id`, `send_to`, `visit_id`, `patient_id`, `manual_prescription`, `created_at`) VALUES
-(1, 124, 1, 1, NULL, '2023-03-03 11:30:21');
+(1, 124, 1, 1, NULL, '2023-03-06 09:43:04'),
+(2, 125, 1, 1, NULL, '2023-03-06 09:43:14');
 
 -- --------------------------------------------------------
 
@@ -17407,8 +17557,17 @@ INSERT INTO `symptoms` (`id`, `symptoms_title`, `description`, `type`, `added_by
 (3, 'result of eating undercooked meat', 'so go with boiled and healthy food', '3', 0, '', '2022-06-27 06:11:16'),
 (4, 'brought on by stress', 'brought on by stress', '4', 0, '', '2022-06-27 06:08:39'),
 (5, 'fatigue.', 'fatigue.', '5', 0, '', '2022-06-27 06:08:56'),
-(6, 'SH Added by SA', 'SH Added by SAA', '1', 1, 'yes', '2023-01-01 15:45:53'),
-(7, 'SH Added by TA', 'SH Added by TA', '2', 94, 'no', '2023-01-01 15:46:16');
+(7, 'SH Added by TA', 'SH Added by TA', '2', 94, 'no', '2023-01-01 15:46:16'),
+(13, 'Fever', '', '9', 1, 'yes', '2023-03-07 11:58:22'),
+(14, 'Fever', '', '10', 1, 'yes', '2023-03-07 11:58:29'),
+(15, 'LightHeaded', '', '9', 1, 'yes', '2023-03-07 11:58:37'),
+(16, 'LightHead', '', '10', 1, 'yes', '2023-03-07 11:58:58'),
+(17, 'Sleepy', '', '9', 1, 'yes', '2023-03-07 11:59:08'),
+(18, 'Sleepy', '', '10', 1, 'yes', '2023-03-07 11:59:14'),
+(19, 'fatigue', '', '9', 1, 'yes', '2023-03-07 11:59:25'),
+(20, 'fatigue', '', '10', 1, 'yes', '2023-03-07 11:59:30'),
+(21, 'Swelling', '', '9', 1, 'yes', '2023-03-07 11:59:55'),
+(22, 'Swelling', '', '10', 1, 'yes', '2023-03-07 12:00:01');
 
 -- --------------------------------------------------------
 
@@ -17434,8 +17593,9 @@ INSERT INTO `symptoms_classification` (`id`, `symptoms_type`, `added_by`, `is_ce
 (3, 'stomach cramps', 0, '', '2022-06-27 06:06:46'),
 (4, 'throbbing headache', 0, '', '2022-06-27 06:07:02'),
 (5, 'overwhelming feeling', 0, '', '2022-06-27 06:07:20'),
-(7, 'SType Added by SA', 1, 'yes', '2023-01-01 16:07:55'),
-(8, 'SType Added by TA', 94, 'no', '2023-01-01 16:08:31');
+(8, 'SType Added by TA', 94, 'no', '2023-01-01 16:08:31'),
+(9, 'Acute', 1, 'yes', '2023-03-07 10:12:55'),
+(10, 'Chronic', 1, 'yes', '2023-03-07 10:13:14');
 
 -- --------------------------------------------------------
 
@@ -19092,7 +19252,250 @@ INSERT INTO `system_notification` (`id`, `notification_title`, `notification_typ
 (1619, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-03 17:11:59', 'yes', '2023-03-03 11:41:59'),
 (1620, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-03 17:11:59', 'yes', '2023-03-03 11:41:59'),
 (1621, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-03 17:11:59', 'yes', '2023-03-03 11:41:59'),
-(1622, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-03 17:11:59', 'yes', '2023-03-03 11:41:59');
+(1622, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-03 17:11:59', 'yes', '2023-03-03 11:41:59'),
+(1623, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 10:12:08', 'yes', '2023-03-06 04:42:09'),
+(1624, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 10:12:08', 'yes', '2023-03-06 04:42:09'),
+(1625, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 10:12:08', 'yes', '2023-03-06 04:42:09'),
+(1626, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 10:12:09', 'yes', '2023-03-06 04:42:09'),
+(1627, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 10:12:09', 'yes', '2023-03-06 04:42:09'),
+(1628, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 10:12:09', 'yes', '2023-03-06 04:42:09'),
+(1629, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 10:12:09', 'yes', '2023-03-06 04:42:09'),
+(1630, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 10:12:09', 'yes', '2023-03-06 04:42:09'),
+(1631, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 10:12:09', 'yes', '2023-03-06 04:42:09'),
+(1632, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 10:12:09', 'yes', '2023-03-06 04:42:09'),
+(1633, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 10:12:09', 'yes', '2023-03-06 04:42:09'),
+(1634, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 11:37:18', 'yes', '2023-03-06 06:07:18'),
+(1635, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 11:37:18', 'yes', '2023-03-06 06:07:18'),
+(1636, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 11:37:18', 'yes', '2023-03-06 06:07:18'),
+(1637, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 11:37:18', 'yes', '2023-03-06 06:07:18'),
+(1638, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 11:37:18', 'yes', '2023-03-06 06:07:18'),
+(1639, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 11:37:18', 'yes', '2023-03-06 06:07:18'),
+(1640, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 11:37:18', 'yes', '2023-03-06 06:07:18'),
+(1641, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 11:37:18', 'yes', '2023-03-06 06:07:18'),
+(1642, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 11:37:18', 'yes', '2023-03-06 06:07:18'),
+(1643, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 11:37:18', 'yes', '2023-03-06 06:07:18'),
+(1644, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 11:37:18', 'yes', '2023-03-06 06:07:18'),
+(1645, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 11:40:32', 'yes', '2023-03-06 06:10:32'),
+(1646, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 11:40:32', 'yes', '2023-03-06 06:10:32'),
+(1647, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 11:40:32', 'yes', '2023-03-06 06:10:32'),
+(1648, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 11:40:32', 'yes', '2023-03-06 06:10:32'),
+(1649, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 11:40:32', 'yes', '2023-03-06 06:10:32'),
+(1650, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 11:40:32', 'yes', '2023-03-06 06:10:32'),
+(1651, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 11:40:32', 'yes', '2023-03-06 06:10:32'),
+(1652, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 11:40:32', 'yes', '2023-03-06 06:10:32'),
+(1653, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 11:40:32', 'yes', '2023-03-06 06:10:32'),
+(1654, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 11:40:32', 'yes', '2023-03-06 06:10:32'),
+(1655, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 11:40:32', 'yes', '2023-03-06 06:10:32'),
+(1656, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 11:47:31', 'yes', '2023-03-06 06:17:31'),
+(1657, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 11:47:31', 'yes', '2023-03-06 06:17:31'),
+(1658, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 11:47:31', 'yes', '2023-03-06 06:17:31'),
+(1659, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 11:47:31', 'yes', '2023-03-06 06:17:31'),
+(1660, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 11:47:31', 'yes', '2023-03-06 06:17:31'),
+(1661, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 11:47:31', 'yes', '2023-03-06 06:17:31'),
+(1662, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 11:47:31', 'yes', '2023-03-06 06:17:31'),
+(1663, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 11:47:31', 'yes', '2023-03-06 06:17:31'),
+(1664, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 11:47:31', 'yes', '2023-03-06 06:17:31'),
+(1665, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 11:47:31', 'yes', '2023-03-06 06:17:31'),
+(1666, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 11:47:31', 'yes', '2023-03-06 06:17:31'),
+(1667, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 12:06:37', 'yes', '2023-03-06 06:36:37'),
+(1668, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 12:06:37', 'yes', '2023-03-06 06:36:37'),
+(1669, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 12:06:37', 'yes', '2023-03-06 06:36:37'),
+(1670, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 12:06:37', 'yes', '2023-03-06 06:36:37'),
+(1671, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 12:06:37', 'yes', '2023-03-06 06:36:37'),
+(1672, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 12:06:37', 'yes', '2023-03-06 06:36:37'),
+(1673, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 12:06:37', 'yes', '2023-03-06 06:36:37'),
+(1674, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 12:06:37', 'yes', '2023-03-06 06:36:37'),
+(1675, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 12:06:37', 'yes', '2023-03-06 06:36:37'),
+(1676, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 12:06:37', 'yes', '2023-03-06 06:36:37'),
+(1677, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 12:06:37', 'yes', '2023-03-06 06:36:37'),
+(1678, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 12:08:14', 'yes', '2023-03-06 06:38:14'),
+(1679, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 12:08:14', 'yes', '2023-03-06 06:38:14'),
+(1680, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 12:08:14', 'yes', '2023-03-06 06:38:14'),
+(1681, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 12:08:14', 'yes', '2023-03-06 06:38:14'),
+(1682, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 12:08:14', 'yes', '2023-03-06 06:38:14'),
+(1683, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 12:08:14', 'yes', '2023-03-06 06:38:14'),
+(1684, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 12:08:14', 'yes', '2023-03-06 06:38:14'),
+(1685, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 12:08:14', 'yes', '2023-03-06 06:38:14'),
+(1686, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 12:08:14', 'yes', '2023-03-06 06:38:14'),
+(1687, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 12:08:14', 'yes', '2023-03-06 06:38:14'),
+(1688, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 12:08:14', 'yes', '2023-03-06 06:38:14'),
+(1689, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 12:11:56', 'yes', '2023-03-06 06:41:56'),
+(1690, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 12:11:56', 'yes', '2023-03-06 06:41:56'),
+(1691, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 12:11:56', 'yes', '2023-03-06 06:41:56'),
+(1692, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 12:11:56', 'yes', '2023-03-06 06:41:56'),
+(1693, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 12:11:56', 'yes', '2023-03-06 06:41:56'),
+(1694, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 12:11:56', 'yes', '2023-03-06 06:41:56'),
+(1695, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 12:11:56', 'yes', '2023-03-06 06:41:56'),
+(1696, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 12:11:56', 'yes', '2023-03-06 06:41:56'),
+(1697, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 12:11:56', 'yes', '2023-03-06 06:41:56'),
+(1698, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 12:11:56', 'yes', '2023-03-06 06:41:56'),
+(1699, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 12:11:56', 'yes', '2023-03-06 06:41:56'),
+(1700, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 12:17:06', 'yes', '2023-03-06 06:47:06'),
+(1701, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 12:17:06', 'yes', '2023-03-06 06:47:06'),
+(1702, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 12:17:06', 'yes', '2023-03-06 06:47:06'),
+(1703, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 12:17:06', 'yes', '2023-03-06 06:47:06'),
+(1704, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 12:17:06', 'yes', '2023-03-06 06:47:06'),
+(1705, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 12:17:06', 'yes', '2023-03-06 06:47:06'),
+(1706, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 12:17:06', 'yes', '2023-03-06 06:47:06'),
+(1707, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 12:17:06', 'yes', '2023-03-06 06:47:06'),
+(1708, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 12:17:06', 'yes', '2023-03-06 06:47:06'),
+(1709, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 12:17:06', 'yes', '2023-03-06 06:47:06'),
+(1710, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 12:17:06', 'yes', '2023-03-06 06:47:06'),
+(1711, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 12:52:49', 'yes', '2023-03-06 07:22:49'),
+(1712, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 12:52:49', 'yes', '2023-03-06 07:22:49'),
+(1713, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 12:52:49', 'yes', '2023-03-06 07:22:49'),
+(1714, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 12:52:49', 'yes', '2023-03-06 07:22:49'),
+(1715, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 12:52:49', 'yes', '2023-03-06 07:22:49'),
+(1716, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 12:52:49', 'yes', '2023-03-06 07:22:49'),
+(1717, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 12:52:49', 'yes', '2023-03-06 07:22:49'),
+(1718, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 12:52:49', 'yes', '2023-03-06 07:22:49'),
+(1719, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 12:52:49', 'yes', '2023-03-06 07:22:49'),
+(1720, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 12:52:49', 'yes', '2023-03-06 07:22:49'),
+(1721, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 12:52:49', 'yes', '2023-03-06 07:22:49'),
+(1722, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 13:00:08', 'yes', '2023-03-06 07:30:08'),
+(1723, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 13:00:08', 'yes', '2023-03-06 07:30:08'),
+(1724, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 13:00:08', 'yes', '2023-03-06 07:30:08'),
+(1725, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 13:00:08', 'yes', '2023-03-06 07:30:08'),
+(1726, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 13:00:08', 'yes', '2023-03-06 07:30:08'),
+(1727, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 13:00:08', 'yes', '2023-03-06 07:30:08'),
+(1728, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 13:00:08', 'yes', '2023-03-06 07:30:08'),
+(1729, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 13:00:08', 'yes', '2023-03-06 07:30:08'),
+(1730, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 13:00:08', 'yes', '2023-03-06 07:30:08'),
+(1731, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 13:00:08', 'yes', '2023-03-06 07:30:08'),
+(1732, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 13:00:08', 'yes', '2023-03-06 07:30:08'),
+(1733, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 13:00:38', 'yes', '2023-03-06 07:30:38'),
+(1734, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 13:00:38', 'yes', '2023-03-06 07:30:38'),
+(1735, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 13:00:38', 'yes', '2023-03-06 07:30:38'),
+(1736, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 13:00:38', 'yes', '2023-03-06 07:30:38'),
+(1737, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 13:00:38', 'yes', '2023-03-06 07:30:38'),
+(1738, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 13:00:38', 'yes', '2023-03-06 07:30:38'),
+(1739, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 13:00:38', 'yes', '2023-03-06 07:30:38'),
+(1740, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 13:00:38', 'yes', '2023-03-06 07:30:38'),
+(1741, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 13:00:38', 'yes', '2023-03-06 07:30:38'),
+(1742, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 13:00:38', 'yes', '2023-03-06 07:30:38'),
+(1743, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 13:00:38', 'yes', '2023-03-06 07:30:38'),
+(1744, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 340.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 13:17:51', 'yes', '2023-03-06 07:47:51'),
+(1745, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 340.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 13:17:51', 'yes', '2023-03-06 07:47:51'),
+(1746, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 340.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 13:17:51', 'yes', '2023-03-06 07:47:51'),
+(1747, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 340.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 13:17:51', 'yes', '2023-03-06 07:47:51'),
+(1748, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 340.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 13:17:51', 'yes', '2023-03-06 07:47:51'),
+(1749, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 340.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 13:17:51', 'yes', '2023-03-06 07:47:51'),
+(1750, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 340.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 13:17:51', 'yes', '2023-03-06 07:47:51'),
+(1751, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 340.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 13:17:51', 'yes', '2023-03-06 07:47:51'),
+(1752, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 340.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 13:17:51', 'yes', '2023-03-06 07:47:51');
+INSERT INTO `system_notification` (`id`, `notification_title`, `notification_type`, `notification_desc`, `notification_for`, `role_id`, `receiver_id`, `date`, `is_active`, `created_at`) VALUES
+(1753, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 340.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 13:17:51', 'yes', '2023-03-06 07:47:51'),
+(1754, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: 0.00\r\nTax: 27.37\r\nPaid Amount: 340.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 13:17:51', 'yes', '2023-03-06 07:47:51'),
+(1755, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 340.42', '', 7, 1, '2023-03-06 13:23:36', 'yes', '2023-03-06 07:53:36'),
+(1756, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 340.42', '', 7, 13, '2023-03-06 13:23:36', 'yes', '2023-03-06 07:53:36'),
+(1757, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 340.42', '', 7, 120, '2023-03-06 13:23:36', 'yes', '2023-03-06 07:53:36'),
+(1758, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 340.42', '', 7, 1, '2023-03-06 13:23:36', 'yes', '2023-03-06 07:53:36'),
+(1759, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 340.42', '', 7, 13, '2023-03-06 13:23:36', 'yes', '2023-03-06 07:53:36'),
+(1760, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 340.42', '', 4, 124, '2023-03-06 13:23:36', 'yes', '2023-03-06 07:53:36'),
+(1761, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 340.42', '', 4, 125, '2023-03-06 13:23:36', 'yes', '2023-03-06 07:53:36'),
+(1762, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 340.42', '', 4, 126, '2023-03-06 13:23:36', 'yes', '2023-03-06 07:53:36'),
+(1763, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 340.42', '', 4, 127, '2023-03-06 13:23:36', 'yes', '2023-03-06 07:53:36'),
+(1764, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: {discount}} \r\nTax: 27.37\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 340.42', '', 4, 128, '2023-03-06 13:23:36', 'yes', '2023-03-06 07:53:36'),
+(1765, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 313.05\r\nNet Amount: 340.42\r\nDiscount: 0.00\r\nTax: 27.37\r\nPaid Amount: 0.00\r\nDue Amount: 340.42', '', NULL, 1, '2023-03-06 13:23:36', 'yes', '2023-03-06 07:53:36'),
+(1766, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 13:43:26', 'yes', '2023-03-06 08:13:26'),
+(1767, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 13:43:26', 'yes', '2023-03-06 08:13:26'),
+(1768, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 13:43:26', 'yes', '2023-03-06 08:13:26'),
+(1769, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 13:43:26', 'yes', '2023-03-06 08:13:26'),
+(1770, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 13:43:26', 'yes', '2023-03-06 08:13:26'),
+(1771, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 13:43:26', 'yes', '2023-03-06 08:13:26'),
+(1772, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 13:43:26', 'yes', '2023-03-06 08:13:26'),
+(1773, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 13:43:26', 'yes', '2023-03-06 08:13:26'),
+(1774, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 13:43:26', 'yes', '2023-03-06 08:13:26'),
+(1775, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 13:43:26', 'yes', '2023-03-06 08:13:26'),
+(1776, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 13:43:26', 'yes', '2023-03-06 08:13:26'),
+(1777, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 14:21:00', 'yes', '2023-03-06 08:51:00'),
+(1778, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 14:21:00', 'yes', '2023-03-06 08:51:00'),
+(1779, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 14:21:00', 'yes', '2023-03-06 08:51:00'),
+(1780, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 14:21:00', 'yes', '2023-03-06 08:51:00'),
+(1781, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 14:21:00', 'yes', '2023-03-06 08:51:00'),
+(1782, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 14:21:00', 'yes', '2023-03-06 08:51:00'),
+(1783, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 14:21:00', 'yes', '2023-03-06 08:51:00'),
+(1784, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 14:21:00', 'yes', '2023-03-06 08:51:00'),
+(1785, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 14:21:00', 'yes', '2023-03-06 08:51:00'),
+(1786, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 14:21:00', 'yes', '2023-03-06 08:51:00'),
+(1787, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 14:21:00', 'yes', '2023-03-06 08:51:00'),
+(1788, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 187.42', '', 7, 1, '2023-03-06 14:58:02', 'yes', '2023-03-06 09:28:02'),
+(1789, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 187.42', '', 7, 13, '2023-03-06 14:58:02', 'yes', '2023-03-06 09:28:02'),
+(1790, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 187.42', '', 7, 120, '2023-03-06 14:58:02', 'yes', '2023-03-06 09:28:02'),
+(1791, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 187.42', '', 7, 1, '2023-03-06 14:58:02', 'yes', '2023-03-06 09:28:02'),
+(1792, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 187.42', '', 7, 13, '2023-03-06 14:58:02', 'yes', '2023-03-06 09:28:02'),
+(1793, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 187.42', '', 4, 124, '2023-03-06 14:58:02', 'yes', '2023-03-06 09:28:02'),
+(1794, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 187.42', '', 4, 125, '2023-03-06 14:58:02', 'yes', '2023-03-06 09:28:02'),
+(1795, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 187.42', '', 4, 126, '2023-03-06 14:58:02', 'yes', '2023-03-06 09:28:02'),
+(1796, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 187.42', '', 4, 127, '2023-03-06 14:58:02', 'yes', '2023-03-06 09:28:02'),
+(1797, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 187.42', '', 4, 128, '2023-03-06 14:58:02', 'yes', '2023-03-06 09:28:02'),
+(1798, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 0.00\r\nDue Amount: 187.42', '', NULL, 1, '2023-03-06 14:58:02', 'yes', '2023-03-06 09:28:02'),
+(1799, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 145.71\r\nNet Amount: 153.00\r\nDiscount: {discount}} \r\nTax: 7.29\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 153.00', '', 7, 1, '2023-03-06 15:01:54', 'yes', '2023-03-06 09:31:54'),
+(1800, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 145.71\r\nNet Amount: 153.00\r\nDiscount: {discount}} \r\nTax: 7.29\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 153.00', '', 7, 13, '2023-03-06 15:01:54', 'yes', '2023-03-06 09:31:54'),
+(1801, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 145.71\r\nNet Amount: 153.00\r\nDiscount: {discount}} \r\nTax: 7.29\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 153.00', '', 7, 120, '2023-03-06 15:01:54', 'yes', '2023-03-06 09:31:54'),
+(1802, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 145.71\r\nNet Amount: 153.00\r\nDiscount: {discount}} \r\nTax: 7.29\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 153.00', '', 7, 1, '2023-03-06 15:01:54', 'yes', '2023-03-06 09:31:54'),
+(1803, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 145.71\r\nNet Amount: 153.00\r\nDiscount: {discount}} \r\nTax: 7.29\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 153.00', '', 7, 13, '2023-03-06 15:01:54', 'yes', '2023-03-06 09:31:54'),
+(1804, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 145.71\r\nNet Amount: 153.00\r\nDiscount: {discount}} \r\nTax: 7.29\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 153.00', '', 4, 124, '2023-03-06 15:01:54', 'yes', '2023-03-06 09:31:54'),
+(1805, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 145.71\r\nNet Amount: 153.00\r\nDiscount: {discount}} \r\nTax: 7.29\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 153.00', '', 4, 125, '2023-03-06 15:01:54', 'yes', '2023-03-06 09:31:54'),
+(1806, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 145.71\r\nNet Amount: 153.00\r\nDiscount: {discount}} \r\nTax: 7.29\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 153.00', '', 4, 126, '2023-03-06 15:01:54', 'yes', '2023-03-06 09:31:54'),
+(1807, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 145.71\r\nNet Amount: 153.00\r\nDiscount: {discount}} \r\nTax: 7.29\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 153.00', '', 4, 127, '2023-03-06 15:01:54', 'yes', '2023-03-06 09:31:54'),
+(1808, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 145.71\r\nNet Amount: 153.00\r\nDiscount: {discount}} \r\nTax: 7.29\r\nPaid Amount  $ 0.00\r\nDue Amount  $ 153.00', '', 4, 128, '2023-03-06 15:01:54', 'yes', '2023-03-06 09:31:54'),
+(1809, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 145.71\r\nNet Amount: 153.00\r\nDiscount: 0.00\r\nTax: 7.29\r\nPaid Amount: 0.00\r\nDue Amount: 153.00', '', NULL, 1, '2023-03-06 15:01:54', 'yes', '2023-03-06 09:31:54'),
+(1810, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 15:02:52', 'yes', '2023-03-06 09:32:52'),
+(1811, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 15:02:52', 'yes', '2023-03-06 09:32:52'),
+(1812, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 15:02:52', 'yes', '2023-03-06 09:32:52'),
+(1813, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 15:02:52', 'yes', '2023-03-06 09:32:52'),
+(1814, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 15:02:52', 'yes', '2023-03-06 09:32:52'),
+(1815, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 15:02:52', 'yes', '2023-03-06 09:32:52'),
+(1816, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 15:02:52', 'yes', '2023-03-06 09:32:52'),
+(1817, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 15:02:52', 'yes', '2023-03-06 09:32:52'),
+(1818, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 15:02:52', 'yes', '2023-03-06 09:32:52'),
+(1819, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 15:02:52', 'yes', '2023-03-06 09:32:52'),
+(1820, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 15:02:52', 'yes', '2023-03-06 09:32:52'),
+(1821, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 15:15:57', 'yes', '2023-03-06 09:45:57'),
+(1822, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 15:15:57', 'yes', '2023-03-06 09:45:57'),
+(1823, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 15:15:57', 'yes', '2023-03-06 09:45:57'),
+(1824, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 15:15:57', 'yes', '2023-03-06 09:45:57'),
+(1825, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 15:15:57', 'yes', '2023-03-06 09:45:57'),
+(1826, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 15:15:57', 'yes', '2023-03-06 09:45:57'),
+(1827, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 15:15:57', 'yes', '2023-03-06 09:45:57'),
+(1828, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 15:15:57', 'yes', '2023-03-06 09:45:57'),
+(1829, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 15:15:57', 'yes', '2023-03-06 09:45:57'),
+(1830, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 15:15:57', 'yes', '2023-03-06 09:45:57'),
+(1831, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 15:15:57', 'yes', '2023-03-06 09:45:57'),
+(1832, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 15:23:24', 'yes', '2023-03-06 09:53:24'),
+(1833, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 15:23:24', 'yes', '2023-03-06 09:53:24'),
+(1834, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 15:23:24', 'yes', '2023-03-06 09:53:24'),
+(1835, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 15:23:24', 'yes', '2023-03-06 09:53:24'),
+(1836, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 15:23:24', 'yes', '2023-03-06 09:53:24'),
+(1837, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 15:23:24', 'yes', '2023-03-06 09:53:24'),
+(1838, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 15:23:24', 'yes', '2023-03-06 09:53:24'),
+(1839, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 15:23:24', 'yes', '2023-03-06 09:53:24'),
+(1840, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 15:23:24', 'yes', '2023-03-06 09:53:24'),
+(1841, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 15:23:24', 'yes', '2023-03-06 09:53:24'),
+(1842, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 15:23:24', 'yes', '2023-03-06 09:53:24'),
+(1843, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 15:24:42', 'yes', '2023-03-06 09:54:42'),
+(1844, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 15:24:42', 'yes', '2023-03-06 09:54:42'),
+(1845, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 15:24:42', 'yes', '2023-03-06 09:54:42'),
+(1846, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 15:24:42', 'yes', '2023-03-06 09:54:42'),
+(1847, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 15:24:42', 'yes', '2023-03-06 09:54:42'),
+(1848, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 15:24:42', 'yes', '2023-03-06 09:54:42'),
+(1849, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 15:24:42', 'yes', '2023-03-06 09:54:42'),
+(1850, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 15:24:42', 'yes', '2023-03-06 09:54:42'),
+(1851, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 15:24:42', 'yes', '2023-03-06 09:54:42'),
+(1852, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: .\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 15:24:42', 'yes', '2023-03-06 09:54:42'),
+(1853, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 15:24:42', 'yes', '2023-03-06 09:54:42'),
+(1854, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 15:25:27', 'yes', '2023-03-06 09:55:27'),
+(1855, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 15:25:27', 'yes', '2023-03-06 09:55:27'),
+(1856, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 120, '2023-03-06 15:25:27', 'yes', '2023-03-06 09:55:27'),
+(1857, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 1, '2023-03-06 15:25:27', 'yes', '2023-03-06 09:55:27'),
+(1858, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 7, 13, '2023-03-06 15:25:27', 'yes', '2023-03-06 09:55:27'),
+(1859, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 124, '2023-03-06 15:25:27', 'yes', '2023-03-06 09:55:27'),
+(1860, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 125, '2023-03-06 15:25:27', 'yes', '2023-03-06 09:55:27'),
+(1861, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 126, '2023-03-06 15:25:27', 'yes', '2023-03-06 09:55:27'),
+(1862, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 127, '2023-03-06 15:25:27', 'yes', '2023-03-06 09:55:27'),
+(1863, 'Pharmacy Generate Bill', 'pharmacy', 'Pharmacy Bill Generated for Patient: Sandhiya Murali (1) Case ID: 1.\r\n\r\nPharmacy Bill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: {discount}} \r\nTax: 20.08\r\nPaid Amount  $ 187.42\r\nDue Amount  $ 0.00', '', 4, 128, '2023-03-06 15:25:27', 'yes', '2023-03-06 09:55:27'),
+(1864, 'Pharmacy Generate Bill', 'pharmacy', 'Dear Sandhiya Murali 1 your pharmacy bill is generated. \r\n\r\nBill Details-\r\nTotal Amount: 167.34\r\nNet Amount: 187.42\r\nDiscount: 0.00\r\nTax: 20.08\r\nPaid Amount: 187.42\r\nDue Amount: 0.00', '', NULL, 1, '2023-03-06 15:25:27', 'yes', '2023-03-06 09:55:27');
 
 -- --------------------------------------------------------
 
@@ -19243,11 +19646,14 @@ CREATE TABLE `transactions` (
 --
 
 INSERT INTO `transactions` (`id`, `type`, `section`, `patient_id`, `case_reference_id`, `opd_id`, `ipd_id`, `pharmacy_bill_basic_id`, `pathology_billing_id`, `radiology_billing_id`, `blood_donor_cycle_id`, `blood_issue_id`, `ambulance_call_id`, `appointment_id`, `attachment`, `attachment_name`, `amount_type`, `amount`, `payment_mode`, `cheque_no`, `cheque_date`, `payment_date`, `note`, `received_by`, `created_at`, `parent`, `staffid`) VALUES
-(1, 'payment', 'Appointment', 1, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 0.00, 'Online', NULL, NULL, '2023-03-03 16:58:30', NULL, 110, '2023-03-03 11:28:31', '', ''),
-(2, 'payment', '', 1, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 177.00, 'Online', NULL, NULL, '2023-03-03 16:59:18', 'Online fees deposit through Razorpay TXN ID: pay_LN2FFaZPHjTAev', NULL, '2023-03-03 11:29:18', '', ''),
-(3, 'payment', 'Pharmacy', 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 'Cash', NULL, NULL, '2023-03-03 17:00:00', 'billed by DIS01PHARMA01', 124, '2023-03-03 11:31:03', '122', ''),
-(4, 'payment', 'Pharmacy', 1, 1, NULL, NULL, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 'Cash', NULL, NULL, '2023-03-03 17:05:00', 'ewa', 124, '2023-03-03 11:35:33', '122', ''),
-(5, 'payment', 'Pharmacy', 1, NULL, NULL, NULL, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 'Cash', NULL, NULL, '2023-03-03 17:11:00', 'billed by D01pharma01', 124, '2023-03-03 11:41:59', '122', '');
+(1, 'payment', 'Appointment', 1, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 0.00, 'Online', NULL, NULL, '2023-03-06 15:08:41', NULL, 110, '2023-03-06 09:38:42', '', ''),
+(2, 'payment', '', 1, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 224.00, 'Online', NULL, NULL, '2023-03-06 15:11:14', 'Online fees deposit through Razorpay TXN ID: pay_LOC0R46DyNmC7s', NULL, '2023-03-06 09:41:14', '', ''),
+(3, 'payment', 'Pharmacy', 1, 0, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 'Cash', NULL, NULL, '2023-03-06 15:14:00', '', 124, '2023-03-06 09:45:57', '122', ''),
+(4, 'payment', 'Pharmacy', 1, 1, NULL, NULL, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 'Cash', NULL, NULL, '2023-03-06 15:22:00', '', 124, '2023-03-06 09:53:24', '122', ''),
+(5, 'payment', 'Pharmacy', 1, 0, NULL, NULL, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 'Cash', NULL, NULL, '2023-03-06 15:24:00', '', 124, '2023-03-06 09:54:42', '122', ''),
+(6, 'payment', 'Pharmacy', 1, 1, NULL, NULL, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 'Cash', NULL, NULL, '2023-03-06 15:25:00', '', 124, '2023-03-06 09:55:27', '122', ''),
+(7, 'payment', '', 1, 1, NULL, NULL, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 'Cash', NULL, NULL, '2023-03-06 15:26:25', 'Cash', NULL, '2023-03-06 09:56:25', '', ''),
+(8, 'payment', 'Pharmacy', 1, 1, NULL, NULL, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 187.42, 'Cash', NULL, NULL, '2023-03-06 15:26:00', 'added by paharma', 124, '2023-03-06 09:56:47', '122', '');
 
 -- --------------------------------------------------------
 
@@ -21139,7 +21545,28 @@ INSERT INTO `userlog` (`id`, `user`, `role`, `ipaddress`, `user_agent`, `login_d
 (1837, 'dis01pharm02@gmail.com', 'Pharmacist', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-03 10:28:48'),
 (1838, 'dis01pharm01@gmail.com', 'Pharmacist', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-03 10:30:16'),
 (1839, 'independentdoctor01@gmail.com', 'Doctor', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-03 11:28:05'),
-(1840, 'roushan@gmail.com', 'Super Admin', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-03 11:41:22');
+(1840, 'roushan@gmail.com', 'Super Admin', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-03 11:41:22'),
+(1841, 'roushan@gmail.com', 'Super Admin', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-06 03:39:36'),
+(1842, 'independentdoctor01@gmail.com', 'Doctor', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-06 03:46:46'),
+(1843, 'dis01pharm01@gmail.com', 'Pharmacist', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-06 03:48:44'),
+(1844, 'independentdoctor01@gmail.com', 'Doctor', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-06 07:09:01'),
+(1845, 'dis01pharm01@gmail.com', 'Pharmacist', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-06 07:40:13'),
+(1846, 'centralwarehouse@gmail.com', 'Central Pharmacy', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-06 09:37:44'),
+(1847, 'independentdoctor01@gmail.com', 'Doctor', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-06 09:38:07'),
+(1848, 'pat1', 'patient', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-06 09:40:35');
+INSERT INTO `userlog` (`id`, `user`, `role`, `ipaddress`, `user_agent`, `login_datetime`) VALUES
+(1849, 'dis01pharm01@gmail.com', 'Pharmacist', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-06 09:44:05'),
+(1850, 'dis01pharm02@gmail.com', 'Pharmacist', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-06 09:44:15'),
+(1851, 'independentdoctor01@gmail.com', 'Doctor', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-06 10:47:27'),
+(1852, 'roushan@gmail.com', 'Super Admin', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-06 11:36:00'),
+(1853, 'independentdoctor01@gmail.com', 'Doctor', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-06 11:36:37'),
+(1854, 'centralwarehouse@gmail.com', 'Central Pharmacy', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-06 11:46:04'),
+(1855, 'independentdoctor01@gmail.com', 'Doctor', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-06 12:38:14'),
+(1856, 'roushan@gmail.com', 'Super Admin', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-07 03:52:14'),
+(1857, 'independentdoctor01@gmail.com', 'Doctor', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-07 03:52:53'),
+(1858, 'roushan@gmail.com', 'Super Admin', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-07 10:12:10'),
+(1859, 'independentdoctor01@gmail.com', 'Doctor', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-07 11:44:46'),
+(1860, 'independentdoctor01@gmail.com', 'Doctor', '::1', 'Chrome 110.0.0.0, Windows 10', '2023-03-07 11:53:51');
 
 -- --------------------------------------------------------
 
@@ -21293,7 +21720,7 @@ CREATE TABLE `visit_details` (
 --
 
 INSERT INTO `visit_details` (`id`, `opd_details_id`, `organisation_id`, `patient_charge_id`, `transaction_id`, `cons_doctor`, `case_type`, `appointment_date`, `symptoms_type`, `symptoms`, `bp`, `height`, `weight`, `pulse`, `temperature`, `respiration`, `known_allergies`, `patient_old`, `casualty`, `refference`, `date`, `note`, `note_remark`, `payment_mode`, `generated_by`, `live_consult`, `can_delete`, `created_at`) VALUES
-(1, 1, NULL, 1, 1, 110, '', '2023-03-03 16:58:30', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', 110, 'No', 'no', '2023-03-03 11:28:31');
+(1, 1, NULL, 1, 1, 110, '', '2023-03-06 15:08:41', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', 110, 'No', 'no', '2023-03-06 09:38:42');
 
 -- --------------------------------------------------------
 
@@ -22936,13 +23363,13 @@ ALTER TABLE `expense_head`
 -- AUTO_INCREMENT for table `finding`
 --
 ALTER TABLE `finding`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `finding_category`
 --
 ALTER TABLE `finding_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `floor`
@@ -23038,13 +23465,13 @@ ALTER TABLE `ipd_doctors`
 -- AUTO_INCREMENT for table `ipd_prescription_basic`
 --
 ALTER TABLE `ipd_prescription_basic`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `ipd_prescription_details`
 --
 ALTER TABLE `ipd_prescription_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `ipd_prescription_test`
@@ -23116,7 +23543,7 @@ ALTER TABLE `locality_city`
 -- AUTO_INCREMENT for table `logs`
 --
 ALTER TABLE `logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7420;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7550;
 
 --
 -- AUTO_INCREMENT for table `medication_report`
@@ -23344,13 +23771,13 @@ ALTER TABLE `pharmacy`
 -- AUTO_INCREMENT for table `pharmacy_bill_basic`
 --
 ALTER TABLE `pharmacy_bill_basic`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `pharmacy_bill_detail`
 --
 ALTER TABLE `pharmacy_bill_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `prefixes`
@@ -23404,7 +23831,7 @@ ALTER TABLE `radiology_report_parameterdetails`
 -- AUTO_INCREMENT for table `read_notification`
 --
 ALTER TABLE `read_notification`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `read_systemnotification`
@@ -23458,7 +23885,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `roles_permissions`
 --
 ALTER TABLE `roles_permissions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5238;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5240;
 
 --
 -- AUTO_INCREMENT for table `sch_settings`
@@ -23476,7 +23903,7 @@ ALTER TABLE `send_notification`
 -- AUTO_INCREMENT for table `send_pres_to_chemist`
 --
 ALTER TABLE `send_pres_to_chemist`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `shift_details`
@@ -23590,19 +24017,19 @@ ALTER TABLE `supplier_bill_basic`
 -- AUTO_INCREMENT for table `symptoms`
 --
 ALTER TABLE `symptoms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `symptoms_classification`
 --
 ALTER TABLE `symptoms_classification`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `system_notification`
 --
 ALTER TABLE `system_notification`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1623;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1865;
 
 --
 -- AUTO_INCREMENT for table `system_notification_setting`
@@ -23620,7 +24047,7 @@ ALTER TABLE `tax_category`
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `unit`
@@ -23632,7 +24059,7 @@ ALTER TABLE `unit`
 -- AUTO_INCREMENT for table `userlog`
 --
 ALTER TABLE `userlog`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1841;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1861;
 
 --
 -- AUTO_INCREMENT for table `users`

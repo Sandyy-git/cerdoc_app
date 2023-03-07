@@ -15,8 +15,9 @@
                              <div class="col-sm-12">  
                                 <table class="table table-striped table-bordered table-hover" >
                                     <tr>
-                                        <td style="display:none"><div class="form-group">
-                                            <!-- <label><?php echo $this->lang->line('finding_category'); ?></label> -->
+
+                                        <!-- <td style="display:none"><div class="form-group">
+                                            <label><?php echo $this->lang->line('finding_category'); ?></label>
                                             <label><?php echo $this->lang->line('finding_diagnosis'); ?></label>
                                             <select class="form-control select2 findingtype" style="width: 100%" name='finding_type' id="finding_type">
                                                 <option value=""><?php echo $this->lang->line('select'); ?> </option>
@@ -28,7 +29,43 @@
                                                         <?php } ?>
                                              </select>
                                             </div>
+                                        </td> -->
+
+
+                                        <td><div class="form-group">
+                                            <label><?php echo $this->lang->line('finding_category'); ?></label>
+                                            <select class="form-control select2 findingtype" style="width: 100%" name='finding_type' id="finding_type">
+                                                <option value=""><?php echo $this->lang->line('select'); ?> </option>
+                                                <?php
+                                                foreach ($findingtype as $fvalue) {
+                                                ?>
+                                                <option value="<?php echo $fvalue["id"]; ?>"><?php echo $fvalue["category"] ?>
+                                                            </option>   
+                                                        <?php } ?>
+                                             </select>
+                                            </div>
                                         </td>
+
+
+                                        <td>
+                                            <label for="filterinput"> 
+                                                <?php echo $this->lang->line('finding_list'); ?></label>
+                                            <div id="dd" class="wrapper-dropdown-3">
+                                                <input class="form-control filterinput" type="text">
+                                                <ul class="dropdown scroll150 section_ul">
+                                                    <li><label class="checkbox"><?php echo $this->lang->line('select'); ?></label></li>
+                                                </ul>
+                                            </div>
+                                           
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                 <label><?php echo $this->lang->line('finding_description'); ?></label>
+                                                    <textarea name="finding_description" id="finding_description"  class="form-control"> </textarea> 
+                                            </div>
+                                        </td>
+
+                                        
                                         <td style="display:none">
                                            
                                                 <label for="filterinput" > 
@@ -41,13 +78,60 @@
                                                 </div>
                                            
                                         </td>
-                                        <td>
+                                       <!--  <td>
                                             <div class="form-group">
                                                  <label><?php echo $this->lang->line('finding_diagnosis'); ?></label>
                                                     <textarea name="finding_description" id="finding_description"  class="form-control"> </textarea> 
                                             </div>
-                                        </td>
+                                        </td> -->
                                         <td>  <label><?php echo $this->lang->line('diagnosis_print'); ?> </label><br/><input type="checkbox" name="finding_print" value="yes" checked></td>
+                                    </tr>
+                                </table>
+                                </div>
+
+                             <div class="col-sm-12">  
+                                <table class="table table-striped table-bordered table-hover" >
+                                    <tr>
+                                        <td><div class="form-group">
+                                            <label for="exampleInputFile">
+                                                        <?php echo $this->lang->line('symptoms_type'); ?></label>
+                                                    <div><select  name='symptoms_type'  id="actcat"  class="form-control select2 act"  style="width:100%" >
+                                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                                            <?php foreach ($symptomsresulttype as $dkey => $dvalue) {
+                                                                ?>
+                                                            <option value="<?php echo $dvalue["id"]; ?>"><?php echo $dvalue["symptoms_type"] ;?></option>
+
+                                                        <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                    <span class="text-danger"><?php echo form_error('symptoms_type'); ?></span>
+                                            </div>
+                                        </td>
+
+
+                                        <td>
+                                            <div class="form-group">
+                                            <label for="exampleInputFile"> 
+                                                        <?php echo $this->lang->line('symptoms') ; ?></label>
+                                                    <div id="dd" class="wrapper-dropdown-4">
+                                                        <input class="form-control filtersymptominput" type="text">
+                                                        <ul class="dropdown scroll150 section_symptomul">
+                                                            <li><label class="checkbox"><?php echo $this->lang->line('select'); ?></label></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                           
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                 <label><?php echo $this->lang->line('symptoms_description'); ?></label>
+                                                    <textarea class="form-control" id="symptoms_description" name="symptoms_description" ></textarea>  
+                                            </div>
+                                        </td>
+
+                                        
+                                      
+                                       
                                     </tr>
                                 </table>
                                 </div>

@@ -713,7 +713,7 @@ $genderList = $this->customlib->getGender();
                                                     <span class="text-danger"><?php echo form_error('symptoms_type'); ?></span>
                                                 </div>
                                             </div>                                            
-                                             <div class="col-sm-4">
+                                             <!-- <div class="col-sm-4">
                                                 <div class="form-group">
                                                     <label for="exampleInputFile"> 
                                                         <?php echo $this->lang->line('symptoms') ; ?></label>
@@ -724,13 +724,13 @@ $genderList = $this->customlib->getGender();
                                                         </ul>
                                                     </div>
                                                 </div>    
-                                            </div>
-                                            <div class="col-sm-4 col-xs-12">
+                                            </div> -->
+                                            <!-- <div class="col-sm-4 col-xs-12">
                                                 <div class="form-group">
                                                     <label><?php echo $this->lang->line('symptoms_description'); ?></label>
                                                     <textarea class="form-control" id="symptoms_description" name="symptoms" ></textarea> 
                                                 </div> 
-                                            </div>                                        
+                                            </div>  -->                                       
                                             <div class="col-sm-6 col-xs-12">
                                                 <div class="form-group">
                                                     <label for="pwd"><?php echo $this->lang->line('note'); ?></label>
@@ -1463,7 +1463,7 @@ $genderList = $this->customlib->getGender();
                                             </div>
                                             
                                             
-                                                <div class="col-sm-3 col-xs-6">
+                                                <!-- <div class="col-sm-3 col-xs-6">
                                                     <label for="filterinput"> 
                                                         <?php echo $this->lang->line('symptoms_title'); ?></label>
                                                     <div id="dd" class="wrapper-dropdown-3">
@@ -1472,7 +1472,7 @@ $genderList = $this->customlib->getGender();
                                                             <li><label class="checkbox"><?php echo $this->lang->line('select'); ?></label></li>
                                                         </ul>
                                                     </div>
-                                                </div>
+                                                </div> -->
 
                                             <div class="col-sm-6 col-xs-12">
                                                 <div class="form-group">
@@ -2047,12 +2047,12 @@ $genderList = $this->customlib->getGender();
     });
 </script>
 <script>
-    var prescription_rows=2;
+    // var prescription_rows=2;
     $(document).on('change', '.act', function () {
         alert('ds');
         $this = $(this);
         var sys_val = $(this).val();
-        var section_ul = $(this).closest('div.row').find('ul.section_ul');
+        var section_symptomul = $(this).closest('div.row').find('ul.section_symptomul');
         $.ajax({
             type: 'POST',
             url: base_url + 'admin/patient/getPartialsymptoms',
@@ -2060,10 +2060,10 @@ $genderList = $this->customlib->getGender();
             dataType: 'JSON',
             beforeSend: function () {
                 // setting a timeout
-                $('ul.section_ul').find('li:not(:first-child)').remove();
+                $('ul.section_symptomul').find('li:not(:first-child)').remove();
             },
             success: function (data) {
-                section_ul.append(data.record);
+                section_symptomul.append(data.record);
 
             },
             error: function (xhr) { // if error occured
@@ -2094,6 +2094,7 @@ $genderList = $this->customlib->getGender();
     });
 
     $(document).on('click', '.filterinput', function () {
+        // alert("who who");
       
         if (!$(this).closest('.wrapper-dropdown-3').hasClass("active")) {
             $(".wrapper-dropdown-3").not($(this)).removeClass('active');
@@ -2106,6 +2107,7 @@ $genderList = $this->customlib->getGender();
     });
 
     $(document).on('keyup', '.filterinput', function () {
+        // alert("who");
         var valThis = $(this).val().toLowerCase();
         var closer_section = $(this).closest('div').find('.section_ul > li');
 
@@ -2135,6 +2137,67 @@ $genderList = $this->customlib->getGender();
 
     
 </script>
+
+<script>
+     // Symptoms
+    $(document).on('click', '.remove_row', function () {
+        $this = $(this);
+        $this.closest('.row').remove();
+    });
+
+    $(document).mouseup(function (e)
+    {
+        var container = $(".wrapper-dropdown-4"); // YOUR CONTAINER SELECTOR
+        if (!container.is(e.target) // if the target of the click isn't the container...
+                && container.has(e.target).length === 0) // ... nor a descendant of the container
+        {
+            $("div.wrapper-dropdown-4").removeClass('active');
+        }
+    });
+
+    $(document).on('click', '.filtersymptominput', function () {
+        if (!$(this).closest('.wrapper-dropdown-4').hasClass("active")) {
+            $(".wrapper-dropdown-4").not($(this)).removeClass('active');
+            $(this).closest("div.wrapper-dropdown-4").addClass('active');
+        }
+    });
+
+    $(document).on('click', 'input[name="section[]"]', function () {
+        $(this).closest('label').toggleClass('active_section');
+    });
+
+       $(document).on('keyup', '.filtersymptominput', function () {
+        // alert("who");
+        var valSymThis = $(this).val().toLowerCase();
+        var closer_section_symp = $(this).closest('div').find('.section_symptomul > li');
+
+        var noresultSym = 0;
+        if (valSymThis == "") {
+            closer_section_symp.show();
+            noresultSym = 1;
+            $('.no-results-found').remove();
+        } else {
+            closer_section_symp.each(function () {
+                var textsym = $(this).text().toLowerCase();
+                var matchsym = textsym.indexOf(valSymThis);
+                if (matchsym >= 0) {
+                    $(this).show();
+                    noresultSym = 1;
+                    $('.no-results-found').remove();
+                } else {
+                    $(this).hide();
+                }
+            });
+        }
+        ;
+        if (noresultSym == 0) {
+            closer_section_symp.append('<li class="no-results-found">No results found...</li>');
+        }
+    });
+
+
+</script>
+
 <script type="text/javascript">
 
     $(function () {
@@ -4112,7 +4175,6 @@ return dosage_opt;
     });
 
     $(document).on('change', '.findinghead', function () {
-
         $this = $(this);
         var head_id = $(this).val();
         div_data="";

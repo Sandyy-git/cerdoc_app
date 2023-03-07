@@ -4545,6 +4545,7 @@ This Function is used to Import Multiple Patient Records
             $footer_note         = $this->input->post("footer_note");
             $ipd_no_value        = $this->input->post('ipd_no_value');
             $finding_description = $this->input->post('finding_description');
+            $symptoms_description = $this->input->post('symptoms_description');
             $finding_print       = $this->input->post('finding_print');
             $opd_details         = $this->patient_model->get_patientidbyvisitid($visitid);
             $opd_basic_array = array(
@@ -4552,6 +4553,7 @@ This Function is used to Import Multiple Patient Records
                 'header_note'         => $header_note,
                 'footer_note'         => $footer_note,
                 'finding_description' => $finding_description,
+                'symptoms_description' => $symptoms_description,
                 'is_finding_print'    => $finding_print,
                 'date'                => date("Y-m-d"),
                 'generated_by'        => $this->customlib->getStaffID(),
@@ -4609,6 +4611,7 @@ This Function is used to Import Multiple Patient Records
                 'opd_no'              => $this->customlib->getSessionPrefixByType('opd_no') . $patient_record['opd_details_id'],
                 'checkup_id'          => $this->customlib->getSessionPrefixByType('checkup_id') . $visitid,
                 'finding_description' => $finding_description,
+                'symptoms_description' => $symptoms_description,
                 'medicine'            => $medicine_var,
                 'radilogy_test'       => $radiology_test_var,
                 'pathology_test'      => $pathology_test_var,

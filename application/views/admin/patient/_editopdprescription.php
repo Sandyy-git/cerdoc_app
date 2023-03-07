@@ -33,7 +33,7 @@ if (!empty($result->tests)) {
                             <div class="col-sm-12">   
                                 <table class="table table-striped table-bordered table-hover">
                                     <tr>
-                                        <td style="display:none">
+                                        <td>
                                          <label><?php echo $this->lang->line('finding_category'); ?></label> 
                                             <select class="form-control select2 findingtype " style="width: 100%" name='finding_type' id="finding_type">
                                                 <option value=""><?php echo $this->lang->line('select'); ?> </option>
@@ -45,7 +45,7 @@ if (!empty($result->tests)) {
                                                 <?php } ?>
                                              </select>
                                         </td>
-                                        <td style="display:none">
+                                        <td>
                                             <div>
                                                 <label for="filterinput"> 
                                                     <?php echo $this->lang->line('finding_list'); ?></label>
@@ -67,6 +67,50 @@ if (!empty($result->tests)) {
                                     </tr>
                                 </table>
                             </div>
+
+
+
+                             <div class="col-sm-12">   
+                                <table class="table table-striped table-bordered table-hover">
+                                    <tr>
+                                        <td>
+                                          <label for="exampleInputFile">
+                                                        <?php echo $this->lang->line('symptoms_type'); ?></label>
+                                                    <div><select  name='symptoms_type'  id="actcat"  class="form-control select2 act"  style="width:100%" >
+                                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                                            <?php foreach ($symptomsresulttype as $dkey => $dvalue) {
+                                                                ?>
+                                                            <option value="<?php echo $dvalue["id"]; ?>"><?php echo $dvalue["symptoms_type"] ;?></option>
+
+                                                        <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                    <span class="text-danger"><?php echo form_error('symptoms_type'); ?></span>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <label for="exampleInputFile"> 
+                                                        <?php echo $this->lang->line('symptoms') ; ?></label>
+                                                    <div id="dd" class="wrapper-dropdown-4">
+                                                        <input class="form-control filtersymptominput" type="text">
+                                                        <ul class="dropdown scroll150 section_symptomul">
+                                                            <li><label class="checkbox"><?php echo $this->lang->line('select'); ?></label></li>
+                                                        </ul>
+                                                    </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                 <label><?php echo $this->lang->line('symptoms_description'); ?></label>
+                                                    <textarea class="form-control" id="symptoms_description" name="symptoms_description" ><?php echo set_value('symptoms_description',$result->symptoms_description ) ?></textarea>  
+                                            </div>
+                                        </td>
+                                       
+                                    </tr>
+                                </table>
+                            </div>
+
+
                             <table class="table table-striped table-bordered table-hover mb0" id="tableID">
                                   <?php 
                                   $medicine_row=1;

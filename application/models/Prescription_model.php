@@ -479,7 +479,7 @@ class Prescription_model extends MY_Model
                 return $result;
             } 
         } elseif ($table_type == "opd_prescription") {
-            $query = $this->db->select("opd_details.*,patients.*,staff.name,staff.surname,staff.local_address,ipd_prescription_basic.ipd_id,ipd_prescription_basic.id as prescription_id,ipd_prescription_basic.date as presdate,ipd_prescription_basic.header_note,ipd_prescription_basic.footer_note,ipd_prescription_basic.finding_description,ipd_prescription_basic.is_finding_print,visit_details.id as visit_details_id,ipd_prescription_basic.prescribe_by");
+            $query = $this->db->select("opd_details.*,patients.*,staff.name,staff.surname,staff.local_address,ipd_prescription_basic.ipd_id,ipd_prescription_basic.id as prescription_id,ipd_prescription_basic.date as presdate,ipd_prescription_basic.header_note,ipd_prescription_basic.footer_note,ipd_prescription_basic.finding_description,ipd_prescription_basic.symptoms_description,ipd_prescription_basic.is_finding_print,visit_details.id as visit_details_id,ipd_prescription_basic.prescribe_by");
             $this->db->join("visit_details", "visit_details.id = ipd_prescription_basic.visit_details_id");
             $this->db->join("opd_details", "opd_details.id = visit_details.opd_details_id");
             $this->db->join("patients", "patients.id = opd_details.patient_id");

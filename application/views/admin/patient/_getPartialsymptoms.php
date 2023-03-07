@@ -10,7 +10,7 @@ if (!empty($sectionList)) {
 <script type="text/javascript">
 	
 	$("input[name=symptoms_title]").change(function() {
-  updateAllChecked();
+  updateAllCheckedSymptoms();
 });
 
 $("input[name=addall]").change(function() {
@@ -21,8 +21,8 @@ $("input[name=addall]").change(function() {
   }
 });
 
-function updateAllChecked() {
-
+function updateAllCheckedSymptoms() {
+  var cat = $("#actcat :selected").text(); 
   $('#symptoms_description').val('');
   $('#esymptoms').val('');
   $('#move_ipd_symptoms').val('');
@@ -32,9 +32,9 @@ function updateAllChecked() {
       let new_visit_symptoms = $('#esymptoms').val() ? $('#esymptoms').val() + '\n\n' : '';
       let symptoms_text = $('#move_ipd_symptoms').val() ? $('#move_ipd_symptoms').val() + '\n\n' : '';
      // let eold_text = $('#esymptoms').val() ? $('#esymptoms').val() + '\n\n' : '';
-      $('#symptoms_description').val(old_text + $(this).val());
-      $('#esymptoms').val(new_visit_symptoms + $(this).val());
-      $('#move_ipd_symptoms').val(symptoms_text + $(this).val());
+      $('#symptoms_description').val(old_text + $(this).val() + cat);
+      $('#esymptoms').val(new_visit_symptoms + $(this).val() + cat);
+      $('#move_ipd_symptoms').val(symptoms_text + $(this).val() + cat);
     }
   })
 }

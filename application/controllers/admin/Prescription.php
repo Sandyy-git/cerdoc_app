@@ -180,6 +180,8 @@ class Prescription extends Admin_Controller
         $data['durationdosage']   = $this->medicine_dosage_model->getDurationDosage();
         $data['medicineName']     = $this->pharmacy_model->getMedicineName();
         $data['dosage']           = $this->medicine_dosage_model->getMedicineDosage();
+        $symptoms_resulttype        = $this->symptoms_model->getsymtype();
+        $data['symptomsresulttype'] = $symptoms_resulttype;
         $role                        = $this->customlib->getStaffRole();
         $role_id                     = json_decode($role)->id;    //3 doctor
 
@@ -257,6 +259,8 @@ class Prescription extends Admin_Controller
         $data['durationdosage']   = $this->medicine_dosage_model->getDurationDosage();
         $data['medicineName']     = $this->pharmacy_model->getMedicineName();
         $data['dosage']           = $this->medicine_dosage_model->getMedicineDosage();
+        $symptoms_resulttype        = $this->symptoms_model->getsymtype();
+        $data['symptomsresulttype'] = $symptoms_resulttype;
         //PREV TO SEND PRES NOTIFICATION
         // $data['roles']            = $this->role_model->get();
 
